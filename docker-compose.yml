@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: n1-support-db
+    environment:
+      POSTGRES_DB: n1_support
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./supabase/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgrest:
+    image: postgrest/postgrest:latest
+    container_name: n1-support-api
+    environment:
+      PGRST_DB_URI: postgres://postgres:postgres@db:5432/n1_support
+      PGRST_DB_SCHEMA: public,rag
+      PGRST_DB_ANON_ROLE: anon
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  gotrue:
+    image: supabase/gotrue:latest
+    container_name: n1-support-auth
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: http://localhost:9999
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DATABASE_URL: postgres://postgres:postgres@db:5432/n1_support
+      GOTRURE_SITE_URL: http://localhost:3000
+      GOTRUE_URI_ALLOW_LIST: '*'
+      GOTRUE_DISABLE_SIGNUP: "false"
+    ports:
+      - "9999:9999"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  meta:
+    image: postgres/meta:latest
+    container_name: n1-support-meta
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: db
+      PG_META_DB_PORT: 5432
+      PG_META_DB_NAME: n1_support
+      PG_META_DB_USER: postgres
+      PG_META_DB_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

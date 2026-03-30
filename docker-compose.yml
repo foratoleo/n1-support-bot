@@ -66,5 +66,28 @@ services:
       db:
         condition: service_healthy
 
+  n1-support-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: n1-support-bot
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/n1_support
+      RAG_SCHEMA: rag
+      LOG_LEVEL: INFO
+      USE_PGVECTOR: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    profiles:
+      - bot
+
 volumes:
   postgres_data:
+
+networks:
+  default:
+    name: n1-support-network

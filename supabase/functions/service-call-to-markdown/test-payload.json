@@ -1,0 +1,24 @@
+{
+  "valid_request": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "serviceName": "pagespeed",
+    "serviceCategory": "quality"
+  },
+  "minimal_request": {
+    "id": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  "invalid_uuid": {
+    "id": "not-a-valid-uuid",
+    "serviceName": "pagespeed",
+    "serviceCategory": "quality"
+  },
+  "missing_id": {
+    "serviceName": "pagespeed",
+    "serviceCategory": "quality"
+  },
+  "service_filter_mismatch": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "serviceName": "lighthouse",
+    "serviceCategory": "performance"
+  }
+}

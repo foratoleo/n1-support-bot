@@ -1,75 +1,74 @@
-# N1 Support Bot - Knowledge Base
+# N1 Support Bot
 
-This repository contains the knowledge base for the N1 Support Bot, a RAG-powered chatbot that assists users in validating potential issues in the workforce management system.
+Telegram chatbot for N1 (first-line) support using RAG knowledge base.
 
-## Purpose
+## Overview
 
-The N1 Support Bot analyzes user-reported issues through message-based validation without inspecting code or attempting automatic fixes. When validation suggests a genuine error, the bot escalates to human support.
+The N1 Support Bot receives user-reported issues, validates them through conversational questioning using a RAG knowledge base, and escalates confirmed bugs to human agents.
 
-## Knowledge Base Structure
+## Features
 
-```
-kb_data/
-  INDEX.md              # Knowledge base index
-  overview.md           # System overview
-  terms.md              # Key terms and definitions
-  schema.md             # Database schema documentation
-  structure.md          # Project structure
-
-  # Foundation
-  auth-flows.md         # Authentication flows
-  context-system.md     # Context management system
-  state-patterns.md     # State management patterns
-
-  # Document Generation
-  edge-functions.md     # Edge Functions architecture
-  templates.md           # Document templates
-  tracking.md            # AI interaction tracking
-  endpoints.md          # API endpoints
-  functions.md          # Supabase Functions
-  views.md              # Database views
-
-  # Frontend
-  components.md         # UI components
-  routes.md             # Routing system
-  themes.md             # Area themes
-  members.md            # Team members
-  flows.md              # User flows
-  permissions.md         # Roles and permissions
-
-  # Planning
-  projects.md           # Project management
-  tasks.md             # Task management
-  sprints.md           # Sprint planning
-  transcripts.md       # Meeting transcripts
-  gen-docs.md          # Document generation
-
-  # Support
-  validation.md         # Issue validation logic
-  guides.md             # User guides
-  bot.md               # Bot behavior and flows
-```
+- Receive and acknowledge user issue reports
+- Search RAG knowledge base for relevant articles
+- Ask validation questions (1-3 questions based on issue category)
+- Provide self-service guidance for known issues
+- Escalate validated bugs to human agents
+- Store all conversations in database
 
 ## Tech Stack
 
-- **Database**: PostgreSQL 15 with Supabase
-- **Schema**: Custom `rag` schema for knowledge base
-- **AI**: OpenAI GPT-4 for issue validation
-- **Deployment**: Docker-based VPS setup
+- Python 3.11+
+- python-telegram-bot v21+
+- PostgreSQL with rag schema
+- OpenAI GPT-4o
 
-## Database Schema
+## Setup
 
-The `rag` schema contains:
+1. Clone the repository
+2. Copy `.env.example` to `.env` and fill in your credentials
+3. Start with Docker Compose:
+   ```bash
+   docker-compose --profile bot up -d
+   ```
+4. Initialize the database with KB data:
+   ```bash
+   python scripts/seed_kb.py
+   ```
 
-- `kb_documents` - Knowledge base articles
-- `user_reports` - User-reported issues
-- `conversations` - Chat conversations
-- `escalations` - Human escalation records
+## Bot Commands
 
-## Related Repositories
+- `/start` - Welcome message
+- `/help` - Show available commands
+- `/report <issue>` - Report an issue
+- `/status <report_id>` - Check report status
+- `/cancel` - Cancel current conversation
 
-- [workforce](https://github.com/foratoleo/workforce) - Main application
+## Development
+
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run locally
+python -m src.main
+```
+
+## Project Structure
+
+```
+src/
+  bot/           - Telegram bot handlers
+  database/      - Database models and repositories
+  escalation/    - Escalation handling
+  rag/           - RAG knowledge base search
+  utils/         - Utilities (logger, OpenAI client)
+  validation/    - Issue classification and validation
+```
 
 ## License
 
-Proprietary - All rights reserved
+Proprietary

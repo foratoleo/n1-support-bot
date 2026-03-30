@@ -1,0 +1,1779 @@
+{
+    "score": 92,
+    "audits": {
+        "list": {
+            "id": "list",
+            "score": 1,
+            "title": "As listas contêm somente elementos `<li>` e elementos compatíveis com script (`<script>` e `<template>`).",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Os leitores de tela têm uma maneira específica de enunciar listas. Uma estrutura de lista adequada melhora os resultados do leitor de tela. [Saiba mais sobre estruturas de lista adequadas](https://dequeuniversity.com/rules/axe/4.11/list).",
+            "scoreDisplayMode": "binary"
+        },
+        "label": {
+            "id": "label",
+            "score": null,
+            "title": "Os elementos de formulário têm etiquetas associadas",
+            "description": "Os marcadores garantem que os controles de formulário sejam enunciados corretamente por tecnologias adaptativas, como, por exemplo, leitores de tela. [Saiba mais sobre marcadores de elementos de formulários](https://dequeuniversity.com/rules/axe/4.11/label).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "bypass": {
+            "id": "bypass",
+            "score": null,
+            "title": "A página contém um título, um link de salto ou uma região de ponto de referência",
+            "description": "A adição de maneiras de ignorar conteúdo repetido permite que usuários de teclado naveguem pela página com mais eficiência. [Saiba mais sobre ignorar blocos](https://dequeuniversity.com/rules/axe/4.11/bypass).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "dlitem": {
+            "id": "dlitem",
+            "score": null,
+            "title": "Os itens da lista de definição estão unidos em elementos `<dl>`",
+            "description": "Os itens da lista de definição (`<dt>` e `<dd>`) precisam ficar unidos em um elemento `<dl>` pai para garantir que os leitores de tela consigam enunciá-los corretamente. [Aprenda a estruturar listas de definição da forma correta](https://dequeuniversity.com/rules/axe/4.11/dlitem).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "listitem": {
+            "id": "listitem",
+            "score": 1,
+            "title": "Itens de lista (`<li>`) estão contidos nos elementos pai `<ul>`, `<ol>` ou `<menu>`",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Os leitores de tela exigem que os itens de lista (`<li>`) estejam contidos em um elemento pai `<ul>`, `<ol>` ou `<menu>` para serem enunciados da forma correta. [Saiba mais sobre estruturas de lista adequadas](https://dequeuniversity.com/rules/axe/4.11/listitem).",
+            "scoreDisplayMode": "binary"
+        },
+        "tabindex": {
+            "id": "tabindex",
+            "score": 1,
+            "title": "Nenhum elemento tem um valor de `[tabindex]` maior que 0",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Um valor maior que 0 indica uma ordem explícita de navegação. Embora tecnicamente válido, isso costuma gerar experiências frustrantes para os usuários que utilizam tecnologias adaptativas. [Saiba mais sobre o atributo `tabindex`](https://dequeuniversity.com/rules/axe/4.11/tabindex).",
+            "scoreDisplayMode": "binary"
+        },
+        "aria-text": {
+            "id": "aria-text",
+            "score": null,
+            "title": "Os elementos com o atributo `role=text` não têm descendentes focalizáveis.",
+            "description": "Adicionar `role=text` ao redor de um nó de texto dividido por marcação permite que o VoiceOver trate isso como uma frase, mas os descendentes focalizáveis do elemento não vão ser anunciados. [Saiba mais sobre o atributo `role=text`](https://dequeuniversity.com/rules/axe/4.11/aria-text).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "image-alt": {
+            "id": "image-alt",
+            "score": 1,
+            "title": "Os elementos de imagem têm atributos `[alt]`",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "O texto de elementos informativos precisa ser alternativo, breve e descritivo. Elementos decorativos podem ser ignorados com um atributo alternativo vazio. [Saiba mais sobre o atributo `alt`](https://dequeuniversity.com/rules/axe/4.11/image-alt).",
+            "scoreDisplayMode": "binary"
+        },
+        "link-name": {
+            "id": "link-name",
+            "score": 0,
+            "title": "Os links não têm um nome compreensível",
+            "details": {
+                "type": "table",
+                "items": [
+                    {
+                        "node": {
+                            "lhId": "1-14-A",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,2,FOOTER,0,DIV,1,DIV,1,DIV,0,A",
+                            "type": "node",
+                            "snippet": "<a class=\"text-gray-500 hover:text-brand-orange\" href=\"/\">",
+                            "selector": "div.container > div.mt-8 > div.flex > a.text-gray-500",
+                            "nodeLabel": "div.container > div.mt-8 > div.flex > a.text-gray-500",
+                            "explanation": "Fix all of the following:\n  Element is in tab order and does not have accessible text\n\nFix any of the following:\n  Element does not have text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute",
+                            "boundingRect": {
+                                "top": 4598,
+                                "left": 1156,
+                                "right": 1176,
+                                "width": 20,
+                                "bottom": 4618,
+                                "height": 20
+                            }
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-15-A",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,2,FOOTER,0,DIV,1,DIV,1,DIV,1,A",
+                            "type": "node",
+                            "snippet": "<a class=\"text-gray-500 hover:text-brand-orange\" href=\"/\">",
+                            "selector": "div.container > div.mt-8 > div.flex > a.text-gray-500",
+                            "nodeLabel": "div.container > div.mt-8 > div.flex > a.text-gray-500",
+                            "explanation": "Fix all of the following:\n  Element is in tab order and does not have accessible text\n\nFix any of the following:\n  Element does not have text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute",
+                            "boundingRect": {
+                                "top": 4598,
+                                "left": 1192,
+                                "right": 1212,
+                                "width": 20,
+                                "bottom": 4618,
+                                "height": 20
+                            }
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-16-A",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,2,FOOTER,0,DIV,1,DIV,1,DIV,2,A",
+                            "type": "node",
+                            "snippet": "<a class=\"text-gray-500 hover:text-brand-orange\" href=\"/\">",
+                            "selector": "div.container > div.mt-8 > div.flex > a.text-gray-500",
+                            "nodeLabel": "div.container > div.mt-8 > div.flex > a.text-gray-500",
+                            "explanation": "Fix all of the following:\n  Element is in tab order and does not have accessible text\n\nFix any of the following:\n  Element does not have text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute",
+                            "boundingRect": {
+                                "top": 4598,
+                                "left": 1228,
+                                "right": 1248,
+                                "width": 20,
+                                "bottom": 4618,
+                                "height": 20
+                            }
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-17-A",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,2,FOOTER,0,DIV,1,DIV,1,DIV,3,A",
+                            "type": "node",
+                            "snippet": "<a class=\"text-gray-500 hover:text-brand-orange\" href=\"/\">",
+                            "selector": "div.container > div.mt-8 > div.flex > a.text-gray-500",
+                            "nodeLabel": "div.container > div.mt-8 > div.flex > a.text-gray-500",
+                            "explanation": "Fix all of the following:\n  Element is in tab order and does not have accessible text\n\nFix any of the following:\n  Element does not have text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute",
+                            "boundingRect": {
+                                "top": 4598,
+                                "left": 1264,
+                                "right": 1284,
+                                "width": 20,
+                                "bottom": 4618,
+                                "height": 20
+                            }
+                        }
+                    }
+                ],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ],
+                "debugData": {
+                    "tags": [
+                        "cat.name-role-value",
+                        "wcag2a",
+                        "wcag244",
+                        "wcag412",
+                        "section508",
+                        "section508.22.a",
+                        "TTv5",
+                        "TT6.a",
+                        "EN-301-549",
+                        "EN-9.2.4.4",
+                        "EN-9.4.1.2",
+                        "ACT",
+                        "RGAAv4",
+                        "RGAA-6.2.1"
+                    ],
+                    "type": "debugdata",
+                    "impact": "serious"
+                }
+            },
+            "description": "Textos de link (e textos alternativos de imagens, quando utilizados como link) compreensíveis, únicos e focalizáveis melhoram a experiência de navegação para usuários de leitores de tela. [Aprenda a deixar os links mais acessíveis](https://dequeuniversity.com/rules/axe/4.11/link-name).",
+            "scoreDisplayMode": "binary"
+        },
+        "skip-link": {
+            "id": "skip-link",
+            "score": null,
+            "title": "Links de salto são focalizáveis.",
+            "description": "Com a inclusão de um link de salto, os usuários podem pular o conteúdo principal e economizar tempo. [Saiba mais sobre links de salto](https://dequeuniversity.com/rules/axe/4.11/skip-link).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "accesskeys": {
+            "id": "accesskeys",
+            "score": null,
+            "title": "Valores de `[accesskey]` são exclusivos",
+            "description": "As chaves de acesso permitem ao usuário focar rapidamente em uma determinada parte da página. Para haver uma navegação adequada, cada chave de acesso precisa ser única. [Saiba mais sobre as chaves de acesso](https://dequeuniversity.com/rules/axe/4.11/accesskeys).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-roles": {
+            "id": "aria-roles",
+            "score": 1,
+            "title": "Os valores de `[role]` são válidos",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "As funções ARIA precisam ter valores válidos para realizar as tarefas de acessibilidade pretendidas. [Saiba mais sobre as funções ARIA válidas](https://dequeuniversity.com/rules/axe/4.11/aria-roles).",
+            "scoreDisplayMode": "binary"
+        },
+        "object-alt": {
+            "id": "object-alt",
+            "score": null,
+            "title": "Os elementos `<object>` têm texto alternativo",
+            "description": "Os leitores de tela não traduzem conteúdo não textual. A adição de texto alternativo a elementos `<object>` ajuda os leitores de tela a transmitir o significado para os usuários. [Saiba mais sobre texto alternativo para elementos `object`](https://dequeuniversity.com/rules/axe/4.11/object-alt).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "valid-lang": {
+            "id": "valid-lang",
+            "score": null,
+            "title": "Os atributos `[lang]` têm um valor válido",
+            "description": "A especificação de um [idioma BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) válido nos elementos ajuda a garantir que o texto seja pronunciado corretamente pelo leitor de tela. [Aprenda a usar o atributo `lang`](https://dequeuniversity.com/rules/axe/4.11/valid-lang).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "button-name": {
+            "id": "button-name",
+            "score": 1,
+            "title": "Os botões têm um nome acessível",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Quando um botão não tem um nome acessível, os leitores de tela o enunciam como \"botão\", o que o inutiliza para usuários que dependem desses leitores. [Aprenda a tornar os botões mais acessíveis](https://dequeuniversity.com/rules/axe/4.11/button-name).",
+            "scoreDisplayMode": "binary"
+        },
+        "focus-traps": {
+            "id": "focus-traps",
+            "score": null,
+            "title": "User focus is not accidentally trapped in a region",
+            "description": "A user can tab into and out of any control or region without accidentally trapping their focus. [Learn how to avoid focus traps](https://developer.chrome.com/docs/lighthouse/accessibility/focus-traps/).",
+            "scoreDisplayMode": "manual"
+        },
+        "frame-title": {
+            "id": "frame-title",
+            "score": null,
+            "title": "Os elementos `<frame>` ou `<iframe>` têm um título",
+            "description": "Os usuários de leitores de tela utilizam títulos para descrever o conteúdo de frames. [Saiba mais sobre os títulos de frames](https://dequeuniversity.com/rules/axe/4.11/frame-title).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "select-name": {
+            "id": "select-name",
+            "score": null,
+            "title": "Os elementos de <select> têm elementos de <label> associados.",
+            "description": "Elementos de <form> sem rótulos eficazes podem criar experiências frustrantes para usuários de leitores de tela. [Saiba mais sobre o elemento `select`](https://dequeuniversity.com/rules/axe/4.11/select-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "target-size": {
+            "id": "target-size",
+            "score": 1,
+            "title": "As áreas de toque têm tamanho e espaçamento suficientes.",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Áreas de toque com tamanho e espaçamento suficientes ajudam usuários que talvez tivessem dificuldade em tocar em áreas pequenas. [Saiba mais sobre áreas de toque](https://dequeuniversity.com/rules/axe/4.11/target-size).",
+            "scoreDisplayMode": "binary"
+        },
+        "meta-refresh": {
+            "id": "meta-refresh",
+            "score": null,
+            "title": "O documento não usa `<meta http-equiv=\"refresh\">`",
+            "description": "O usuário não espera a atualização automática da página, o que move o foco novamente para a parte superior dela. Isso pode causar uma experiência confusa ou frustrante. [Saiba mais sobre a metatag de atualização](https://dequeuniversity.com/rules/axe/4.11/meta-refresh).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "empty-heading": {
+            "id": "empty-heading",
+            "score": null,
+            "title": "Todos os elementos de <heading> têm conteúdo.",
+            "description": "Um cabeçalho sem conteúdo ou com texto inacessível impede que usuários de leitores de tela acessem informações sobre a estrutura da página. [Saiba mais sobre cabeçalhos](https://dequeuniversity.com/rules/axe/4.11/empty-heading).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "heading-order": {
+            "id": "heading-order",
+            "score": 1,
+            "title": "Os elementos de título aparecem em uma ordem sequencial descendente",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Títulos propriamente ordenados que não pulam níveis comunicam a estrutura semântica da página, facilitando a navegação e compreensão ao usar tecnologias adaptativas. [Saiba mais sobre ordem de títulos](https://dequeuniversity.com/rules/axe/4.11/heading-order).",
+            "scoreDisplayMode": "binary"
+        },
+        "html-has-lang": {
+            "id": "html-has-lang",
+            "score": 1,
+            "title": "O elemento `<html>` tem um atributo `[lang]`",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Se uma página não especifica um atributo `lang`, o leitor de tela presume que a página está no idioma padrão escolhido pelo usuário na configuração. Se a página não está no idioma padrão, o leitor de tela pode ler o texto dela incorretamente. [Saiba mais sobre o atributo `lang`](https://dequeuniversity.com/rules/axe/4.11/html-has-lang).",
+            "scoreDisplayMode": "binary"
+        },
+        "managed-focus": {
+            "id": "managed-focus",
+            "score": null,
+            "title": "The user's focus is directed to new content added to the page",
+            "description": "If new content, such as a dialog, is added to the page, the user's focus is directed to it. [Learn how to direct focus to new content](https://developer.chrome.com/docs/lighthouse/accessibility/managed-focus/).",
+            "scoreDisplayMode": "manual"
+        },
+        "meta-viewport": {
+            "id": "meta-viewport",
+            "score": 1,
+            "title": "`[user-scalable=\"no\"]` não é usado no elemento `<meta name=\"viewport\">`, e o atributo `[maximum-scale]` não é menor que 5.",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "A desativação do zoom gera problemas para usuários com baixa visão que utilizam a ampliação de tela para enxergar corretamente o conteúdo de uma página da Web. [Saiba mais sobre a metatag viewport](https://dequeuniversity.com/rules/axe/4.11/meta-viewport).",
+            "scoreDisplayMode": "binary"
+        },
+        "td-has-header": {
+            "id": "td-has-header",
+            "score": null,
+            "title": "Os elementos `<td>` em uma `<table>` grande têm um ou mais cabeçalhos de tabela.",
+            "description": "Os leitores de tela têm recursos para facilitar a navegação em tabelas. Garantir que os elementos `<td>` em uma tabela grande (com largura e altura de três ou mais células) tenham um cabeçalho associado pode melhorar a experiência dos usuários de leitores de tela. [Saiba mais sobre cabeçalhos da tabela.](https://dequeuniversity.com/rules/axe/4.11/td-has-header)",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "use-landmarks": {
+            "id": "use-landmarks",
+            "score": null,
+            "title": "HTML5 landmark elements are used to improve navigation",
+            "description": "Landmark elements (`<main>`, `<nav>`, etc.) are used to improve the keyboard navigation of the page for assistive technology. [Learn more about landmark elements](https://developer.chrome.com/docs/lighthouse/accessibility/use-landmarks/).",
+            "scoreDisplayMode": "manual"
+        },
+        "video-caption": {
+            "id": "video-caption",
+            "score": null,
+            "title": "Os elementos `<video>` contêm um elemento `<track>` com `[kind=\"captions\"]`",
+            "description": "Quando um vídeo é acompanhado de legendas, pessoas surdas e deficientes auditivas têm mais facilidade para acessar as informações dele. [Saiba mais sobre legendas de vídeo](https://dequeuniversity.com/rules/axe/4.11/video-caption).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "color-contrast": {
+            "id": "color-contrast",
+            "score": 0,
+            "title": "As cores de primeiro e segundo plano não têm uma taxa de contraste suficiente.",
+            "details": {
+                "type": "table",
+                "items": [
+                    {
+                        "node": {
+                            "lhId": "1-0-BUTTON",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,0,HEADER,0,DIV,2,DIV,1,A,0,BUTTON",
+                            "type": "node",
+                            "snippet": "<button class=\"inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm fo…\">",
+                            "selector": "div.container > div.ml-auto > a > button.inline-flex",
+                            "nodeLabel": "Começar Agora",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 3.21 (foreground color: #ffffff, background color: #578fea, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 14,
+                                "left": 1145,
+                                "right": 1276,
+                                "width": 131,
+                                "bottom": 50,
+                                "height": 36
+                            }
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-1-DIV",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,SECTION,0,DIV,0,DIV,0,DIV,0,DIV",
+                            "type": "node",
+                            "snippet": "<div class=\"inline-block rounded-lg bg-brand-secondary/10 px-3 py-1 text-sm text-brand…\">",
+                            "selector": "div.container > div.flex > div.space-y-2 > div.inline-block",
+                            "nodeLabel": "Disponível para Clínicas & Profissionais Independentes",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 1.34 (foreground color: #80e1c6, background color: #e7f0ee, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 193,
+                                "left": 475,
+                                "right": 861,
+                                "width": 386,
+                                "bottom": 221,
+                                "height": 28
+                            }
+                        },
+                        "subItems": {
+                            "type": "subitems",
+                            "items": [
+                                {
+                                    "relatedNode": {
+                                        "lhId": "1-2-BODY",
+                                        "path": "1,HTML,1,BODY",
+                                        "type": "node",
+                                        "snippet": "<body>",
+                                        "selector": "body",
+                                        "nodeLabel": "body",
+                                        "boundingRect": {
+                                            "top": 0,
+                                            "left": 0,
+                                            "right": 1335,
+                                            "width": 1335,
+                                            "bottom": 4642,
+                                            "height": 4642
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-3-P",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,SECTION,0,DIV,0,DIV,0,DIV,2,P",
+                            "type": "node",
+                            "snippet": "<p class=\"mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400\">",
+                            "selector": "div.container > div.flex > div.space-y-2 > p.mx-auto",
+                            "nodeLabel": "Plataforma completa para gestão de consultório: agendamento, prontuários e fina…",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 4.31 (foreground color: #6b7280, background color: #f2f2f2, font size: 15.0pt (20px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 329,
+                                "left": 318,
+                                "right": 1018,
+                                "width": 700,
+                                "bottom": 413,
+                                "height": 84
+                            }
+                        },
+                        "subItems": {
+                            "type": "subitems",
+                            "items": [
+                                {
+                                    "relatedNode": {
+                                        "lhId": "1-2-BODY",
+                                        "path": "1,HTML,1,BODY",
+                                        "type": "node",
+                                        "snippet": "<body>",
+                                        "selector": "body",
+                                        "nodeLabel": "body",
+                                        "boundingRect": {
+                                            "top": 0,
+                                            "left": 0,
+                                            "right": 1335,
+                                            "width": 1335,
+                                            "bottom": 4642,
+                                            "height": 4642
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-4-BUTTON",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,SECTION,0,DIV,0,DIV,1,DIV,0,A,0,BUTTON",
+                            "type": "node",
+                            "snippet": "<button class=\"inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm fo…\">",
+                            "selector": "div.flex > div.flex > a > button.inline-flex",
+                            "nodeLabel": "Começar Agora",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 3.21 (foreground color: #ffffff, background color: #578fea, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 429,
+                                "left": 502,
+                                "right": 673,
+                                "width": 171,
+                                "bottom": 473,
+                                "height": 44
+                            }
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-5-DIV",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,1,SECTION,0,DIV,0,DIV,0,DIV,0,DIV",
+                            "type": "node",
+                            "snippet": "<div class=\"inline-block rounded-lg bg-brand-secondary/10 px-3 py-1 text-sm text-brand…\">",
+                            "selector": "div.container > div.flex > div.space-y-4 > div.inline-block",
+                            "nodeLabel": "Funcionalidades Principais",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 1.39 (foreground color: #80e1c6, background color: #e8f5f9, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 1370,
+                                "left": 568,
+                                "right": 767,
+                                "width": 199,
+                                "bottom": 1398,
+                                "height": 28
+                            }
+                        },
+                        "subItems": {
+                            "type": "subitems",
+                            "items": [
+                                {
+                                    "relatedNode": {
+                                        "lhId": "1-6-SECTION",
+                                        "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,1,SECTION",
+                                        "type": "node",
+                                        "snippet": "<section class=\"w-full py-12 md:py-24 lg:py-32 bg-brand-light\" id=\"features\">",
+                                        "selector": "div#root > div.min-h-screen > main.flex-1 > section#features",
+                                        "nodeLabel": "Funcionalidades Principais\nTudo o que Você Precisa para Gerir seu Consultório\n\n…",
+                                        "boundingRect": {
+                                            "top": 1242,
+                                            "left": 0,
+                                            "right": 1335,
+                                            "width": 1335,
+                                            "bottom": 2130,
+                                            "height": 888
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-7-DIV",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,2,SECTION,0,DIV,0,DIV,0,DIV,0,DIV",
+                            "type": "node",
+                            "snippet": "<div class=\"inline-block rounded-lg bg-brand-primary/10 px-3 py-1 text-sm text-brand-p…\">",
+                            "selector": "div.container > div.flex > div.space-y-4 > div.inline-block",
+                            "nodeLabel": "Programa de Fundadores",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 2.52 (foreground color: #5693ed, background color: #e2e9f2, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 2258,
+                                "left": 570,
+                                "right": 764,
+                                "width": 194,
+                                "bottom": 2286,
+                                "height": 28
+                            }
+                        },
+                        "subItems": {
+                            "type": "subitems",
+                            "items": [
+                                {
+                                    "relatedNode": {
+                                        "lhId": "1-2-BODY",
+                                        "path": "1,HTML,1,BODY",
+                                        "type": "node",
+                                        "snippet": "<body>",
+                                        "selector": "body",
+                                        "nodeLabel": "body",
+                                        "boundingRect": {
+                                            "top": 0,
+                                            "left": 0,
+                                            "right": 1335,
+                                            "width": 1335,
+                                            "bottom": 4642,
+                                            "height": 4642
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-8-P",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,2,SECTION,0,DIV,0,DIV,0,DIV,2,P",
+                            "type": "node",
+                            "snippet": "<p class=\"mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400\">",
+                            "selector": "div.container > div.flex > div.space-y-4 > p.mx-auto",
+                            "nodeLabel": "Estamos construindo algo especial. E queremos você do nosso lado desde o início…",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 4.31 (foreground color: #6b7280, background color: #f2f2f2, font size: 15.0pt (20px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 2382,
+                                "left": 317,
+                                "right": 1017,
+                                "width": 700,
+                                "bottom": 2466,
+                                "height": 84
+                            }
+                        },
+                        "subItems": {
+                            "type": "subitems",
+                            "items": [
+                                {
+                                    "relatedNode": {
+                                        "lhId": "1-2-BODY",
+                                        "path": "1,HTML,1,BODY",
+                                        "type": "node",
+                                        "snippet": "<body>",
+                                        "selector": "body",
+                                        "nodeLabel": "body",
+                                        "boundingRect": {
+                                            "top": 0,
+                                            "left": 0,
+                                            "right": 1335,
+                                            "width": 1335,
+                                            "bottom": 4642,
+                                            "height": 4642
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-9-BUTTON",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,2,SECTION,0,DIV,1,DIV,1,DIV,2,DIV,0,A,0,BUTTON",
+                            "type": "node",
+                            "snippet": "<button class=\"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md…\">",
+                            "selector": "div.rounded-lg > div.flex > a.w-full > button.inline-flex",
+                            "nodeLabel": "Quero os R$ 600 de desconto",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 3.21 (foreground color: #ffffff, background color: #578fea, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 2833,
+                                "left": 709,
+                                "right": 1091,
+                                "width": 382,
+                                "bottom": 2873,
+                                "height": 40
+                            }
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-10-DIV",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,3,SECTION,0,DIV,0,DIV,0,DIV,0,DIV",
+                            "type": "node",
+                            "snippet": "<div class=\"inline-block rounded-lg bg-brand-secondary/10 px-3 py-1 text-sm text-brand…\">",
+                            "selector": "div.container > div.flex > div.space-y-4 > div.inline-block",
+                            "nodeLabel": "Depoimentos",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 1.39 (foreground color: #80e1c6, background color: #e8f5f9, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 3154,
+                                "left": 612,
+                                "right": 724,
+                                "width": 112,
+                                "bottom": 3182,
+                                "height": 28
+                            }
+                        },
+                        "subItems": {
+                            "type": "subitems",
+                            "items": [
+                                {
+                                    "relatedNode": {
+                                        "lhId": "1-11-SECTION",
+                                        "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,3,SECTION",
+                                        "type": "node",
+                                        "snippet": "<section class=\"w-full py-12 md:py-24 lg:py-32 bg-brand-light\" id=\"testimonials\">",
+                                        "selector": "div#root > div.min-h-screen > main.flex-1 > section#testimonials",
+                                        "nodeLabel": "Depoimentos\nConfiável por Profissionais de Saúde Mental\n\nVeja o que os profissi…",
+                                        "boundingRect": {
+                                            "top": 3026,
+                                            "left": 0,
+                                            "right": 1335,
+                                            "width": 1335,
+                                            "bottom": 3769,
+                                            "height": 743
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-12-P",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,4,SECTION,0,DIV,0,DIV,0,DIV,1,P",
+                            "type": "node",
+                            "snippet": "<p class=\"mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400\">",
+                            "selector": "div.container > div.flex > div.space-y-2 > p.mx-auto",
+                            "nodeLabel": "Junte-se a milhares de profissionais de saúde mental que simplificaram sua prát…",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 4.31 (foreground color: #6b7280, background color: #f2f2f2, font size: 15.0pt (20px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 3993,
+                                "left": 317,
+                                "right": 1017,
+                                "width": 700,
+                                "bottom": 4049,
+                                "height": 56
+                            }
+                        },
+                        "subItems": {
+                            "type": "subitems",
+                            "items": [
+                                {
+                                    "relatedNode": {
+                                        "lhId": "1-2-BODY",
+                                        "path": "1,HTML,1,BODY",
+                                        "type": "node",
+                                        "snippet": "<body>",
+                                        "selector": "body",
+                                        "nodeLabel": "body",
+                                        "boundingRect": {
+                                            "top": 0,
+                                            "left": 0,
+                                            "right": 1335,
+                                            "width": 1335,
+                                            "bottom": 4642,
+                                            "height": 4642
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "node": {
+                            "lhId": "1-13-BUTTON",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,4,SECTION,0,DIV,0,DIV,1,DIV,0,A,0,BUTTON",
+                            "type": "node",
+                            "snippet": "<button class=\"inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm fo…\">",
+                            "selector": "div.flex > div.flex > a > button.inline-flex",
+                            "nodeLabel": "Comece de Graça",
+                            "explanation": "Fix any of the following:\n  Element has insufficient color contrast of 3.21 (foreground color: #ffffff, background color: #578fea, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
+                            "boundingRect": {
+                                "top": 4073,
+                                "left": 433,
+                                "right": 622,
+                                "width": 189,
+                                "bottom": 4117,
+                                "height": 44
+                            }
+                        }
+                    }
+                ],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ],
+                "debugData": {
+                    "tags": [
+                        "cat.color",
+                        "wcag2aa",
+                        "wcag143",
+                        "TTv5",
+                        "TT13.c",
+                        "EN-301-549",
+                        "EN-9.1.4.3",
+                        "ACT",
+                        "RGAAv4",
+                        "RGAA-3.2.1"
+                    ],
+                    "type": "debugdata",
+                    "impact": "serious"
+                }
+            },
+            "description": "Para muitos usuários, é difícil ou impossível ler textos com baixo contraste. [Aprenda a fornecer contraste de cor suficiente](https://dequeuniversity.com/rules/axe/4.11/color-contrast).",
+            "scoreDisplayMode": "binary"
+        },
+        "document-title": {
+            "id": "document-title",
+            "score": 1,
+            "title": "O documento tem um elemento `<title>`",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "O título oferece ao usuário do leitor de tela uma visão geral da página, além de ser extremamente útil para que os usuários de mecanismos de pesquisa determinem se uma página é relevante à pesquisa deles. [Saiba mais sobre títulos de documentos](https://dequeuniversity.com/rules/axe/4.11/document-title).",
+            "scoreDisplayMode": "binary"
+        },
+        "aria-meter-name": {
+            "id": "aria-meter-name",
+            "score": null,
+            "title": "Os elementos ARIA `meter` têm nomes acessíveis",
+            "description": "Quando um elemento meter não tem um nome acessível, os leitores de tela o anunciam com um nome genérico, fazendo com que ele não possa ser usado pelos usuários que dependem desses leitores. [Aprenda a nomear elementos `meter`](https://dequeuniversity.com/rules/axe/4.11/aria-meter-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-valid-attr": {
+            "id": "aria-valid-attr",
+            "score": 1,
+            "title": "Os atributos `[aria-*]` são válidos e não contêm erros de ortografia",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "As tecnologias adaptativas, como leitores de tela, não conseguem interpretar atributos ARIA com nomes inválidos. [Saiba mais sobre os atributos ARIA válidos](https://dequeuniversity.com/rules/axe/4.11/aria-valid-attr).",
+            "scoreDisplayMode": "binary"
+        },
+        "definition-list": {
+            "id": "definition-list",
+            "score": null,
+            "title": "`<dl>`s contêm apenas os grupos `<dt>` e `<dd>`, elementos `<script>`, `<template>` ou `<div>` devidamente organizados.",
+            "description": "Quando listas de definição não são marcadas corretamente, os leitores de tela podem produzir resultados confusos ou imprecisos. [Aprenda a estruturar listas de definição da forma correta](https://dequeuniversity.com/rules/axe/4.11/definition-list).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "html-lang-valid": {
+            "id": "html-lang-valid",
+            "score": 1,
+            "title": "O elemento `<html>` tem um valor válido para o atributo `[lang]`",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "A especificação de um [idioma BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) válido ajuda os leitores de tela a enunciar o texto corretamente. [Aprenda a usar o atributo `lang`](https://dequeuniversity.com/rules/axe/4.11/html-lang-valid).",
+            "scoreDisplayMode": "binary"
+        },
+        "input-image-alt": {
+            "id": "input-image-alt",
+            "score": null,
+            "title": "Os elementos `<input type=\"image\">` têm texto `[alt]`",
+            "description": "Quando uma imagem é usada como um botão `<input>`, a oferta de texto alternativo ajuda o usuário do leitor de tela a entender a finalidade do botão. [Saiba mais sobre texto alternativo para imagens de entrada](https://dequeuniversity.com/rules/axe/4.11/input-image-alt).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "td-headers-attr": {
+            "id": "td-headers-attr",
+            "score": null,
+            "title": "Células em um elemento `<table>` que usam o atributo `[headers]` referem-se às células na mesma tabela.",
+            "description": "Os leitores de tela têm recursos para facilitar a navegação em tabelas. Para melhorar a experiência dos usuários de leitores de tela, as células `<td>` que usam o atributo `[headers]` devem referenciar apenas outras células na mesma tabela. [Saiba mais sobre o atributo `headers`](https://dequeuniversity.com/rules/axe/4.11/td-headers-attr).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-dialog-name": {
+            "id": "aria-dialog-name",
+            "score": null,
+            "title": "Elementos com `role=\"dialog\"` ou `role=\"alertdialog\"` têm nomes acessíveis.",
+            "description": "Elementos de caixa de diálogo ARIA sem nomes acessíveis podem impedir que usuários de leitores de tela entendam a finalidade desses elementos. [Saiba como tornar os elementos da caixa de diálogo ARIA mais acessíveis](https://dequeuniversity.com/rules/axe/4.11/aria-dialog-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-hidden-body": {
+            "id": "aria-hidden-body",
+            "score": 1,
+            "title": "O `[aria-hidden=\"true\"]` não está presente no documento `<body>`",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "As tecnologias adaptativas, como leitores de tela, funcionam de maneira inconsistente quando o `aria-hidden=\"true\"` está configurado no documento `<body>`. [Aprenda como o `aria-hidden` afeta o corpo do documento](https://dequeuniversity.com/rules/axe/4.11/aria-hidden-body).",
+            "scoreDisplayMode": "binary"
+        },
+        "aria-allowed-attr": {
+            "id": "aria-allowed-attr",
+            "score": 1,
+            "title": "Os atributos `[aria-*]` correspondem às próprias funções",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Cada `role` ARIA é compatível com um subconjunto específico de atributos `aria-*`. A falta de correspondência entre eles invalida os atributos `aria-*`. [Aprenda a associar atributos ARIA às próprias funções](https://dequeuniversity.com/rules/axe/4.11/aria-allowed-attr).",
+            "scoreDisplayMode": "binary"
+        },
+        "aria-allowed-role": {
+            "id": "aria-allowed-role",
+            "score": null,
+            "title": "Usa papéis ARIA apenas em elementos compatíveis",
+            "description": "Muitos elementos HTML só podem receber alguns papéis ARIA. Usar papéis ARIA onde eles não são permitidos pode interferir na acessibilidade da página da Web. [Saiba mais sobre os papéis ARIA](https://dequeuniversity.com/rules/axe/4.11/aria-allowed-role).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-command-name": {
+            "id": "aria-command-name",
+            "score": null,
+            "title": "Os elementos `button`, `link` e `menuitem` têm nomes acessíveis",
+            "description": "Quando um elemento não tem um nome acessível, os leitores de tela o anunciam com um nome genérico, fazendo com que os usuários que dependem desses leitores não possam usá-lo. [Aprenda a tornar os elementos de comando mais acessíveis](https://dequeuniversity.com/rules/axe/4.11/aria-command-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-hidden-focus": {
+            "id": "aria-hidden-focus",
+            "score": null,
+            "title": "Os elementos `[aria-hidden=\"true\"]` não contêm descendentes focalizáveis",
+            "description": "Os descendentes focalizáveis dentro de um elemento `[aria-hidden=\"true\"]` impedem que esses elementos interativos sejam disponibilizados para usuários de tecnologias adaptativas, por exemplo, leitores de tela. [Aprenda como o elemento `aria-hidden` afeta elementos focalizáveis](https://dequeuniversity.com/rules/axe/4.11/aria-hidden-focus).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-tooltip-name": {
+            "id": "aria-tooltip-name",
+            "score": null,
+            "title": "Os elementos ARIA `tooltip` têm nomes acessíveis",
+            "description": "Quando um elemento tooltip não tem um nome acessível, os leitores de tela o anunciam com um nome genérico, fazendo com que ele não possa ser usado pelos usuários que dependem desses leitores. [Aprenda a nomear elementos `tooltip`](https://dequeuniversity.com/rules/axe/4.11/aria-tooltip-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "duplicate-id-aria": {
+            "id": "duplicate-id-aria",
+            "score": null,
+            "title": "Os códigos ARIA são únicos",
+            "description": "É necessário que o valor de um código ARIA seja único para impedir que outras instâncias sejam ignoradas por tecnologias adaptativas. [Aprenda a corrigir códigos ARIA duplicados](https://dequeuniversity.com/rules/axe/4.11/duplicate-id-aria).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "input-button-name": {
+            "id": "input-button-name",
+            "score": null,
+            "title": "Os botões de entrada têm texto compreensível.",
+            "description": "A adição de texto compreensível e acessível a botões de entrada pode ajudar os usuários de leitores de tela a entender a finalidade do botão. [Saiba mais sobre botões de entrada.](https://dequeuniversity.com/rules/axe/4.11/input-button-name)",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "landmark-one-main": {
+            "id": "landmark-one-main",
+            "score": 1,
+            "title": "O documento tem um ponto de referência principal.",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Um ponto de referência principal ajuda os usuários de leitores de tela a navegar em uma página da Web. [Saiba mais sobre pontos de referência](https://dequeuniversity.com/rules/axe/4.11/landmark-one-main).",
+            "scoreDisplayMode": "binary"
+        },
+        "logical-tab-order": {
+            "id": "logical-tab-order",
+            "score": null,
+            "title": "The page has a logical tab order",
+            "description": "Tabbing through the page follows the visual layout. Users cannot focus elements that are offscreen. [Learn more about logical tab ordering](https://developer.chrome.com/docs/lighthouse/accessibility/logical-tab-order/).",
+            "scoreDisplayMode": "manual"
+        },
+        "th-has-data-cells": {
+            "id": "th-has-data-cells",
+            "score": null,
+            "title": "Os elementos `<th>` e os elementos com `[role=\"columnheader\"/\"rowheader\"]` têm as células de dados descritas.",
+            "description": "Os leitores de tela têm recursos para facilitar a navegação em tabelas. Garantir que os cabeçalhos das tabelas se refiram sempre a alguns conjuntos de células pode melhorar a experiência dos usuários de leitores de tela. [Saiba mais sobre os cabeçalhos da tabela](https://dequeuniversity.com/rules/axe/4.11/th-has-data-cells).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-required-attr": {
+            "id": "aria-required-attr",
+            "score": 1,
+            "title": "`[role]`s têm todos os atributos `[aria-*]` obrigatórios",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Algumas funções ARIA têm atributos obrigatórios que descrevem o estado do elemento para leitores de tela. [Saiba mais sobre funções e atributos obrigatórios](https://dequeuniversity.com/rules/axe/4.11/aria-required-attr).",
+            "scoreDisplayMode": "binary"
+        },
+        "aria-treeitem-name": {
+            "id": "aria-treeitem-name",
+            "score": null,
+            "title": "Os elementos ARIA `treeitem` têm nomes acessíveis",
+            "description": "Quando um elemento `treeitem` não tem um nome acessível, os leitores de tela o anunciam com um nome genérico, fazendo com que os usuários que dependem desses leitores não possam usá-lo. [Saiba mais sobre como marcar elementos `treeitem`](https://dequeuniversity.com/rules/axe/4.11/aria-treeitem-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "focusable-controls": {
+            "id": "focusable-controls",
+            "score": null,
+            "title": "Interactive controls are keyboard focusable",
+            "description": "Custom interactive controls are keyboard focusable and display a focus indicator. [Learn how to make custom controls focusable](https://developer.chrome.com/docs/lighthouse/accessibility/focusable-controls/).",
+            "scoreDisplayMode": "manual"
+        },
+        "link-in-text-block": {
+            "id": "link-in-text-block",
+            "score": null,
+            "title": "Os links são distinguíveis sem depender da cor.",
+            "description": "Para muitos usuários, é difícil ou impossível ler textos com baixo contraste. Textos de link perceptíveis melhoram a experiência dos usuários com baixa visão. [Saiba como tornar os links diferenciáveis](https://dequeuniversity.com/rules/axe/4.11/link-in-text-block).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "table-fake-caption": {
+            "id": "table-fake-caption",
+            "score": null,
+            "title": "As tabelas usam `<caption>` em vez de células com o atributo `[colspan]` para indicar uma legenda.",
+            "description": "Os leitores de tela têm recursos para facilitar a navegação em tabelas. Garantir que as tabelas usem o elemento de legenda em vez de células com o atributo `[colspan]` pode melhorar a experiência dos usuários de leitores de tela. [Saiba mais sobre legendas.](https://dequeuniversity.com/rules/axe/4.11/table-fake-caption)",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "image-redundant-alt": {
+            "id": "image-redundant-alt",
+            "score": null,
+            "title": "Elementos de imagem não têm atributos `[alt]` que sejam texto redundante.",
+            "description": "O texto de elementos informativos precisa ser alternativo, breve e descritivo. Se ele for exatamente igual ao texto adjacente ao link ou à imagem pode ser confuso para usuários de leitores de tela, porque o texto será lido duas vezes. [Saiba mais sobre o atributo `alt`](https://dequeuniversity.com/rules/axe/4.11/image-redundant-alt).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-deprecated-role": {
+            "id": "aria-deprecated-role",
+            "score": 1,
+            "title": "As funções ARIA descontinuadas não foram usadas",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "As funções ARIA descontinuadas talvez não sejam processadas corretamente pela tecnologia adaptativa. [Saiba mais sobre as funções ARIA descontinuadas](https://dequeuniversity.com/rules/axe/4.11/aria-deprecated-role).",
+            "scoreDisplayMode": "binary"
+        },
+        "aria-prohibited-attr": {
+            "id": "aria-prohibited-attr",
+            "score": 1,
+            "title": "Os elementos usam apenas atributos ARIA permitidos",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Usar atributos ARIA em funções em que eles são proibidos pode fazer com que informações importantes não sejam comunicadas aos usuários de tecnologias adaptativas. [Saiba mais sobre as funções ARIA proibidas](https://dequeuniversity.com/rules/axe/4.11/aria-prohibited-attr).",
+            "scoreDisplayMode": "binary"
+        },
+        "aria-required-parent": {
+            "id": "aria-required-parent",
+            "score": null,
+            "title": "`[role]`s fazem parte do elemento pai obrigatório",
+            "description": "Algumas funções ARIA filhas precisam fazer parte das funções mães específicas para cumprir as tarefas de acessibilidade pretendidas. [Saiba mais sobre as funções ARIA e o elemento pai obrigatório](https://dequeuniversity.com/rules/axe/4.11/aria-required-parent).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "table-duplicate-name": {
+            "id": "table-duplicate-name",
+            "score": null,
+            "title": "As tabelas têm conteúdo diferente no atributo de resumo e em `<caption>`.",
+            "description": "O atributo de resumo precisa descrever a estrutura da tabela, enquanto `<caption>` precisa ter o título na tela. A marcação precisa de tabelas ajuda os usuários de leitores de tela. [Saiba mais sobre resumos e legendas](https://dequeuniversity.com/rules/axe/4.11/table-duplicate-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-conditional-attr": {
+            "id": "aria-conditional-attr",
+            "score": 1,
+            "title": "Os atributos ARIA são usados conforme especificado para a função do elemento",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Alguns atributos ARIA só são permitidos em um elemento sob certas condições. [Saiba mais sobre os atributos ARIA condicionais](https://dequeuniversity.com/rules/axe/4.11/aria-conditional-attr).",
+            "scoreDisplayMode": "binary"
+        },
+        "aria-input-field-name": {
+            "id": "aria-input-field-name",
+            "score": null,
+            "title": "Os campos de entrada ARIA têm nomes acessíveis",
+            "description": "Quando um campo de entrada não tem um nome acessível, os leitores de tela o anunciam com um nome genérico, fazendo com que os usuários com leitores de tela não possam usá-lo. [Saiba mais sobre os rótulos de campos de entrada](https://dequeuniversity.com/rules/axe/4.11/aria-input-field-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-progressbar-name": {
+            "id": "aria-progressbar-name",
+            "score": null,
+            "title": "Os elementos ARIA `progressbar` têm nomes acessíveis",
+            "description": "Quando um elemento `progressbar` não tem um nome acessível, os leitores de tela o anunciam com um nome genérico, fazendo com que os usuários que dependem desses leitores não possam usá-lo. [Aprenda a marcar elementos `progressbar`](https://dequeuniversity.com/rules/axe/4.11/aria-progressbar-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-valid-attr-value": {
+            "id": "aria-valid-attr-value",
+            "score": 1,
+            "title": "Os atributos `[aria-*]` têm valores válidos",
+            "details": {
+                "type": "table",
+                "items": [],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ]
+            },
+            "description": "Tecnologias adaptativas, como leitores de tela, não conseguem interpretar atributos ARIA com valores inválidos. [Saiba mais sobre os valores válidos para atributos ARIA](https://dequeuniversity.com/rules/axe/4.11/aria-valid-attr-value).",
+            "scoreDisplayMode": "binary"
+        },
+        "custom-controls-roles": {
+            "id": "custom-controls-roles",
+            "score": null,
+            "title": "Custom controls have ARIA roles",
+            "description": "Custom interactive controls have appropriate ARIA roles. [Learn how to add roles to custom controls](https://developer.chrome.com/docs/lighthouse/accessibility/custom-control-roles/).",
+            "scoreDisplayMode": "manual"
+        },
+        "aria-required-children": {
+            "id": "aria-required-children",
+            "score": null,
+            "title": "Elementos com uma `[role]` ARIA que exigem que os filhos contenham uma `[role]` específica têm todos os filhos obrigatórios.",
+            "description": "Algumas funções ARIA mães precisam ter funções filhas específicas para cumprir as tarefas de acessibilidade pretendidas. [Saiba mais sobre funções e os elementos filhos obrigatórios](https://dequeuniversity.com/rules/axe/4.11/aria-required-children).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "aria-toggle-field-name": {
+            "id": "aria-toggle-field-name",
+            "score": null,
+            "title": "Os campos de alternância ARIA têm nomes acessíveis",
+            "description": "Quando um campo de alternância não tem um nome acessível, os leitores de tela o anunciam com um nome genérico, fazendo com que os usuários com leitores de tela não possam usá-lo. [Saiba mais sobre campos de alternância](https://dequeuniversity.com/rules/axe/4.11/aria-toggle-field-name).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "custom-controls-labels": {
+            "id": "custom-controls-labels",
+            "score": null,
+            "title": "Custom controls have associated labels",
+            "description": "Custom interactive controls have associated labels, provided by aria-label or aria-labelledby. [Learn more about custom controls and labels](https://developer.chrome.com/docs/lighthouse/accessibility/custom-controls-labels/).",
+            "scoreDisplayMode": "manual"
+        },
+        "html-xml-lang-mismatch": {
+            "id": "html-xml-lang-mismatch",
+            "score": null,
+            "title": "O elemento `<html>` tem um atributo `[xml:lang]` com o mesmo idioma base que o atributo `[lang]`.",
+            "description": "Se a página da Web não especificar um idioma consistente, talvez o leitor de tela não anuncie o texto dela corretamente. [Saiba mais sobre o atributo `lang`.](https://dequeuniversity.com/rules/axe/4.11/html-xml-lang-mismatch)",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "offscreen-content-hidden": {
+            "id": "offscreen-content-hidden",
+            "score": null,
+            "title": "Offscreen content is hidden from assistive technology",
+            "description": "Offscreen content is hidden with display: none or aria-hidden=true. [Learn how to properly hide offscreen content](https://developer.chrome.com/docs/lighthouse/accessibility/offscreen-content-hidden/).",
+            "scoreDisplayMode": "manual"
+        },
+        "visual-order-follows-dom": {
+            "id": "visual-order-follows-dom",
+            "score": null,
+            "title": "Visual order on the page follows DOM order",
+            "description": "DOM order matches the visual order, improving navigation for assistive technology. [Learn more about DOM and visual ordering](https://developer.chrome.com/docs/lighthouse/accessibility/visual-order-follows-dom/).",
+            "scoreDisplayMode": "manual"
+        },
+        "form-field-multiple-labels": {
+            "id": "form-field-multiple-labels",
+            "score": null,
+            "title": "Nenhum campo de formulário tem vários rótulos",
+            "description": "Os campos de formulários com vários rótulos podem ser anunciados de maneira confusa por tecnologias adaptativas como leitores de tela, que usam o primeiro, o último ou todos os rótulos. [Aprenda a usar os rótulos de formulários](https://dequeuniversity.com/rules/axe/4.11/form-field-multiple-labels).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "label-content-name-mismatch": {
+            "id": "label-content-name-mismatch",
+            "score": null,
+            "title": "Elementos com rótulos de texto visíveis têm nomes acessíveis correspondentes.",
+            "description": "Marcadores de texto visíveis que não correspondem ao nome acessível podem resultar em uma experiência confusa para usuários de leitores de tela. [Saiba mais sobre nomes acessíveis](https://dequeuniversity.com/rules/axe/4.11/label-content-name-mismatch).",
+            "scoreDisplayMode": "notApplicable"
+        },
+        "identical-links-same-purpose": {
+            "id": "identical-links-same-purpose",
+            "score": 1,
+            "title": "Links idênticos têm a mesma finalidade.",
+            "details": {
+                "type": "table",
+                "items": [
+                    {
+                        "node": {
+                            "lhId": "1-19-A",
+                            "path": "1,HTML,1,BODY,0,DIV,1,DIV,0,HEADER,0,DIV,1,DIV,0,NAV,3,A",
+                            "type": "node",
+                            "snippet": "<a href=\"/#contact\" class=\"text-sm font-medium transition-colors hover:text-primary\">",
+                            "selector": "div.container > div.flex > nav.hidden > a.text-sm",
+                            "nodeLabel": "Contato",
+                            "explanation": "Fix all of the following:\n  Check that links have the same purpose, or are intentionally ambiguous.",
+                            "boundingRect": {
+                                "top": 25,
+                                "left": 515,
+                                "right": 571,
+                                "width": 56,
+                                "bottom": 45,
+                                "height": 20
+                            }
+                        },
+                        "subItems": {
+                            "type": "subitems",
+                            "items": [
+                                {
+                                    "relatedNode": {
+                                        "lhId": "1-20-A",
+                                        "path": "1,HTML,1,BODY,0,DIV,1,DIV,2,FOOTER,0,DIV,0,DIV,2,DIV,1,UL,3,LI,0,A",
+                                        "type": "node",
+                                        "snippet": "<a class=\"text-gray-500 hover:text-brand-orange\" href=\"/contact\">",
+                                        "selector": "div > ul.space-y-2 > li > a.text-gray-500",
+                                        "nodeLabel": "Contato",
+                                        "boundingRect": {
+                                            "top": 4522,
+                                            "left": 684,
+                                            "right": 736,
+                                            "width": 52,
+                                            "bottom": 4539,
+                                            "height": 17
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "headings": [
+                    {
+                        "key": "node",
+                        "label": "Elementos com falha",
+                        "valueType": "node",
+                        "subItemsHeading": {
+                            "key": "relatedNode",
+                            "valueType": "node"
+                        }
+                    }
+                ],
+                "debugData": {
+                    "tags": [
+                        "cat.semantics",
+                        "wcag2aaa",
+                        "wcag249"
+                    ],
+                    "type": "debugdata",
+                    "impact": "minor"
+                }
+            },
+            "description": "Links com o mesmo destino devem ter a mesma descrição, para ajudar os usuários a entender a finalidade do link e decidir se devem ou não clicar nele. [Saiba mais sobre links idênticos](https://dequeuniversity.com/rules/axe/4.11/identical-links-same-purpose).",
+            "scoreDisplayMode": "informative"
+        },
+        "interactive-element-affordance": {
+            "id": "interactive-element-affordance",
+            "score": null,
+            "title": "Interactive elements indicate their purpose and state",
+            "description": "Interactive elements, such as links and buttons, should indicate their state and be distinguishable from non-interactive elements. [Learn how to decorate interactive elements with affordance hints](https://developer.chrome.com/docs/lighthouse/accessibility/interactive-element-affordance/).",
+            "scoreDisplayMode": "manual"
+        }
+    },
+    "finalUrl": "https://sistemamaind.com.br/",
+    "fetchTime": "2025-11-09T22:59:12.771Z",
+    "timestamp": "2025-11-09T22:59:25.427Z",
+    "categories": {
+        "accessibility": {
+            "score": 92,
+            "title": "Acessibilidade",
+            "auditRefs": [
+                {
+                    "id": "accesskeys",
+                    "group": "a11y-navigation",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-allowed-attr",
+                    "group": "a11y-aria",
+                    "weight": 10
+                },
+                {
+                    "id": "aria-command-name",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-conditional-attr",
+                    "group": "a11y-aria",
+                    "weight": 7
+                },
+                {
+                    "id": "aria-deprecated-role",
+                    "group": "a11y-aria",
+                    "weight": 1
+                },
+                {
+                    "id": "aria-dialog-name",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-hidden-body",
+                    "group": "a11y-aria",
+                    "weight": 10
+                },
+                {
+                    "id": "aria-hidden-focus",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-input-field-name",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-meter-name",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-progressbar-name",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-prohibited-attr",
+                    "group": "a11y-aria",
+                    "weight": 7
+                },
+                {
+                    "id": "aria-required-attr",
+                    "group": "a11y-aria",
+                    "weight": 10
+                },
+                {
+                    "id": "aria-required-children",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-required-parent",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-roles",
+                    "group": "a11y-aria",
+                    "weight": 10
+                },
+                {
+                    "id": "aria-text",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-toggle-field-name",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-tooltip-name",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-treeitem-name",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-valid-attr-value",
+                    "group": "a11y-aria",
+                    "weight": 10
+                },
+                {
+                    "id": "aria-valid-attr",
+                    "group": "a11y-aria",
+                    "weight": 10
+                },
+                {
+                    "id": "button-name",
+                    "group": "a11y-names-labels",
+                    "weight": 10
+                },
+                {
+                    "id": "bypass",
+                    "group": "a11y-navigation",
+                    "weight": 0
+                },
+                {
+                    "id": "color-contrast",
+                    "group": "a11y-color-contrast",
+                    "weight": 7
+                },
+                {
+                    "id": "definition-list",
+                    "group": "a11y-tables-lists",
+                    "weight": 0
+                },
+                {
+                    "id": "dlitem",
+                    "group": "a11y-tables-lists",
+                    "weight": 0
+                },
+                {
+                    "id": "document-title",
+                    "group": "a11y-names-labels",
+                    "weight": 7
+                },
+                {
+                    "id": "duplicate-id-aria",
+                    "group": "a11y-aria",
+                    "weight": 0
+                },
+                {
+                    "id": "form-field-multiple-labels",
+                    "group": "a11y-names-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "frame-title",
+                    "group": "a11y-names-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "heading-order",
+                    "group": "a11y-navigation",
+                    "weight": 3
+                },
+                {
+                    "id": "html-has-lang",
+                    "group": "a11y-language",
+                    "weight": 7
+                },
+                {
+                    "id": "html-lang-valid",
+                    "group": "a11y-language",
+                    "weight": 7
+                },
+                {
+                    "id": "html-xml-lang-mismatch",
+                    "group": "a11y-language",
+                    "weight": 0
+                },
+                {
+                    "id": "image-alt",
+                    "group": "a11y-names-labels",
+                    "weight": 10
+                },
+                {
+                    "id": "input-button-name",
+                    "group": "a11y-names-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "input-image-alt",
+                    "group": "a11y-names-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "label",
+                    "group": "a11y-names-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "link-in-text-block",
+                    "group": "a11y-color-contrast",
+                    "weight": 0
+                },
+                {
+                    "id": "link-name",
+                    "group": "a11y-names-labels",
+                    "weight": 7
+                },
+                {
+                    "id": "list",
+                    "group": "a11y-tables-lists",
+                    "weight": 7
+                },
+                {
+                    "id": "listitem",
+                    "group": "a11y-tables-lists",
+                    "weight": 7
+                },
+                {
+                    "id": "meta-refresh",
+                    "group": "a11y-best-practices",
+                    "weight": 0
+                },
+                {
+                    "id": "meta-viewport",
+                    "group": "a11y-best-practices",
+                    "weight": 10
+                },
+                {
+                    "id": "object-alt",
+                    "group": "a11y-names-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "select-name",
+                    "group": "a11y-names-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "skip-link",
+                    "group": "a11y-names-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "tabindex",
+                    "group": "a11y-navigation",
+                    "weight": 7
+                },
+                {
+                    "id": "target-size",
+                    "group": "a11y-best-practices",
+                    "weight": 7
+                },
+                {
+                    "id": "td-headers-attr",
+                    "group": "a11y-tables-lists",
+                    "weight": 0
+                },
+                {
+                    "id": "th-has-data-cells",
+                    "group": "a11y-tables-lists",
+                    "weight": 0
+                },
+                {
+                    "id": "valid-lang",
+                    "group": "a11y-language",
+                    "weight": 0
+                },
+                {
+                    "id": "video-caption",
+                    "group": "a11y-audio-video",
+                    "weight": 0
+                },
+                {
+                    "id": "landmark-one-main",
+                    "group": "a11y-best-practices",
+                    "weight": 3
+                },
+                {
+                    "id": "focusable-controls",
+                    "weight": 0
+                },
+                {
+                    "id": "interactive-element-affordance",
+                    "weight": 0
+                },
+                {
+                    "id": "logical-tab-order",
+                    "weight": 0
+                },
+                {
+                    "id": "visual-order-follows-dom",
+                    "weight": 0
+                },
+                {
+                    "id": "focus-traps",
+                    "weight": 0
+                },
+                {
+                    "id": "managed-focus",
+                    "weight": 0
+                },
+                {
+                    "id": "use-landmarks",
+                    "weight": 0
+                },
+                {
+                    "id": "offscreen-content-hidden",
+                    "weight": 0
+                },
+                {
+                    "id": "custom-controls-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "custom-controls-roles",
+                    "weight": 0
+                },
+                {
+                    "id": "table-duplicate-name",
+                    "group": "a11y-best-practices",
+                    "weight": 0
+                },
+                {
+                    "id": "empty-heading",
+                    "group": "a11y-best-practices",
+                    "weight": 0
+                },
+                {
+                    "id": "aria-allowed-role",
+                    "group": "a11y-best-practices",
+                    "weight": 0
+                },
+                {
+                    "id": "image-redundant-alt",
+                    "group": "a11y-names-labels",
+                    "weight": 0
+                },
+                {
+                    "id": "identical-links-same-purpose",
+                    "group": "a11y-best-practices",
+                    "weight": 0
+                },
+                {
+                    "id": "label-content-name-mismatch",
+                    "group": "hidden",
+                    "weight": 0
+                },
+                {
+                    "id": "table-fake-caption",
+                    "group": "hidden",
+                    "weight": 0
+                },
+                {
+                    "id": "td-has-header",
+                    "group": "hidden",
+                    "weight": 0
+                }
+            ]
+        }
+    },
+    "requestedUrl": "https://sistemamaind.com.br/"
+}

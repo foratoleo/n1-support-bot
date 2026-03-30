@@ -1,0 +1,56 @@
+# DR-AI-Workforce API
+
+> Supabase Edge Functions for agile project management. POST-only API with action-based routing. All endpoints accept JSON with an `action` field to determine operation (create, get, list, update, delete). Responses use consistent format: `{success: boolean, data?: object, error?: {code, message, details?}, requestId: string}`.
+
+Base URL: `https://gerxucfvjluujtpwnybt.supabase.co`
+Documentation API: `GET /functions/v1/api-docs?file=<filename>`
+
+- [Full Documentation](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=llms-full.txt): Complete API documentation in single file
+- [Response Format](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=docs/response-format.md): Standard response format, error codes, HTTP status
+- [Common Patterns](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=docs/common-patterns.md): Action routing, pagination, filtering, sorting
+- [Authentication](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=docs/authentication.md): Auth requirements and headers
+
+## CRUD APIs
+
+Core data management endpoints for project entities.
+
+- [api-projects](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=api-projects.md): Project management with team and statistics - actions: create, get, list, update
+- [api-tasks](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=api-tasks.md): Development tasks with assignees and sprints - actions: create, get, list, update
+- [api-sprints](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=api-sprints.md): Sprint planning with velocity tracking - actions: create, get, list, update
+- [api-meetings](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=api-meetings.md): Meeting transcripts management - actions: create, get, list, update
+- [api-backlog-items](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=api-backlog-items.md): Backlog items with batch create - actions: create, create_batch, get, list, update
+- [api-features](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=api-features.md): Features with batch create and computed fields - actions: create, create_batch, get, list, update, delete
+- [api-task-comments](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=api-task-comments.md): Task comments with author-only editing - actions: create, list, update (no delete)
+
+## AI Document Generation
+
+Endpoints that use OpenAI to generate documents from meeting transcripts.
+
+- [create-prd](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=create-prd.md): Generate Product Requirements Documents
+- [create-user-story](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=create-user-story.md): Generate User Stories from transcripts
+- [create-meeting-notes](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=create-meeting-notes.md): Generate structured meeting summaries
+- [create-technical-specs](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=create-technical-specs.md): Generate technical specifications
+- [create-test-cases](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=create-test-cases.md): Generate test scenarios
+- [create-unit-tests](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=create-unit-tests.md): Generate unit test code
+
+## Integrations
+
+External service integrations.
+
+- [sync-github-prs](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=sync-github-prs.md): Synchronize GitHub pull requests
+- [upload-to-s3](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=upload-to-s3.md): Upload files to AWS S3
+- [upload-to-presigned-s3](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=upload-to-presigned-s3.md): Upload using presigned URLs
+- [generate-presigned-download-url](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=generate-presigned-download-url.md): Generate S3 download URLs
+
+## Utilities
+
+Helper functions and analysis tools.
+
+- [accessibility-test](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=accessibility-test.md): Run accessibility tests on URLs
+- [service-call-to-markdown](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=service-call-to-markdown.md): Convert service calls to markdown
+
+## Optional
+
+Shared code and internal utilities.
+
+- [Shared Utilities](https://gerxucfvjluujtpwnybt.supabase.co/functions/v1/api-docs?file=docs/_shared.md): Shared types, utilities, and response builders

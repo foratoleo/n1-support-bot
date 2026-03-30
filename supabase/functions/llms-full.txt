@@ -1,0 +1,752 @@
+# DR-AI-Workforce API - Complete Documentation
+
+> Supabase Edge Functions for agile project management. POST-only API with action-based routing. All endpoints accept JSON with an `action` field to determine operation (create, get, list, update, delete). Responses use consistent format: `{success: boolean, data?: object, error?: {code, message, details?}, requestId: string}`.
+
+---
+
+# Response Format
+
+All API responses follow a consistent JSON structure for predictable parsing.
+
+## Success Response
+
+```json
+{
+  "success": true,
+  "data": {
+    // Response payload varies by endpoint
+  },
+  "requestId": "1735123456789-abc123def",
+  "meta": {
+    "processingTimeMs": 45
+  }
+}
+```
+
+## Error Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message",
+    "details": ["field-level errors if applicable"],
+    "retryable": true
+  },
+  "requestId": "1735123456789-abc123def",
+  "timestamp": "2025-12-26T00:00:00.000Z"
+}
+```
+
+## Error Codes
+
+| Code | HTTP Status | Description | Retryable |
+|------|-------------|-------------|-----------|
+| `INVALID_INPUT` | 400 | Validation failed | No |
+| `INVALID_JSON` | 400 | Request body is not valid JSON | No |
+| `NOT_FOUND` | 404 | Resource not found | No |
+| `METHOD_NOT_ALLOWED` | 405 | Only POST method is supported | No |
+| `INTERNAL_ERROR` | 500 | Server error | Yes |
+
+## HTTP Status Codes
+
+| Status | Usage |
+|--------|-------|
+| 200 | Successful GET, LIST, UPDATE, DELETE |
+| 201 | Successful CREATE |
+| 400 | Invalid request |
+| 404 | Resource not found |
+| 405 | Wrong HTTP method |
+| 500 | Server error |
+
+---
+
+# Common Patterns
+
+## Action-Based Routing
+
+All endpoints use POST with `action` field:
+
+```json
+{"action": "list", "project_id": "uuid", "filters": {...}}
+```
+
+| Action | Description | Response Code |
+|--------|-------------|---------------|
+| `create` | Create single entity | 201 |
+| `create_batch` | Create multiple entities | 201 |
+| `get` | Retrieve single entity | 200 |
+| `list` | List with filters | 200 |
+| `update` | Partial update | 200 |
+| `delete` | Soft delete | 200 |
+
+## Pagination
+
+```json
+{"pagination": {"page": 1, "limit": 50}}
+```
+
+- `page`: 1-indexed, default 1
+- `limit`: 1-100, default 50
+
+## Filtering
+
+```json
+{
+  "filters": {
+    "status": ["todo", "in_progress"],
+    "priority": ["high"],
+    "is_active": true,
+    "tags": ["frontend"]
+  }
+}
+```
+
+## Sorting
+
+```json
+{"sort": {"field": "created_at", "order": "desc"}}
+```
+
+## Batch Operations
+
+```json
+{
+  "action": "create_batch",
+  "project_id": "uuid",
+  "items": [{"title": "Item 1"}, {"title": "Item 2"}]
+}
+```
+
+Maximum 100 items per request.
+
+---
+
+# api-projects
+
+POST `/functions/v1/api-projects`
+
+Project management with team and statistics.
+
+## Actions
+
+### create
+
+```json
+{
+  "action": "create",
+  "name": "My Project",
+  "description": "Description",
+  "category": "development",
+  "tags": ["react", "typescript"],
+  "is_active": true,
+  "git_repository_url": "https://github.com/org/repo",
+  "jira_url": "https://company.atlassian.net/browse/PROJ"
+}
+```
+
+Required: `name`, `description`
+
+### get
+
+```json
+{
+  "action": "get",
+  "project_id": "uuid"
+}
+```
+
+Returns project with stats: team_member_count, active_sprint, sprint_count, meeting_count, task_counts by status.
+
+### list
+
+```json
+{
+  "action": "list",
+  "filters": {"is_active": true, "category": "development", "tags": ["react"]},
+  "pagination": {"page": 1, "limit": 50},
+  "sort": {"field": "created_at", "order": "desc"}
+}
+```
+
+Sort fields: name, created_at, updated_at
+
+### update
+
+```json
+{
+  "action": "update",
+  "project_id": "uuid",
+  "data": {"name": "Updated Name", "is_active": false}
+}
+```
+
+---
+
+# api-tasks
+
+POST `/functions/v1/api-tasks`
+
+Development tasks with assignees and sprints.
+
+## Actions
+
+### create
+
+```json
+{
+  "action": "create",
+  "project_id": "uuid",
+  "title": "Task title",
+  "description": "Description",
+  "status": "todo",
+  "priority": "medium",
+  "task_type": "feature",
+  "story_points": 5,
+  "estimated_hours": 8,
+  "tags": ["react"],
+  "assigned_to": "uuid",
+  "sprint_id": "uuid",
+  "feature_id": "uuid"
+}
+```
+
+Required: `project_id`, `title`
+
+### get
+
+```json
+{
+  "action": "get",
+  "project_id": "uuid",
+  "task_id": "uuid"
+}
+```
+
+Returns task with assignee, sprint, parent_task, subtasks_count.
+
+### list
+
+```json
+{
+  "action": "list",
+  "project_id": "uuid",
+  "filters": {
+    "status": ["todo", "in_progress"],
+    "priority": ["high"],
+    "task_type": ["feature"],
+    "sprint_id": "uuid",
+    "assigned_to": "uuid",
+    "feature_id": "uuid",
+    "tags": ["frontend"]
+  },
+  "pagination": {"page": 1, "limit": 50},
+  "sort": {"field": "priority", "order": "desc"}
+}
+```
+
+Sort fields: priority, created_at, story_points, updated_at, title
+
+### update
+
+```json
+{
+  "action": "update",
+  "project_id": "uuid",
+  "task_id": "uuid",
+  "data": {"status": "in_progress", "priority": "high", "feature_id": "uuid"}
+}
+```
+
+## Enums
+
+Status: todo, in_progress, testing, in_review, done, blocked
+Priority: low, medium, high, critical, urgent
+Task Type: feature, bug, chore, spike, improvement
+
+---
+
+# api-sprints
+
+POST `/functions/v1/api-sprints`
+
+Sprint planning with velocity tracking.
+
+## Actions
+
+### create
+
+```json
+{
+  "action": "create",
+  "project_id": "uuid",
+  "name": "Sprint 1",
+  "description": "First sprint",
+  "start_date": "2024-01-15",
+  "end_date": "2024-01-29",
+  "status": "planning",
+  "goals": ["Complete auth", "Setup CI/CD"],
+  "planned_points": 21
+}
+```
+
+Required: `project_id`, `name`, `start_date`, `end_date`
+
+### get
+
+```json
+{
+  "action": "get",
+  "project_id": "uuid",
+  "sprint_id": "uuid"
+}
+```
+
+Returns sprint with task_stats: total_tasks, total_points, points_by_status.
+
+### list
+
+```json
+{
+  "action": "list",
+  "project_id": "uuid",
+  "filters": {"status": ["active", "planning"]},
+  "pagination": {"page": 1, "limit": 10},
+  "sort": {"field": "start_date", "order": "desc"}
+}
+```
+
+Sort fields: start_date, end_date, created_at, name
+
+### update
+
+```json
+{
+  "action": "update",
+  "project_id": "uuid",
+  "sprint_id": "uuid",
+  "data": {"status": "completed", "completed_points": 21, "velocity": 21}
+}
+```
+
+## Enums
+
+Status: planning, active, completed, cancelled
+
+---
+
+# api-meetings
+
+POST `/functions/v1/api-meetings`
+
+Meeting transcripts management.
+
+## Actions
+
+### create
+
+```json
+{
+  "action": "create",
+  "title": "Sprint Planning",
+  "transcript_text": "Meeting content...",
+  "project_id": "uuid",
+  "description": "Weekly planning",
+  "meeting_date": "2024-01-15T10:00:00Z",
+  "tags": ["sprint", "planning"],
+  "is_public": false
+}
+```
+
+Required: `title`, `transcript_text`
+Optional: `project_id` (meetings can exist without project)
+
+### get
+
+```json
+{
+  "action": "get",
+  "meeting_id": "uuid"
+}
+```
+
+Returns meeting with generated_documents_count.
+
+### list
+
+```json
+{
+  "action": "list",
+  "project_id": "uuid",
+  "filters": {
+    "date_from": "2024-01-01",
+    "date_to": "2024-12-31",
+    "is_public": false,
+    "tags": ["sprint"]
+  },
+  "pagination": {"page": 1, "limit": 20},
+  "sort": {"field": "meeting_date", "order": "desc"}
+}
+```
+
+Sort fields: meeting_date, created_at, title
+
+### update
+
+```json
+{
+  "action": "update",
+  "meeting_id": "uuid",
+  "data": {"title": "Updated Title", "tags": ["sprint", "q1"]}
+}
+```
+
+---
+
+# api-backlog-items
+
+POST `/functions/v1/api-backlog-items`
+
+Backlog items with batch create support.
+
+## Actions
+
+### create
+
+```json
+{
+  "action": "create",
+  "project_id": "uuid",
+  "title": "Feature title",
+  "description": "Description",
+  "acceptance_criteria": [
+    {"id": "ac-1", "description": "Criterion", "completed": false}
+  ],
+  "story_points": 3,
+  "priority": "medium",
+  "business_value": 7,
+  "technical_complexity": 5,
+  "tags": ["frontend"],
+  "status": "draft"
+}
+```
+
+Required: `project_id`, `title`
+
+### create_batch
+
+```json
+{
+  "action": "create_batch",
+  "project_id": "uuid",
+  "items": [
+    {"title": "Item 1", "priority": "high"},
+    {"title": "Item 2", "priority": "medium"}
+  ]
+}
+```
+
+### get
+
+```json
+{
+  "action": "get",
+  "project_id": "uuid",
+  "item_id": "uuid"
+}
+```
+
+### list
+
+```json
+{
+  "action": "list",
+  "project_id": "uuid",
+  "filters": {"status": ["draft", "ready"], "priority": ["high"]},
+  "pagination": {"page": 1, "limit": 50},
+  "sort": {"field": "position", "order": "asc"}
+}
+```
+
+Sort fields: position, created_at, priority, story_points
+
+### update
+
+```json
+{
+  "action": "update",
+  "project_id": "uuid",
+  "item_id": "uuid",
+  "data": {"status": "ready", "priority": "high"}
+}
+```
+
+## Enums
+
+Status: draft, ready, in_refinement, approved
+Priority: low, medium, high, critical, urgent
+
+---
+
+# api-features
+
+POST `/functions/v1/api-features`
+
+Features with batch create, computed fields from views, and soft delete.
+
+## Actions
+
+### create
+
+```json
+{
+  "action": "create",
+  "project_id": "uuid",
+  "title": "User Authentication",
+  "description": "Implement login",
+  "status": "draft",
+  "priority": "high",
+  "story_points": 8,
+  "estimated_hours": 40,
+  "tags": ["auth", "security"],
+  "ready_criteria": [
+    {"id": "rc-1", "description": "Login form validated", "completed": false}
+  ],
+  "dependencies": [
+    {"id": "dep-1", "feature_id": "uuid", "title": "Database Setup", "type": "blocks"}
+  ],
+  "backlog_item_id": "uuid"
+}
+```
+
+Required: `project_id`, `title`
+
+### create_batch
+
+```json
+{
+  "action": "create_batch",
+  "project_id": "uuid",
+  "items": [
+    {"title": "Feature A", "status": "draft", "priority": "high", "story_points": 8},
+    {"title": "Feature B", "status": "ready", "priority": "medium", "story_points": 5}
+  ]
+}
+```
+
+### get
+
+```json
+{
+  "action": "get",
+  "project_id": "uuid",
+  "feature_id": "uuid"
+}
+```
+
+Returns feature with computed fields: epic_title, task_count, completed_task_count, linked_documents_count, linked_sprints_count, attachments_count.
+
+### list
+
+```json
+{
+  "action": "list",
+  "project_id": "uuid",
+  "filters": {
+    "status": ["draft", "ready"],
+    "priority": ["high", "critical"],
+    "tags": ["frontend"],
+    "backlog_item_id": "uuid"
+  },
+  "pagination": {"page": 1, "limit": 20},
+  "sort": {"field": "position", "order": "asc"}
+}
+```
+
+Sort fields: position, created_at, priority, story_points, status
+
+### update
+
+```json
+{
+  "action": "update",
+  "project_id": "uuid",
+  "feature_id": "uuid",
+  "data": {"status": "in_progress", "story_points": 13}
+}
+```
+
+### delete
+
+```json
+{
+  "action": "delete",
+  "project_id": "uuid",
+  "feature_id": "uuid"
+}
+```
+
+Soft delete (sets deleted_at timestamp).
+
+## Enums
+
+Status: draft, ready, in_progress, done
+Priority: low, medium, high, critical, urgent
+
+---
+
+# api-task-comments
+
+POST `/functions/v1/api-task-comments`
+
+Task comments with author-only editing. No delete operation by design.
+
+## Actions
+
+### create
+
+```json
+{
+  "action": "create",
+  "project_id": "uuid",
+  "task_id": "uuid",
+  "author_id": "uuid",
+  "content": "Comment content",
+  "mentioned_members": ["uuid"]
+}
+```
+
+Required: `project_id`, `task_id`, `author_id`, `content`
+
+### list
+
+```json
+{
+  "action": "list",
+  "project_id": "uuid",
+  "task_id": "uuid",
+  "pagination": {"page": 1, "limit": 50},
+  "sort": {"field": "created_at", "order": "desc"}
+}
+```
+
+Returns comments with author info (name, email, avatar_url, headline).
+
+Sort fields: created_at, updated_at
+
+### update
+
+```json
+{
+  "action": "update",
+  "project_id": "uuid",
+  "comment_id": "uuid",
+  "author_id": "uuid",
+  "data": {"content": "Updated content", "mentioned_members": ["uuid"]}
+}
+```
+
+Returns 403 FORBIDDEN if author_id doesn't match the comment's original author.
+
+## Business Rules
+
+- **No delete operation**: Comments cannot be deleted
+- **Author-only editing**: Only original author can update
+- **Task validation**: Task must exist before creating comment
+
+---
+
+# AI Document Generation Endpoints
+
+All document generation endpoints use OpenAI to process meeting transcripts.
+
+## Common Request Format
+
+```json
+{
+  "content": "Transcript text...",
+  "project_id": "uuid",
+  "meeting_transcript_id": "uuid",
+  "user_id": "uuid",
+  "system_prompt": "Optional custom prompt",
+  "previous_response_id": "resp_xxx"
+}
+```
+
+## Common Response Format
+
+```json
+{
+  "success": true,
+  "document": "Generated markdown content...",
+  "response_id": "resp_xxx"
+}
+```
+
+## Endpoints
+
+- `create-prd`: Generate Product Requirements Documents
+- `create-user-story`: Generate User Stories
+- `create-meeting-notes`: Generate structured meeting summaries
+- `create-technical-specs`: Generate technical specifications
+- `create-test-cases`: Generate test scenarios
+- `create-unit-tests`: Generate unit test code
+
+---
+
+# Integration Endpoints
+
+## sync-github-prs
+
+Synchronize GitHub pull requests to the system.
+
+## upload-to-s3
+
+Upload files directly to AWS S3.
+
+## upload-to-presigned-s3
+
+Upload files using presigned URLs for security.
+
+## generate-presigned-download-url
+
+Generate secure S3 download URLs.
+
+---
+
+# Utility Endpoints
+
+## accessibility-test
+
+Run accessibility tests on URLs.
+
+## service-call-to-markdown
+
+Convert service call logs to markdown documentation.
+
+---
+
+# Quick Reference
+
+## Base URL
+
+```
+https://<project-ref>.supabase.co/functions/v1/<endpoint>
+```
+
+## Headers
+
+```
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+## cURL Template
+
+```bash
+curl -X POST 'https://<project-ref>.supabase.co/functions/v1/api-tasks' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{"action": "list", "project_id": "uuid"}'
+```

@@ -116,7 +116,7 @@ async def report_command(update: Update, context) -> None:
 
         # Classify the issue
         classifier = IssueClassifier(
-            openai_client=None,
+                        openai_client=context.bot_data.get("openai_client"),
             kb_searcher=kb_searcher,
             question_generator=question_generator,
         )
@@ -312,7 +312,7 @@ async def handle_message(update: Update, context) -> None:
 
                     # Check if should escalate
                     classifier = IssueClassifier(
-                        openai_client=None,
+                        openai_client=context.bot_data.get("openai_client"),
                         kb_searcher=KnowledgeBaseSearcher(pool),
                         question_generator=question_generator,
                     )

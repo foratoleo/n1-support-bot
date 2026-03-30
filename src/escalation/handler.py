@@ -98,7 +98,13 @@ class EscalationHandler:
             status="open",
         )
 
-        await self.escalation_repo.create(escalation)
+        await self.escalation_repo.create(
+            report_id=escalation.user_report_id,
+            summary=escalation.summary,
+            project_name=escalation.project_name,
+            impact=escalation.impact,
+            assigned_to=escalation.assigned_to,
+        )
 
         await self.user_report_repo.update_status(report_id, "escalated")
 

@@ -2,6 +2,8 @@
 
 from typing import Optional, List
 
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
 BOT_MESSAGES = {
     "welcome": (
         "Welcome to N1 Support Bot! I'm here to help you with issues in the workforce system. "
@@ -13,6 +15,9 @@ BOT_MESSAGES = {
         "/help - Show this help message\n"
         "/report <issue> - Report an issue\n"
         "/status <report_id> - Check report status\n"
+        "/search <query> - Search knowledge base\n"
+        "/list - Show your recent reports\n"
+        "/feedback <report_id> <1-5> - Rate a report\n"
         "/cancel - Cancel current conversation"
     ),
     "acknowledge": (
@@ -49,6 +54,12 @@ BOT_MESSAGES = {
     ),
     "cancel": "Conversation cancelled. If you have another issue, use /report to start a new conversation.",
     "error": "Sorry, something went wrong. Please try again or use /cancel to start over.",
+    "search_results": "Search results for '{query}':\n\n{results}",
+    "no_results": "No results found for '{query}'.\n\nTry different keywords or /report to create a support ticket.",
+    "feedback_success": "Thank you for your feedback! Report {report_id} rated {rating}/5.\n\nWe appreciate your input to improve our service.",
+    "report_list": "Your Recent Reports:\n\n{reports}",
+    "report_item": "• [{status}] {description}\n  ID: `{report_id}`\n  Created: {created_at}{rating_text}\n",
+    "confirmation": "Did this resolve your issue?",
 }
 
 
@@ -149,3 +160,82 @@ def format_status_report(
         created_at=created_at,
         escalated="Yes" if escalated else "No",
     )
+
+def format_search_results(query: str, results: List[dict]) -> str:
+    """Format search results message.
+
+    Args:
+        query: The search query.
+        results: List of result dictionaries with title, content, area.
+
+    Returns:
+        Formatted search results message.
+    """
+    if not results:
+        return BOT_MESSAGES["no_results"].format(query=query)
+
+    results_text = []
+    for i, r in enumerate(results, 1):
+        results_text.append(
+            f"*{i}. {r['title']}*\n"
+            f"   Area: {r['area']}\n"
+            f"   {r['content'][:150]}..."
+        )
+
+    return BOT_MESSAGES["search_results"].format(
+        query=query,
+        results="\n\n".join(results_text)
+    )
+
+
+def format_feedback(report_id: str, rating: int) -> str:
+    """Format feedback confirmation message.
+
+    Args:
+        report_id: The unique report identifier.
+        rating: Rating value (1-5).
+
+    Returns:
+        Formatted feedback message.
+    """
+    return BOT_MESSAGES["feedback_success"].format(report_id=report_id, rating=rating)
+
+
+def format_report_list(reports: List[dict]) -> str:
+    """Format a list of user reports.
+
+    Args:
+        reports: List of report dictionaries.
+
+    Returns:
+        Formatted report list message.
+    """
+    reports_text = []
+    for r in reports:
+        rating_text = f"\n  Rating: {r['rating']}/5" if r.get("rating") else ""
+        reports_text.append(
+            BOT_MESSAGES["report_item"].format(
+                status=r["status"],
+                description=r["description"],
+                report_id=r["id"],
+                created_at=r["created_at"],
+                rating_text=rating_text,
+            )
+        )
+
+    return BOT_MESSAGES["report_list"].format(reports="\n".join(reports_text))
+
+
+def get_confirmation_keyboard() -> InlineKeyboardMarkup:
+    """Get inline keyboard with yes/no confirmation buttons.
+
+    Returns:
+        InlineKeyboardMarkup with Yes and No buttons.
+    """
+    keyboard = [
+        [
+            InlineKeyboardButton("Yes, resolved", callback_data="yes_resolved"),
+            InlineKeyboardButton("No, still need help", callback_data="no_unresolved"),
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)

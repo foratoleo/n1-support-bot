@@ -232,6 +232,48 @@ class UserReportRepository:
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 
+    async def get_recent_by_user(self, user_id: UUID, limit: int = 5) -> List[UserReport]:
+        """Get recent reports for a specific user.
+
+        Args:
+            user_id: UUID of the user.
+            limit: Maximum number of reports to return.
+
+        Returns:
+            List of recent UserReport objects ordered by creation date.
+        """
+        stmt = (
+            select(UserReport)
+            .where(UserReport.user_id == user_id)
+            .order_by(UserReport.created_at.desc())
+            .limit(limit)
+        )
+        result = await self.session.execute(stmt)
+        return list(result.scalars().all())
+
+    async def update_rating(self, report_id: UUID, rating: int) -> bool:
+        """Update the rating of a user report.
+
+        Args:
+            report_id: UUID of the report to update.
+            rating: Rating value (1-5).
+
+        Returns:
+            True if update succeeded, False if report not found.
+        """
+        stmt = select(UserReport).where(UserReport.id == report_id)
+        result = await self.session.execute(stmt)
+        report = result.scalar_one_or_none()
+
+        if not report:
+            logger.warning(f"Report not found for rating update: {report_id}")
+            return False
+
+        report.rating = str(rating)
+        await self.session.commit()
+        logger.info(f"Updated report {report_id} rating to: {rating}")
+        return True
+
 
 class ConversationRepository:
     """Repository for conversation message operations.

@@ -67,6 +67,7 @@ class UserReport(Base):
     project_id = Column(UUID(as_uuid=True), nullable=True)
     description = Column(Text, nullable=False)
     status = Column(Text, default="pending")
+    rating = Column(Text, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     def __repr__(self) -> str:

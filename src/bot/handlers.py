@@ -3,12 +3,14 @@
 from uuid import UUID
 
 from telegram import Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, MessageHandler, filters
 
 from src.database.connection import get_database_pool
 from src.database.repositories import (
     ConversationRepository,
     EscalationRepository,
+    KBDocumentRepository,
     UserReportRepository,
 )
 from src.escalation.handler import EscalationHandler
@@ -24,6 +26,10 @@ from .templates import (
     format_self_service,
     format_validation_question,
     format_status_report,
+    format_search_results,
+    format_feedback,
+    format_report_list,
+    get_confirmation_keyboard,
 )
 
 
@@ -387,7 +393,8 @@ async def handle_message(update: Update, context) -> None:
                 steps = ["Check the knowledge base article for resolution steps."]
 
                 guidance_message = format_self_service(summary=summary, steps=steps)
-                await update.message.reply_text(guidance_message)
+                keyboard = get_confirmation_keyboard()
+                await update.message.reply_text(guidance_message, reply_markup=keyboard)
 
                 # Store bot response
                 if user_state.current_report_id:
@@ -427,6 +434,186 @@ async def handle_message(update: Update, context) -> None:
     await update.message.reply_text(BOT_MESSAGES["error"])
 
 
+
+async def search_command(update: Update, context) -> None:
+    """Handle /search <query> command.
+
+    Searches the KB directly and returns results to the user.
+
+    Args:
+        update: The Telegram update object.
+        context: The callback context.
+    """
+    if not context.args:
+        await update.message.reply_text(
+            "Please provide a search query. Usage: /search <your query>"
+        )
+        return
+
+    query = " ".join(context.args)
+    pool = get_database_pool()
+
+    async with pool.acquire() as session:
+        kb_repo = KBDocumentRepository(session)
+        articles = await kb_repo.search(query=query, limit=5)
+
+        if not articles:
+            await update.message.reply_text(
+                f"No results found for: {query}\n\n"
+                "Try different keywords or /report to create a support ticket."
+            )
+            return
+
+        results_text = format_search_results(query, [
+            {"title": a.title, "content": a.content[:200] + "..." if len(a.content) > 200 else a.content, "area": a.area}
+            for a in articles
+        ])
+        await update.message.reply_text(results_text, parse_mode="Markdown")
+
+
+async def list_command(update: Update, context) -> None:
+    """Handle /list command.
+
+    Shows user's recent reports (last 5) with status.
+
+    Args:
+        update: The Telegram update object.
+        context: The callback context.
+    """
+    user_id = update.effective_user.id
+    pool = get_database_pool()
+
+    try:
+        user_uuid = UUID(int=user_id)
+    except ValueError:
+        await update.message.reply_text("Invalid user ID.")
+        return
+
+    async with pool.acquire() as session:
+        user_report_repo = UserReportRepository(session)
+        reports = await user_report_repo.get_recent_by_user(user_uuid, limit=5)
+
+        if not reports:
+            await update.message.reply_text(
+                "You have no recent reports. Use /report <issue> to create one."
+            )
+            return
+
+        reports_data = []
+        for r in reports:
+            created_at = r.created_at.strftime("%d/%m/%Y %H:%M") if r.created_at else "Unknown"
+            reports_data.append({
+                "id": str(r.id),
+                "description": r.description[:50] + "..." if len(r.description) > 50 else r.description,
+                "status": r.status or "Unknown",
+                "created_at": created_at,
+                "rating": r.rating if r.rating else None,
+            })
+
+        list_text = format_report_list(reports_data)
+        await update.message.reply_text(list_text, parse_mode="Markdown")
+
+
+async def feedback_command(update: Update, context) -> None:
+    """Handle /feedback <report_id> <1-5> command.
+
+    Allows user to rate if their issue was resolved.
+
+    Args:
+        update: The Telegram update object.
+        context: The callback context.
+    """
+    if len(context.args) < 2:
+        await update.message.reply_text(
+            "Please provide a report ID and rating (1-5). Usage: /feedback <report_id> <1-5>"
+        )
+        return
+
+    report_id = context.args[0]
+    rating_str = context.args[1]
+
+    try:
+        rating = int(rating_str)
+        if rating < 1 or rating > 5:
+            raise ValueError("Rating must be between 1 and 5")
+    except ValueError:
+        await update.message.reply_text(
+            "Invalid rating. Please provide a number between 1 and 5."
+        )
+        return
+
+    pool = get_database_pool()
+
+    try:
+        report_uuid = UUID(report_id)
+    except ValueError:
+        await update.message.reply_text(
+            "Invalid report ID format. Please provide a valid UUID."
+        )
+        return
+
+    async with pool.acquire() as session:
+        user_report_repo = UserReportRepository(session)
+        success = await user_report_repo.update_rating(report_uuid, rating)
+
+        if not success:
+            await update.message.reply_text(f"Report {report_id} not found.")
+            return
+
+        feedback_text = format_feedback(report_id, rating)
+        await update.message.reply_text(feedback_text)
+
+
+async def button_callback(update: Update, context) -> None:
+    """Handle callback queries from inline keyboard buttons.
+
+    Args:
+        update: The Telegram update object.
+        context: The callback context.
+    """
+    query = update.callback_query
+    await query.answer()
+
+    user_id = update.effective_user.id
+    user_state = conv_manager.get_user_state(user_id)
+    data = query.data
+
+    if data == "yes_resolved":
+        await query.edit_message_text(
+            text="Great! I'm glad I could help resolve your issue. "
+                 "If you have any other problems, don't hesitate to reach out. "
+                 "Use /list to view your recent reports."
+        )
+        if user_state and user_state.current_report_id:
+            pool = get_database_pool()
+            async with pool.acquire() as session:
+                user_report_repo = UserReportRepository(session)
+                await user_report_repo.update_status(
+                    UUID(user_state.current_report_id), "resolved"
+                )
+        conv_manager.update_user_state(user_id, ConversationState.IDLE)
+
+    elif data == "no_unresolved":
+        await query.edit_message_text(
+            text="I'm sorry the guidance didn't resolve your issue. "
+                 "Let me escalate this to our support team for further assistance. "
+                 "Use /status <report_id> to check progress."
+        )
+        if user_state and user_state.current_report_id:
+            pool = get_database_pool()
+            async with pool.acquire() as session:
+                escalation_handler = EscalationHandler(
+                    escalation_repo=EscalationRepository(session),
+                    user_report_repo=UserReportRepository(session),
+                )
+                await escalation_handler.create_escalation(
+                    report_id=UUID(user_state.current_report_id),
+                    summary="User indicated guidance did not resolve issue",
+                )
+        conv_manager.update_user_state(user_id, ConversationState.ESCALATED)
+
+
+
 def register_handlers(application) -> None:
     """Register all handlers with the PTB application.
 
@@ -438,6 +625,10 @@ def register_handlers(application) -> None:
     application.add_handler(CommandHandler("cancel", cancel_command))
     application.add_handler(CommandHandler("report", report_command))
     application.add_handler(CommandHandler("status", status_command))
+    application.add_handler(CommandHandler("search", search_command))
+    application.add_handler(CommandHandler("list", list_command))
+    application.add_handler(CommandHandler("feedback", feedback_command))
+    application.add_handler(CallbackQueryHandler(button_callback))
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
     )

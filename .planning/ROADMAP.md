@@ -193,7 +193,7 @@
 | 2 | Infraestrutura de Teclados e Callbacks | Criar camada de infra para navegacao InlineKeyboard | Complete    | 2026-03-31 |
 | 3 | Extensao de Estado para Navegacao | Estender UserConversationState com campos de menu | Complete    | 2026-03-31 |
 | 4 | Menu Principal | Implementar menu principal via /start com InlineKeyboard | Complete    | 2026-03-31 |
-| 5 | Arvore Completa de Navegacao | Implementar arvore de submenus com botao Voltar | NAV-03 | 3 |
+| 5 | Arvore Completa de Navegacao | Implementar arvore de submenus com botao Voltar | Complete    | 2026-03-31 |
 | 6 | Fluxo Guiado de Report de Erro | Implementar coleta de report por botoes com confirmacao | RPT-01, RPT-02, RPT-03, RPT-04, RPT-05, RPT-06, RPT-07, RPT-08, RPT-09, RPT-10, RPT-11 | 6 |
 | 7 | Knowledge Base Navegavel | Tornar KB navegavel por categorias com artigos formatados | KB-01, KB-02, KB-03, KB-04, KB-05, KB-06, KB-07, KB-08 | 7 |
 | 8 | Refatoracao de handle_message() | Decompor handle_message() em handlers por estado | REF-01 | 3 |

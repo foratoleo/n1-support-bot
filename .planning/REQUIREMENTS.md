@@ -18,7 +18,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 - [x] **NAV-01**: /start exibe menu principal com InlineKeyboard (Tirar Duvida, Reportar Erro, Acompanhar Chamado, Falar com Humano)
 - [x] **NAV-02**: Navegacao por edit-in-place (edit_message_text), nunca enviar mensagem nova por step
-- [ ] **NAV-03**: Botao "Voltar" em todo nivel nao-root
+- [x] **NAV-03**: Botao "Voltar" em todo nivel nao-root
 - [x] **NAV-04**: Botao "Menu Principal" acessivel em qualquer profundidade
 - [x] **NAV-05**: Breadcrumb textual no header da mensagem (ex: Inicio > Tirar Duvida > Acesso)
 - [x] **NAV-06**: Texto livre fora de fluxo ativo redireciona ao menu principal
@@ -104,7 +104,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | L10N-04 | Phase 1 | Complete |
 | NAV-01 | Phase 4 | Complete |
 | NAV-02 | Phase 3 | Complete |
-| NAV-03 | Phase 5 | Pending |
+| NAV-03 | Phase 5 | Complete |
 | NAV-04 | Phase 4 | Complete |
 | NAV-05 | Phase 4 | Complete |
 | NAV-06 | Phase 4 | Complete |

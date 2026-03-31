@@ -13,6 +13,9 @@
 
 **Requirements:** L10N-01, L10N-02, L10N-03, L10N-04
 
+**Plan Progress:**
+- [x] 01-01: Criar módulo src/bot/strings.py com constantes pt-br — complete (2026-03-30)
+
 **Success Criteria:**
 1. Qualquer mensagem exibida ao usuario — incluindo erros e fallbacks — esta em pt-br sem nenhuma string em ingles visivel.
 2. Nenhuma string literal de usuario existe fora de `src/bot/strings.py`; grep por aspas em handlers nao retorna frases de UI.

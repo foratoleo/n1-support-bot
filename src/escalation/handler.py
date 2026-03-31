@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from typing import List, Optional
 from uuid import uuid4
 
+from src.bot import strings
+
 
 @dataclass
 class EscalationData:
@@ -131,27 +133,22 @@ class EscalationHandler:
             Formatted escalation message string.
         """
         lines = [
-            "I've analyzed your issue and identified a potential problem that requires human investigation.",
-            "",
-            "Summary:",
-            f"- Issue: {escalation.summary}",
-            f"- Project: {escalation.project_name or 'Not specified'}",
-            f"- Impact: {escalation.impact or 'To be determined'}",
-            "",
-            "I'm escalating this to our support team. A human agent will review and respond shortly.",
-            "",
-            f"Your report ID: {escalation.user_report_id}",
-            "",
+            strings.ESCALATION_MESSAGE.format(
+                issue=escalation.summary,
+                project=escalation.project_name or strings.DEFAULT_PROJECT_NOT_SPECIFIED,
+                impact=escalation.impact or strings.DEFAULT_IMPACT_UNDETERMINED,
+                report_id=escalation.user_report_id,
+            ),
         ]
 
         if workarounds or known_issues:
-            lines.append("In the meantime:")
+            lines.append("")
+            lines.append(strings.ESCALATION_WORKAROUNDS_HEADER)
             if workarounds:
                 for workaround in workarounds:
                     lines.append(f"- {workaround}")
             if known_issues:
-                lines.append("- You may also want to check our known issues database")
-            lines.append("")
+                lines.append(strings.ESCALATION_KNOWN_ISSUES_TIP)
 
         return "\n".join(lines)
 
@@ -176,13 +173,13 @@ class EscalationHandler:
             Formatted self-service guidance message string.
         """
         lines = [
-            "I found information about this in our knowledge base.",
+            strings.ESCALATION_SELF_SERVICE_INTRO,
             "",
             article_title,
             "",
             article_content,
             "",
-            "Steps to resolve:",
+            strings.ESCALATION_STEPS_HEADER,
         ]
 
         for i, step in enumerate(guide_steps, start=1):
@@ -191,7 +188,7 @@ class EscalationHandler:
         lines.extend(
             [
                 "",
-                "If this does not resolve your issue, please let me know and I will escalate to a human agent.",
+                strings.ESCALATION_NOT_RESOLVED_FOLLOWUP,
             ]
         )
 

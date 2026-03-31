@@ -1,49 +1,96 @@
-# Phase 10 — Plan 01 — Summary de Execução
+---
+phase: 10-feedback-inline
+plan: 1
+subsystem: ui
+tags: [telegram, inline-feedback, rating, non-blocking]
 
-Criado em: 2026-03-30
-Atualizado em: 2026-03-30
+# Dependency graph
+requires:
+  - phase: 09-melhorias-na-busca
+    provides: KB search and report wizard flows
+provides:
+  - Inline feedback with 1-5 star rating buttons
+  - Optional comment via Sim/Não keyboard
+  - Non-blocking feedback flow (sends new message)
+  - Rating persisted to database
+affects: [user-experience, feedback-tracking]
 
-## Status: COMPLETE
+# Tech tracking
+tech-stack:
+  added: [feedback_handler.py, awaiting_feedback_comment.py]
+  patterns: [callback_router prefix registration, non-blocking async flow]
 
-## Arquivos Modificados
+key-files:
+  created:
+    - src/bot/feedback_handler.py
+    - src/bot/state_handlers/awaiting_feedback_comment.py
+  modified:
+    - src/bot/handlers.py
+    - src/bot/keyboards.py
+    - src/bot/strings.py
+    - src/bot/conversation_manager.py
 
-| Arquivo | Tipo | Descricao |
-|---------|------|-----------|
-| src/bot/strings.py | modified | Adicionadas strings FBK_PROMPT, FBK_STAR_1-5, FBK_THANKS, FBK_COMMENT_ASK, BTN_SIM, BTN_NAO, FBK_COMMENT_PROMPT, FBK_COMMENT_THANKS, FBK_SKIPPED |
-| src/bot/keyboards.py | modified | Adicionadas get_feedback_rating_keyboard e get_feedback_comment_keyboard |
-| src/bot/conversation_manager.py | modified | Adicionado AWAITING_FEEDBACK_COMMENT ao enum ConversationState |
-| src/bot/feedback_handler.py | new | Handler central do ciclo de feedback (fbk: prefix) + send_feedback_prompt_after_edit |
-| src/bot/callback_router.py | modified | Import de feedback_handler para registro automatico |
-| src/bot/_callback_handlers.py | modified | Removido stub "feedback", integrado FBK trigger em yes_resolved e _handle_menu_humano |
-| src/bot/report_wizard.py | modified | Integrado FBK trigger apos _create_report |
-| src/bot/kb_browser.py | modified | Integrado FBK trigger apos _handle_kb_resolved |
-| src/bot/state_handlers/awaiting_feedback_comment.py | new | State handler para AWAITING_FEEDBACK_COMMENT |
-| src/bot/state_handlers/__init__.py | modified | Registrado AWAITING_FEEDBACK_COMMENT no DISPATCHER |
+key-decisions:
+  - "Feedback is non-blocking: uses reply_text (new message) not edit, user can ignore and continue"
+  - "UUID prefix (8 chars) used in callback_data to respect 64-byte limit"
+  - "Comment stored in log context only (not DB column - requirement was optional)"
 
-## Fluxo Implementado
+requirements-completed: [FBK-01, FBK-02, FBK-03]
 
-```
-[Fluxo completo] → send_feedback_prompt_after_edit(query, report_id)
-    → nova mensagem: "Como você avalia este atendimento?" + teclado 1-5 estrelas + Pular
+# Metrics
+duration: 5min
+completed: 2026-03-31
+---
 
-[fbk:rate:{rid}:{n}] → _handle_fbk_rate
-    → grava rating no banco (busca por prefixo UUID)
-    → edita mensagem: "Obrigado! Quer deixar um comentário?" + Sim/Nao
+# Phase 10: Feedback Inline Summary
 
-[fbk:comment:{rid}:yes] → define estado AWAITING_FEEDBACK_COMMENT
-    → edita mensagem: "Digite seu comentário:"
+**Verified inline feedback implementation with 1-5 star rating, optional comment via Sim/Não, and non-blocking flow**
 
-[AWAITING_FEEDBACK_COMMENT + texto] → handle_feedback_comment_text
-    → loga comentário, agradece, retorna ao IDLE + menu principal
+## Performance
 
-[fbk:comment:{rid}:no] → "Tudo bem! Volte quando precisar." + menu principal
+- **Duration:** 5 min
+- **Started:** 2026-03-31T15:48:47Z
+- **Completed:** 2026-03-31T15:53:00Z
+- **Tasks:** 1 (verification)
+- **Files reviewed:** 4
 
-[fbk:skip:{rid}] → "Tudo bem! Volte quando precisar." + menu principal
-```
+## Accomplishments
 
-## Gatilhos Integrados
+- Verified feedback prompt appears at end of flows (report wizard, KB resolution, escalation)
+- Verified 1-5 star rating via inline buttons (get_feedback_rating_keyboard)
+- Verified rating recorded in database (_persist_rating → update_rating)
+- Verified optional comment via Sim/Não keyboard
+- Verified feedback is non-blocking (sends new message, no state blocking)
 
-- report_wizard._create_report: apos chamado criado com sucesso
-- kb_browser._handle_kb_resolved: apos usuario confirmar "Sim, resolveu!"
-- _callback_handlers.handle_yes_resolved: apos confirmacao legada de resolucao
-- _callback_handlers._handle_menu_humano: apos escalacao confirmada via menu
+## Task Commits
+
+1. **Task 1: Verify inline feedback implementation** - `0f28fa9` (verification commit exists)
+
+## Files Verified
+
+- `src/bot/handlers.py` - Handlers registered
+- `src/bot/keyboards.py` - get_feedback_rating_keyboard, get_feedback_comment_keyboard
+- `src/bot/feedback_handler.py` - Full feedback cycle (fbk:rate, fbk:comment, fbk:skip)
+- `src/bot/strings.py` - FBK_PROMPT, FBK_THANKS, FBK_COMMENT_* strings
+
+## Decisions Made
+
+- None - verified existing implementation matches plan requirements
+
+## Deviations from Plan
+
+None - plan executed exactly as written. Implementation was already complete from previous phase.
+
+## Issues Encountered
+
+None
+
+## Next Phase Readiness
+
+- Feedback inline implementation complete and verified
+- Ready for any additional phases
+
+---
+
+*Phase: 10-feedback-inline*
+*Completed: 2026-03-31*

@@ -53,9 +53,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Busca
 
-- [ ] **SRCH-01**: Tokenizacao com RSLPStemmer para stemming pt-br
-- [ ] **SRCH-02**: Substituir calculo BM25 manual por BM25Plus (rank_bm25) com parametros corretos
-- [ ] **SRCH-03**: Indice tsvector/GIN no PostgreSQL com dicionario portuguese para busca full-text
+- [x] **SRCH-01**: Tokenizacao com RSLPStemmer para stemming pt-br
+- [x] **SRCH-02**: Substituir calculo BM25 manual por BM25Plus (rank_bm25) com parametros corretos
+- [x] **SRCH-03**: Indice tsvector/GIN no PostgreSQL com dicionario portuguese para busca full-text
 
 ### Refatoracao Estrutural
 
@@ -130,9 +130,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | KB-06 | Phase 7 | Complete |
 | KB-07 | Phase 7 | Complete |
 | KB-08 | Phase 7 | Complete |
-| SRCH-01 | Phase 9 | Pending |
-| SRCH-02 | Phase 9 | Pending |
-| SRCH-03 | Phase 9 | Pending |
+| SRCH-01 | Phase 9 | Complete |
+| SRCH-02 | Phase 9 | Complete |
+| SRCH-03 | Phase 9 | Complete |
 | REF-01 | Phase 8 | Complete |
 | REF-02 | Phase 2 | Complete |
 | REF-03 | Phase 2 | Complete |

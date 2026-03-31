@@ -13,10 +13,14 @@ Uso:
     application.add_handler(CallbackQueryHandler(route_callback))
 """
 
+import logging
 from collections.abc import Callable, Coroutine
 from typing import Any
 
 from telegram import Update
+from telegram.error import BadRequest
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Registro de handlers
@@ -93,12 +97,16 @@ async def route_callback(update: Update, context: Any) -> None:
     # têm prioridade (ex.: "yes_resolved" tem prioridade sobre "yes").
     for prefix in sorted(_HANDLERS, key=len, reverse=True):
         if data.startswith(prefix) or data == prefix:
-            await _HANDLERS[prefix](update, context)
+            try:
+                await _HANDLERS[prefix](update, context)
+            except BadRequest as exc:
+                if "Message is not modified" in str(exc):
+                    logger.debug("edit_message_text ignorado — conteúdo idêntico: %s", data)
+                else:
+                    raise
             return
 
-    # Nenhum handler encontrado — ignora silenciosamente.
-    # Em ambiente de debug, um log aqui seria útil, mas não há dependência de logger
-    # disponível neste módulo de infraestrutura.
+    logger.warning("Nenhum handler para callback_data: %s", data)
 
 
 # ---------------------------------------------------------------------------

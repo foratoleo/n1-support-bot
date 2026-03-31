@@ -33,33 +33,33 @@ class QuestionGenerator:
     # Questions by category from spec.md
     CATEGORY_QUESTIONS = {
         "data_missing": [
-            Question("dm1", "Which project are you working in?"),
-            Question("dm2", "Can you confirm the data should exist in that project?"),
-            Question("dm3", "Have you tried refreshing the page?"),
-            Question("dm4", "What do you see when you look for the data?"),
+            Question("dm1", "Em qual projeto você está trabalhando?"),
+            Question("dm2", "Você confirma que os dados deveriam existir nesse projeto?"),
+            Question("dm3", "Você já tentou atualizar a página?"),
+            Question("dm4", "O que você vê ao procurar pelos dados?"),
         ],
         "document_generation": [
-            Question("dg1", "Which transcript are you generating from?"),
-            Question("dg2", "What document type did you select?"),
-            Question("dg3", "Did you receive any error message?"),
-            Question("dg4", "How long did you wait before it failed?"),
+            Question("dg1", "A partir de qual transcrição você está gerando o documento?"),
+            Question("dg2", "Qual tipo de documento você selecionou?"),
+            Question("dg3", "Você recebeu alguma mensagem de erro?"),
+            Question("dg4", "Quanto tempo você esperou antes de o processo falhar?"),
         ],
         "task_sprint": [
-            Question("ts1", "Which project and sprint is this task in?"),
-            Question("ts2", "What status does the task currently show?"),
-            Question("ts3", "Are you assigned as the task owner?"),
-            Question("ts4", "Have you tried updating the task status?"),
+            Question("ts1", "Em qual projeto e sprint está essa tarefa?"),
+            Question("ts2", "Qual status a tarefa exibe atualmente?"),
+            Question("ts3", "Você está atribuído como responsável pela tarefa?"),
+            Question("ts4", "Você já tentou atualizar o status da tarefa?"),
         ],
         "login_auth": [
-            Question("la1", "Are you seeing any error message?"),
-            Question("la2", "Have you tried clearing your browser cache?"),
-            Question("la3", "Can you try a different browser?"),
-            Question("la4", "Did your password recently change?"),
+            Question("la1", "Você está vendo alguma mensagem de erro?"),
+            Question("la2", "Você já tentou limpar o cache do navegador?"),
+            Question("la3", "Você consegue tentar em um navegador diferente?"),
+            Question("la4", "Sua senha foi alterada recentemente?"),
         ],
         "general": [
-            Question("g1", "Can you provide more details about what happened?"),
-            Question("g2", "When did this issue start?"),
-            Question("g3", "Does this happen every time or only sometimes?"),
+            Question("g1", "Você pode fornecer mais detalhes sobre o que aconteceu?"),
+            Question("g2", "Quando esse problema começou?"),
+            Question("g3", "Isso acontece sempre ou apenas às vezes?"),
         ],
     }
 

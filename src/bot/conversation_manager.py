@@ -14,6 +14,7 @@ class ConversationState(Enum):
     PROVIDING_GUIDANCE = "providing_guidance"
     ESCALATED = "escalated"
     COLLECTING_REPORT = "collecting_report"
+    AWAITING_KB_SEARCH = "awaiting_kb_search"
 
 
 @dataclass

@@ -282,6 +282,11 @@ async def handle_message(update: Update, context) -> None:
         await update.message.reply_text(strings.NON_TEXT_MESSAGE)
         return
 
+    # KB-07: busca por keyword quando usuário digitou após "Pesquisar na KB"
+    if user_state.state == ConversationState.AWAITING_KB_SEARCH:
+        await _handle_kb_search_message(update, user_id, user_state)
+        return
+
     if user_state.state == ConversationState.IDLE:
         # NAV-06: texto livre fora de fluxo ativo exibe o menu principal
         await update.message.reply_text(
@@ -456,6 +461,61 @@ async def handle_message(update: Update, context) -> None:
 
     await update.message.reply_text(BOT_MESSAGES["error"])
 
+
+
+async def _handle_kb_search_message(update: Update, user_id: int, user_state) -> None:
+    """Processa busca por keyword na KB quando o usuário está no estado AWAITING_KB_SEARCH.
+
+    Realiza busca BM25 com o texto digitado e exibe artigos como botões inline.
+
+    Args:
+        update: The Telegram update object.
+        user_id: ID do usuário Telegram.
+        user_state: Estado de conversa atual do usuário.
+    """
+    query_text = update.message.text.strip()
+    pool = get_database_pool()
+
+    kb_searcher = KnowledgeBaseSearcher(pool)
+    results = await kb_searcher.find_relevant_articles(
+        issue_description=query_text,
+        limit=5,
+    )
+
+    conv_manager.update_user_state(user_id, ConversationState.IDLE)
+
+    if not results:
+        from src.bot.keyboards import get_kb_category_list_keyboard  # noqa: PLC0415
+        await update.message.reply_text(
+            strings.KB_SEARCH_NO_RESULTS.format(query=query_text),
+            reply_markup=get_kb_category_list_keyboard(),
+        )
+        return
+
+    from src.database.repositories import KBDocumentRepository  # noqa: PLC0415
+    from src.bot.keyboards import get_kb_article_list_keyboard  # noqa: PLC0415
+
+    # Busca IDs dos artigos encontrados para montar os botões
+    article_buttons: list[tuple[str, str]] = []
+    async with pool.acquire() as session:
+        repo = KBDocumentRepository(session)
+        for title, _content, area in results:
+            # Busca pelo título exato para obter o ID
+            docs = await repo.search(query=title, area=area, limit=1)
+            if docs:
+                article_buttons.append((str(docs[0].id), docs[0].title))
+
+    if not article_buttons:
+        await update.message.reply_text(
+            strings.KB_SEARCH_NO_RESULTS.format(query=query_text),
+        )
+        return
+
+    header = strings.KB_SEARCH_RESULTS_HEADER.format(query=query_text)
+    await update.message.reply_text(
+        text=header,
+        reply_markup=get_kb_article_list_keyboard(article_buttons, "geral"),
+    )
 
 
 async def search_command(update: Update, context) -> None:

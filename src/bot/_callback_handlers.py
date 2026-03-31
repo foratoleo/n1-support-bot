@@ -21,6 +21,7 @@ from src.bot.keyboards import (
     get_duvidas_submenu_keyboard,
     get_erro_submenu_keyboard,
     get_category_keyboard,
+    get_kb_category_list_keyboard,
     format_breadcrumb,
 )
 from src.database.connection import get_database_pool
@@ -198,10 +199,10 @@ async def _handle_menu_main(query) -> None:
 
 
 async def _handle_menu_duvidas(query, update: Update) -> None:
-    """Exibe o submenu de categorias de dúvida (NAV-03).
+    """Exibe o submenu de categorias da KB (KB-01).
 
     Empurra "duvidas" na pilha de navegação e edita a mensagem atual
-    com o submenu de categorias da base de conhecimento.
+    com a listagem de categorias da base de conhecimento navegável.
     """
     user_id = update.effective_user.id
     conv_manager = _get_conv_manager()
@@ -210,7 +211,7 @@ async def _handle_menu_duvidas(query, update: Update) -> None:
 
     await query.edit_message_text(
         text=strings.MENU_DUVIDAS_INTRO,
-        reply_markup=get_duvidas_submenu_keyboard(),
+        reply_markup=get_kb_category_list_keyboard(),
     )
 
 
@@ -386,10 +387,20 @@ async def _handle_nav_back(query, update: Update) -> None:
     # Mapeamento nó-pai → (texto, teclado)
     if parent in ("duvidas",):
         text = strings.MENU_DUVIDAS_INTRO
-        keyboard = get_duvidas_submenu_keyboard()
+        keyboard = get_kb_category_list_keyboard()
     elif parent in ("erro",):
         text = strings.MENU_ERRO_INTRO
         keyboard = get_erro_submenu_keyboard()
+    elif parent and parent.startswith("kb:cat:"):
+        # Voltando de um artigo → retorna para listagem de artigos da categoria
+        category = parent[len("kb:cat:"):]
+        from src.bot.kb_browser import _get_articles_by_category, _CATEGORY_LABELS  # noqa: PLC0415
+        from src.bot.keyboards import get_kb_article_list_keyboard  # noqa: PLC0415
+        articles = await _get_articles_by_category(category)
+        category_label = _CATEGORY_LABELS.get(category, category)
+        text = strings.KB_CATEGORY_HEADER.format(category=category_label)
+        article_buttons = [(art_id, title) for art_id, title, _area in articles]
+        keyboard = get_kb_article_list_keyboard(article_buttons, category)
     else:
         # Raiz ou nó desconhecido → menu principal
         user_state.clear_menu()

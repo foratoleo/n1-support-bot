@@ -418,3 +418,50 @@ BTN_FREQ_ALWAYS = "Sempre"
 BTN_FREQ_SOMETIMES = "Às vezes"
 BTN_FREQ_ONCE = "Só uma vez"
 BTN_FREQ_INTERMITTENT = "Intermitente"
+
+# ---------------------------------------------------------------------------
+# Base de Conhecimento Navegável — Fase 7 (KB-01 a KB-08)
+# ---------------------------------------------------------------------------
+
+KB_BROWSE_TITLE = "Base de Conhecimento"
+
+KB_CATEGORY_HEADER = "Suporte Workforce > Tirar Dúvida > {category}\n\nArtigos disponíveis:"
+
+KB_ARTICLE_SUMMARY = "{title}\n\n{excerpt}"
+
+BTN_VER_MAIS = "Ver artigo completo »"
+
+KB_RESOLVED_PROMPT = "Isso resolveu sua dúvida?"
+
+BTN_SIM_RESOLVEU = "Sim, resolveu!"
+
+BTN_NAO_RESOLVEU = "Não, ainda preciso de ajuda"
+
+KB_VEJA_TAMBEM = "Veja também:"
+
+BTN_PESQUISAR = "Pesquisar na KB"
+
+KB_SEARCH_PROMPT = (
+    "Suporte Workforce > Pesquisar\n\n"
+    "Digite sua busca:"
+)
+
+KB_SEARCH_RESULTS_HEADER = "Resultados para '{query}':"
+
+KB_SEARCH_NO_RESULTS = (
+    "Nenhum artigo encontrado para: {query}\n\n"
+    "Tente palavras-chave diferentes."
+)
+
+BTN_THUMB_UP = "👍 Útil"
+
+BTN_THUMB_DOWN = "👎 Não ajudou"
+
+KB_RATING_THANKS = "Obrigado pela avaliação!"
+
+KB_FULL_ARTICLE_HEADER = "Suporte Workforce > {category} > {title}"
+
+KB_NO_ARTICLES = (
+    "Nenhum artigo encontrado nesta categoria ainda.\n\n"
+    "Use o botão abaixo para pesquisar ou volte ao menu."
+)

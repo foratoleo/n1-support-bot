@@ -54,6 +54,14 @@ from src.bot.strings import (
     BTN_FREQ_INTERMITTENT,
     RPT_DUPLICATE_YES,
     RPT_DUPLICATE_NO,
+    # KB navegável (Fase 7)
+    BTN_VER_MAIS,
+    BTN_SIM_RESOLVEU,
+    BTN_NAO_RESOLVEU,
+    BTN_PESQUISAR,
+    BTN_THUMB_UP,
+    BTN_THUMB_DOWN,
+    KB_VEJA_TAMBEM,
 )
 
 
@@ -452,5 +460,132 @@ def get_report_duplicate_keyboard() -> InlineKeyboardMarkup:
     keyboard = [
         [InlineKeyboardButton(RPT_DUPLICATE_YES, callback_data=_assert_callback_data("rpt:dup:yes"))],
         [InlineKeyboardButton(RPT_DUPLICATE_NO, callback_data=_assert_callback_data("rpt:dup:no"))],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+# ---------------------------------------------------------------------------
+# Teclados da KB navegável — Fase 7 (KB-01 a KB-08)
+# ---------------------------------------------------------------------------
+
+
+def get_kb_category_list_keyboard() -> InlineKeyboardMarkup:
+    """Teclado de listagem de categorias da KB com botão de pesquisa e voltar.
+
+    Exibe as quatro categorias da KB, botão Pesquisar e botão Menu Principal.
+
+    Returns:
+        InlineKeyboardMarkup com categorias + Pesquisar + Menu Principal.
+    """
+    keyboard = [
+        [InlineKeyboardButton(BTN_CAT_ACESSO, callback_data=_assert_callback_data("kb:cat:acesso"))],
+        [InlineKeyboardButton(BTN_CAT_DOCUMENTOS, callback_data=_assert_callback_data("kb:cat:documentos"))],
+        [InlineKeyboardButton(BTN_CAT_TAREFAS, callback_data=_assert_callback_data("kb:cat:tarefas"))],
+        [InlineKeyboardButton(BTN_CAT_GERAL, callback_data=_assert_callback_data("kb:cat:geral"))],
+        [InlineKeyboardButton(BTN_PESQUISAR, callback_data=_assert_callback_data("kb:search"))],
+        [
+            InlineKeyboardButton(BTN_VOLTAR, callback_data=_assert_callback_data("nav:back")),
+            InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
+        ],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_kb_article_list_keyboard(
+    articles: list[tuple[str, str]],
+    category: str,
+) -> InlineKeyboardMarkup:
+    """Teclado de listagem de artigos em uma categoria da KB.
+
+    Args:
+        articles: Lista de tuplas (article_id, title) ordenadas por acessos.
+        category: Identificador da categoria para o botão Voltar.
+
+    Returns:
+        InlineKeyboardMarkup com botões de artigo + Pesquisar + Voltar.
+    """
+    keyboard = []
+    for article_id, title in articles:
+        # Trunca o título a 50 chars para caber no botão
+        label = title[:50] if len(title) > 50 else title
+        cb = f"kb:art:{article_id}"
+        keyboard.append([InlineKeyboardButton(label, callback_data=_assert_callback_data(cb))])
+
+    keyboard.append([InlineKeyboardButton(BTN_PESQUISAR, callback_data=_assert_callback_data("kb:search"))])
+    keyboard.append([
+        InlineKeyboardButton(BTN_VOLTAR, callback_data=_assert_callback_data("menu:duvidas")),
+        InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
+    ])
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_kb_article_keyboard(
+    article_id: str,
+    related: list[tuple[str, str]] | None = None,
+    is_truncated: bool = False,
+) -> InlineKeyboardMarkup:
+    """Teclado exibido após um artigo da KB.
+
+    Inclui: Ver mais (se truncado), avaliação thumbs, prompt de resolução,
+    artigos relacionados e botões de navegação.
+
+    Args:
+        article_id: ID do artigo atual.
+        related: Lista de tuplas (related_id, title) de artigos relacionados (máx 3).
+        is_truncated: Se True, exibe o botão "Ver artigo completo".
+
+    Returns:
+        InlineKeyboardMarkup completo para página de artigo.
+    """
+    keyboard = []
+
+    if is_truncated:
+        keyboard.append([
+            InlineKeyboardButton(BTN_VER_MAIS, callback_data=_assert_callback_data(f"kb:full:{article_id}"))
+        ])
+
+    # Avaliação thumbs-up/down
+    keyboard.append([
+        InlineKeyboardButton(BTN_THUMB_UP, callback_data=_assert_callback_data(f"kb:rate:{article_id}:up")),
+        InlineKeyboardButton(BTN_THUMB_DOWN, callback_data=_assert_callback_data(f"kb:rate:{article_id}:dn")),
+    ])
+
+    # Prompt de resolução
+    keyboard.append([
+        InlineKeyboardButton(BTN_SIM_RESOLVEU, callback_data=_assert_callback_data(f"kb:resolved:{article_id}"))
+    ])
+    keyboard.append([
+        InlineKeyboardButton(BTN_NAO_RESOLVEU, callback_data=_assert_callback_data(f"kb:unresolved:{article_id}"))
+    ])
+
+    # Artigos relacionados (máx 3) — "Veja também"
+    if related:
+        for rel_id, rel_title in related[:3]:
+            label = rel_title[:48] if len(rel_title) > 48 else rel_title
+            cb = f"kb:art:{rel_id}"
+            keyboard.append([InlineKeyboardButton(label, callback_data=_assert_callback_data(cb))])
+
+    keyboard.append([
+        InlineKeyboardButton(BTN_VOLTAR, callback_data=_assert_callback_data("menu:duvidas")),
+        InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
+    ])
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_kb_ver_mais_keyboard(article_id: str) -> InlineKeyboardMarkup:
+    """Teclado mínimo para artigo truncado, com apenas o botão Ver mais.
+
+    Args:
+        article_id: ID do artigo.
+
+    Returns:
+        InlineKeyboardMarkup com botão Ver mais.
+    """
+    keyboard = [
+        [InlineKeyboardButton(BTN_VER_MAIS, callback_data=_assert_callback_data(f"kb:full:{article_id}"))],
+        [
+            InlineKeyboardButton(BTN_VOLTAR, callback_data=_assert_callback_data("menu:duvidas")),
+            InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
+        ],
     ]
     return InlineKeyboardMarkup(keyboard)

@@ -107,3 +107,4 @@ async def route_callback(update: Update, context: Any) -> None:
 # Este import DEVE ficar ao final do módulo para evitar importação circular.
 # Os handlers usam @register() ao ser importados, populando _HANDLERS.
 import src.bot._callback_handlers  # noqa: E402, F401
+import src.bot.report_wizard  # noqa: E402, F401

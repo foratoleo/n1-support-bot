@@ -250,13 +250,37 @@ async def handle_message(update: Update, context) -> None:
         update: The Telegram update object.
         context: The callback context.
     """
-    # Null check for non-text messages
-    if not update.message.text:
-        await update.message.reply_text(strings.NON_TEXT_MESSAGE)
-        return
-
     user_id = update.effective_user.id
     user_state = conv_manager.get_user_state(user_id)
+
+    # COLLECTING_REPORT: aceita texto livre ou foto como detalhe opcional (RPT-05)
+    if user_state.state == ConversationState.COLLECTING_REPORT:
+        wizard = user_state.menu_context.get("rpt_wizard", {})
+        if wizard.get("step") == "details":
+            from src.bot.keyboards import get_report_confirm_keyboard  # noqa: PLC0415
+            from src.bot import strings as _strings  # noqa: PLC0415
+            from src.bot.report_wizard import _build_confirmation_text  # noqa: PLC0415
+
+            # Captura texto ou foto
+            if update.message and update.message.photo:
+                # Armazena o file_id da maior resolução
+                photo = update.message.photo[-1]
+                wizard["photo_id"] = photo.file_id
+                wizard["details"] = "[Foto anexada]"
+            elif update.message and update.message.text:
+                wizard["details"] = update.message.text
+
+            wizard["step"] = "confirm"
+            await update.message.reply_text(
+                text=_build_confirmation_text(wizard),
+                reply_markup=get_report_confirm_keyboard(),
+            )
+        return
+
+    # Null check for non-text messages (após COLLECTING_REPORT para aceitar fotos)
+    if not update.message or not update.message.text:
+        await update.message.reply_text(strings.NON_TEXT_MESSAGE)
+        return
 
     if user_state.state == ConversationState.IDLE:
         # NAV-06: texto livre fora de fluxo ativo exibe o menu principal
@@ -582,4 +606,8 @@ def register_handlers(application) -> None:
     application.add_handler(CallbackQueryHandler(route_callback))
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+    )
+    # RPT-05: aceitar fotos durante a etapa de detalhes do wizard de report
+    application.add_handler(
+        MessageHandler(filters.PHOTO, handle_message)
     )

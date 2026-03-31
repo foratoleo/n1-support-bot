@@ -247,19 +247,17 @@ async def _handle_menu_duvidas_categoria(
 
 
 async def _handle_menu_erro(query, update: Update) -> None:
-    """Exibe o submenu de 'Reportar Erro' com botão voltar (NAV-03, placeholder para Fase 6).
+    """Inicia o wizard guiado de report de erro (Fase 6).
 
-    Empurra "erro" na pilha de navegação e edita a mensagem atual.
+    Empurra "erro" na pilha de navegação e delega ao report_wizard.
     """
     user_id = update.effective_user.id
     conv_manager = _get_conv_manager()
     user_state = conv_manager.get_user_state(user_id)
     user_state.push_menu("erro")
 
-    await query.edit_message_text(
-        text=strings.MENU_ERRO_INTRO,
-        reply_markup=get_erro_submenu_keyboard(),
-    )
+    from src.bot.report_wizard import start_report_wizard  # noqa: PLC0415
+    await start_report_wizard(query, update)
 
 
 async def _handle_menu_chamado(query, update: Update) -> None:

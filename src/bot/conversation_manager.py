@@ -13,6 +13,7 @@ class ConversationState(Enum):
     AWAITING_VALIDATION_ANSWER = "awaiting_validation_answer"
     PROVIDING_GUIDANCE = "providing_guidance"
     ESCALATED = "escalated"
+    COLLECTING_REPORT = "collecting_report"
 
 
 @dataclass

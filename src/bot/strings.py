@@ -317,3 +317,104 @@ MENU_CAT_GERAL = (
     "Descreva a sua dúvida. "
     "Use /report <descrição> para abrir um chamado."
 )
+
+# ---------------------------------------------------------------------------
+# Wizard de report de erro — Fase 6 (RPT-01 a RPT-11)
+# ---------------------------------------------------------------------------
+
+RPT_BREADCRUMB = "Suporte Workforce > Reportar Erro"
+
+RPT_STEP_AREA = (
+    "Suporte Workforce > Reportar Erro\n\n"
+    "Qual área do Workforce está com problema?"
+)
+
+RPT_STEP_SYMPTOM = (
+    "Suporte Workforce > Reportar Erro > {area}\n\n"
+    "Qual tipo de problema você está enfrentando?"
+)
+
+RPT_STEP_WHEN = (
+    "Suporte Workforce > Reportar Erro > {area}\n\n"
+    "Quando esse problema começou?"
+)
+
+RPT_STEP_FREQUENCY = (
+    "Suporte Workforce > Reportar Erro > {area}\n\n"
+    "Com que frequência isso acontece?"
+)
+
+RPT_STEP_DETAILS = (
+    "Suporte Workforce > Reportar Erro > {area}\n\n"
+    "Deseja adicionar detalhes ou screenshot? (Opcional — envie texto, foto ou toque em Pular)"
+)
+
+RPT_STEP_CONFIRM = "Suporte Workforce > Reportar Erro > Confirmação\n\nConfirme os dados do chamado:"
+
+RPT_CONFIRM_TEMPLATE = (
+    "Suporte Workforce > Reportar Erro > Confirmação\n\n"
+    "Confirme os dados do chamado:\n\n"
+    "Área: {area}\n"
+    "Problema: {symptom}\n"
+    "Quando: {when}\n"
+    "Frequência: {frequency}\n"
+    "Detalhes: {details}"
+)
+
+RPT_CREATED = (
+    "Chamado #{report_id} criado com sucesso!\n\n"
+    "Use /status {report_id} para acompanhar o andamento."
+)
+
+RPT_DUPLICATE_FOUND = (
+    "Encontramos um chamado similar:\n\n"
+    "{duplicate_title}\n\n"
+    "Isso já resolve o seu problema?"
+)
+
+RPT_DUPLICATE_YES = "Sim, é isso mesmo"
+RPT_DUPLICATE_NO = "Não, meu problema é diferente"
+
+# Botões do wizard
+BTN_PULAR = "Pular"
+BTN_CONFIRMAR = "Confirmar Envio"
+BTN_CORRIGIR = "Corrigir Dados"
+
+# Opções de área
+BTN_AREA_ACESSO = "Acesso e Login"
+BTN_AREA_DOCUMENTOS = "Geração de Documentos"
+BTN_AREA_TAREFAS = "Tarefas e Sprints"
+BTN_AREA_GERAL = "Suporte Geral"
+
+# Opções de sintoma por área
+BTN_SYMPTOM_ACESSO_1 = "Não consigo fazer login"
+BTN_SYMPTOM_ACESSO_2 = "Senha incorreta ou expirada"
+BTN_SYMPTOM_ACESSO_3 = "Conta bloqueada"
+BTN_SYMPTOM_ACESSO_4 = "Erro de autenticação 2FA"
+
+BTN_SYMPTOM_DOCUMENTOS_1 = "Documento não é gerado"
+BTN_SYMPTOM_DOCUMENTOS_2 = "Documento gerado com erro"
+BTN_SYMPTOM_DOCUMENTOS_3 = "Template não encontrado"
+BTN_SYMPTOM_DOCUMENTOS_4 = "Erro ao exportar"
+
+BTN_SYMPTOM_TAREFAS_1 = "Tarefa não aparece no board"
+BTN_SYMPTOM_TAREFAS_2 = "Não consigo criar tarefa"
+BTN_SYMPTOM_TAREFAS_3 = "Sprint não atualiza"
+BTN_SYMPTOM_TAREFAS_4 = "Dados desapareceram"
+
+BTN_SYMPTOM_GERAL_1 = "Página não carrega"
+BTN_SYMPTOM_GERAL_2 = "Botão não funciona"
+BTN_SYMPTOM_GERAL_3 = "Erro inesperado na tela"
+BTN_SYMPTOM_GERAL_4 = "Outro problema"
+
+# Opções de quando
+BTN_WHEN_TODAY = "Hoje"
+BTN_WHEN_YESTERDAY = "Ontem"
+BTN_WHEN_DAYS_AGO = "Há mais de 2 dias"
+BTN_WHEN_UNKNOWN = "Não sei"
+
+# Opções de frequência
+BTN_FREQ_ALWAYS = "Sempre"
+BTN_FREQ_SOMETIMES = "Às vezes"
+BTN_FREQ_ONCE = "Só uma vez"
+BTN_FREQ_INTERMITTENT = "Intermitente"

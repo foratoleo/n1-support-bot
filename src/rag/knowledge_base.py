@@ -425,24 +425,24 @@ class KnowledgeBaseSearcher:
             ]
             
             # Create reranking prompt
-            prompt = f"""Given the user's issue: "{issue_description}"
+            prompt = f"""Problema relatado pelo usuário: "{issue_description}"
 
-Evaluate each knowledge base article below for relevance to resolving this issue.
-Score each article from 0-10 where:
-- 10 = Highly relevant, directly addresses the issue
-- 5 = Somewhat relevant, contains related information  
-- 0 = Not relevant, doesn't help with this issue
+Avalie cada artigo da base de conhecimento abaixo quanto à relevância para resolver este problema.
+Atribua uma pontuação de 0 a 10 para cada artigo, onde:
+- 10 = Altamente relevante, aborda diretamente o problema
+- 5 = Parcialmente relevante, contém informações relacionadas
+- 0 = Irrelevante, não auxilia na resolução do problema
 
-Articles:
+Artigos:
 {chr(10).join([f"[{i+1}] {text}" for i, text in enumerate(candidate_texts)])}
 
-Return only a JSON array of scores in order, like: [8, 3, 9, 2, 5]
-Only return the array, nothing else."""
+Retorne apenas um array JSON com as pontuações em ordem, como: [8, 3, 9, 2, 5]
+Retorne apenas o array, sem mais nada."""
 
             response = self.openai_client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
-                    {"role": "system", "content": "You are a support ticket analysis assistant."},
+                    {"role": "system", "content": "Você é um assistente de análise de chamados de suporte."},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.1,

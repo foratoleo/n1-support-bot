@@ -16,6 +16,7 @@
 **Plan Progress:**
 - [x] 01-01: Criar módulo src/bot/strings.py com constantes pt-br — complete (2026-03-30)
 - [x] 01-02: Migrar src/bot/templates.py para usar strings.py — complete (2026-03-30)
+- [x] 01-03: Migrar src/bot/handlers.py e src/escalation/handler.py para usar strings.py — complete (2026-03-30)
 - [x] 01-04: Traduzir perguntas de validacao, system prompts LLM e verificacao final — complete (2026-03-30)
 
 **Success Criteria:**

@@ -8,7 +8,7 @@ progress:
   total_phases: 10
   completed_phases: 0
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -34,10 +34,12 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 |------|-------|--------|
 | 01-01 | Criar módulo src/bot/strings.py com constantes pt-br | complete |
 | 01-02 | Migrar src/bot/templates.py para usar strings.py | complete |
+| 01-03 | Migrar src/bot/handlers.py e src/escalation/handler.py para usar strings.py | complete |
 | 01-04 | Traduzir perguntas de validacao, system prompts LLM e verificacao final | complete |
 
 ## Phase History
 
 - **2026-03-30** — Plan 01-01 complete: Created `src/bot/strings.py` with 48 UPPER_SNAKE_CASE constants in pt-br. Zero English user-facing strings.
 - **2026-03-30** — Plan 01-02 complete: Migrated templates.py to import all strings from strings.py. Zero English user-facing strings remain in templates.py.
+- **2026-03-30** — Plan 01-03 complete: Migrated handlers and escalation — replaced 21 English strings in handlers.py and 8 in escalation/handler.py with pt-br constants from strings.py.
 - **2026-03-30** — Plan 01-04 complete: Translated validation and LLM prompts

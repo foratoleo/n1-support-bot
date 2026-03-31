@@ -229,27 +229,27 @@ class IssueClassifier:
         Returns:
             IssueClassification from GPT-4o analysis
         """
-        system_prompt = """You are a support issue classifier for a workforce management system.
-Classify the issue into one of these categories:
-- data_missing: User cannot find or access data that should exist
-- document_generation: Issues with AI document generation (PRD, user stories, etc.)
-- task_sprint: Issues with tasks, sprints, or project planning
-- login_auth: Login, authentication, or session issues
-- general: Issues that don't fit other categories
+        system_prompt = """Você é um classificador de chamados de suporte para um sistema de gestão de workforce.
+Classifique o problema em uma destas categorias:
+- data_missing: Usuário não consegue encontrar ou acessar dados que deveriam existir
+- document_generation: Problemas com geração de documentos por IA (PRD, user stories, etc.)
+- task_sprint: Problemas com tarefas, sprints ou planejamento de projetos
+- login_auth: Problemas de login, autenticação ou sessão
+- general: Problemas que não se encaixam nas outras categorias
 
-Also identify the knowledge base area:
-- foundation: Core system functionality
-- document-generation: Document creation and templates
-- frontend: User interface and display issues
-- planning: Task and sprint management
-- support: General support topics
+Também identifique a área da base de conhecimento:
+- foundation: Funcionalidades centrais do sistema
+- document-generation: Criação de documentos e templates
+- frontend: Interface do usuário e problemas de exibição
+- planning: Gestão de tarefas e sprints
+- support: Tópicos gerais de suporte
 
-Respond with a JSON object:
+Responda com um objeto JSON:
 {
-    "category": "category_name",
+    "category": "nome_da_categoria",
     "confidence": 0.0-1.0,
-    "summary": "brief description",
-    "area": "kb_area"
+    "summary": "descrição breve",
+    "area": "area_kb"
 }"""
 
         response = await self.openai_client.chat.completions.create(

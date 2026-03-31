@@ -191,7 +191,7 @@
 |---|-------|------|--------------|------------------|
 | 1 | Localizacao e Strings | Centralizar todas as strings em pt-br com tom profissional | Complete    | 2026-03-31 |
 | 2 | Infraestrutura de Teclados e Callbacks | Criar camada de infra para navegacao InlineKeyboard | Complete    | 2026-03-31 |
-| 3 | Extensao de Estado para Navegacao | Estender UserConversationState com campos de menu | NAV-02 | 3 |
+| 3 | Extensao de Estado para Navegacao | Estender UserConversationState com campos de menu | Complete    | 2026-03-31 |
 | 4 | Menu Principal | Implementar menu principal via /start com InlineKeyboard | NAV-01, NAV-04, NAV-05, NAV-06 | 4 |
 | 5 | Arvore Completa de Navegacao | Implementar arvore de submenus com botao Voltar | NAV-03 | 3 |
 | 6 | Fluxo Guiado de Report de Erro | Implementar coleta de report por botoes com confirmacao | RPT-01, RPT-02, RPT-03, RPT-04, RPT-05, RPT-06, RPT-07, RPT-08, RPT-09, RPT-10, RPT-11 | 6 |

@@ -98,52 +98,52 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| L10N-01 | Pending | Pending |
-| L10N-02 | Pending | Pending |
-| L10N-03 | Pending | Pending |
-| L10N-04 | Pending | Pending |
-| NAV-01 | Pending | Pending |
-| NAV-02 | Pending | Pending |
-| NAV-03 | Pending | Pending |
-| NAV-04 | Pending | Pending |
-| NAV-05 | Pending | Pending |
-| NAV-06 | Pending | Pending |
-| NAV-07 | Pending | Pending |
-| NAV-08 | Pending | Pending |
-| NAV-09 | Pending | Pending |
-| RPT-01 | Pending | Pending |
-| RPT-02 | Pending | Pending |
-| RPT-03 | Pending | Pending |
-| RPT-04 | Pending | Pending |
-| RPT-05 | Pending | Pending |
-| RPT-06 | Pending | Pending |
-| RPT-07 | Pending | Pending |
-| RPT-08 | Pending | Pending |
-| RPT-09 | Pending | Pending |
-| RPT-10 | Pending | Pending |
-| RPT-11 | Pending | Pending |
-| KB-01 | Pending | Pending |
-| KB-02 | Pending | Pending |
-| KB-03 | Pending | Pending |
-| KB-04 | Pending | Pending |
-| KB-05 | Pending | Pending |
-| KB-06 | Pending | Pending |
-| KB-07 | Pending | Pending |
-| KB-08 | Pending | Pending |
-| SRCH-01 | Pending | Pending |
-| SRCH-02 | Pending | Pending |
-| SRCH-03 | Pending | Pending |
-| REF-01 | Pending | Pending |
-| REF-02 | Pending | Pending |
-| REF-03 | Pending | Pending |
-| FBK-01 | Pending | Pending |
-| FBK-02 | Pending | Pending |
-| FBK-03 | Pending | Pending |
+| L10N-01 | Phase 1 | Pending |
+| L10N-02 | Phase 1 | Pending |
+| L10N-03 | Phase 1 | Pending |
+| L10N-04 | Phase 1 | Pending |
+| NAV-01 | Phase 4 | Pending |
+| NAV-02 | Phase 3 | Pending |
+| NAV-03 | Phase 5 | Pending |
+| NAV-04 | Phase 4 | Pending |
+| NAV-05 | Phase 4 | Pending |
+| NAV-06 | Phase 4 | Pending |
+| NAV-07 | Phase 2 | Pending |
+| NAV-08 | Phase 2 | Pending |
+| NAV-09 | Phase 2 | Pending |
+| RPT-01 | Phase 6 | Pending |
+| RPT-02 | Phase 6 | Pending |
+| RPT-03 | Phase 6 | Pending |
+| RPT-04 | Phase 6 | Pending |
+| RPT-05 | Phase 6 | Pending |
+| RPT-06 | Phase 6 | Pending |
+| RPT-07 | Phase 6 | Pending |
+| RPT-08 | Phase 6 | Pending |
+| RPT-09 | Phase 6 | Pending |
+| RPT-10 | Phase 6 | Pending |
+| RPT-11 | Phase 6 | Pending |
+| KB-01 | Phase 7 | Pending |
+| KB-02 | Phase 7 | Pending |
+| KB-03 | Phase 7 | Pending |
+| KB-04 | Phase 7 | Pending |
+| KB-05 | Phase 7 | Pending |
+| KB-06 | Phase 7 | Pending |
+| KB-07 | Phase 7 | Pending |
+| KB-08 | Phase 7 | Pending |
+| SRCH-01 | Phase 9 | Pending |
+| SRCH-02 | Phase 9 | Pending |
+| SRCH-03 | Phase 9 | Pending |
+| REF-01 | Phase 8 | Pending |
+| REF-02 | Phase 2 | Pending |
+| REF-03 | Phase 2 | Pending |
+| FBK-01 | Phase 10 | Pending |
+| FBK-02 | Phase 10 | Pending |
+| FBK-03 | Phase 10 | Pending |
 
 **Coverage:**
 - v1 requirements: 38 total
-- Mapped to phases: 0
-- Unmapped: 38
+- Mapped to phases: 38
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-30*

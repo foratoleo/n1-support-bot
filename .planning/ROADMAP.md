@@ -195,7 +195,7 @@
 | 4 | Menu Principal | Implementar menu principal via /start com InlineKeyboard | Complete    | 2026-03-31 |
 | 5 | Arvore Completa de Navegacao | Implementar arvore de submenus com botao Voltar | Complete    | 2026-03-31 |
 | 6 | Fluxo Guiado de Report de Erro | Implementar coleta de report por botoes com confirmacao | Complete    | 2026-03-31 |
-| 7 | Knowledge Base Navegavel | Tornar KB navegavel por categorias com artigos formatados | KB-01, KB-02, KB-03, KB-04, KB-05, KB-06, KB-07, KB-08 | 7 |
+| 7 | Knowledge Base Navegavel | Tornar KB navegavel por categorias com artigos formatados | Complete    | 2026-03-31 |
 | 8 | Refatoracao de handle_message() | Decompor handle_message() em handlers por estado | REF-01 | 3 |
 | 9 | Melhorias na Busca | Corrigir bugs de busca e melhorar precisao com pt-br | SRCH-01, SRCH-02, SRCH-03 | 4 |
 | 10 | Feedback Inline | Automatizar ciclo de feedback ao final de cada fluxo | FBK-01, FBK-02, FBK-03 | 4 |

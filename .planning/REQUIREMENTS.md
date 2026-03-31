@@ -42,14 +42,14 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Knowledge Base
 
-- [ ] **KB-01**: KB navegavel por categorias com botoes inline (sem digitacao)
-- [ ] **KB-02**: Artigo exibido com titulo, resumo (max 300 chars) e botao "Ver mais" se longo
-- [ ] **KB-03**: Apos artigo: prompt inline "Isso resolveu?" com Sim/Nao
-- [ ] **KB-04**: "Nao resolveu" redireciona para report de erro pre-preenchido com categoria
-- [ ] **KB-05**: Botao "Pesquisar" disponivel como fallback para busca por keyword
-- [ ] **KB-06**: "Veja tambem" com 2-3 artigos relacionados apos exibir artigo
-- [ ] **KB-07**: Artigos ordenados por quantidade de acessos dentro da categoria
-- [ ] **KB-08**: Rating thumbs-up/thumbs-down por artigo
+- [x] **KB-01**: KB navegavel por categorias com botoes inline (sem digitacao)
+- [x] **KB-02**: Artigo exibido com titulo, resumo (max 300 chars) e botao "Ver mais" se longo
+- [x] **KB-03**: Apos artigo: prompt inline "Isso resolveu?" com Sim/Nao
+- [x] **KB-04**: "Nao resolveu" redireciona para report de erro pre-preenchido com categoria
+- [x] **KB-05**: Botao "Pesquisar" disponivel como fallback para busca por keyword
+- [x] **KB-06**: "Veja tambem" com 2-3 artigos relacionados apos exibir artigo
+- [x] **KB-07**: Artigos ordenados por quantidade de acessos dentro da categoria
+- [x] **KB-08**: Rating thumbs-up/thumbs-down por artigo
 
 ### Busca
 
@@ -122,14 +122,14 @@ Deferred to future release. Tracked but not in current roadmap.
 | RPT-09 | Phase 6 | Complete |
 | RPT-10 | Phase 6 | Complete |
 | RPT-11 | Phase 6 | Complete |
-| KB-01 | Phase 7 | Pending |
-| KB-02 | Phase 7 | Pending |
-| KB-03 | Phase 7 | Pending |
-| KB-04 | Phase 7 | Pending |
-| KB-05 | Phase 7 | Pending |
-| KB-06 | Phase 7 | Pending |
-| KB-07 | Phase 7 | Pending |
-| KB-08 | Phase 7 | Pending |
+| KB-01 | Phase 7 | Complete |
+| KB-02 | Phase 7 | Complete |
+| KB-03 | Phase 7 | Complete |
+| KB-04 | Phase 7 | Complete |
+| KB-05 | Phase 7 | Complete |
+| KB-06 | Phase 7 | Complete |
+| KB-07 | Phase 7 | Complete |
+| KB-08 | Phase 7 | Complete |
 | SRCH-01 | Phase 9 | Pending |
 | SRCH-02 | Phase 9 | Pending |
 | SRCH-03 | Phase 9 | Pending |

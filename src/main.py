@@ -29,7 +29,14 @@ def main():
             base_url=config.openai_base_url,
         )
 
-        application = Application.builder().token(config.telegram_bot_token).build()
+        application = (
+            Application.builder()
+            .token(config.telegram_bot_token)
+            .connect_timeout(30)
+            .read_timeout(30)
+            .write_timeout(30)
+            .build()
+        )
         application.bot_data["openai_client"] = openai_client
         register_handlers(application)
 

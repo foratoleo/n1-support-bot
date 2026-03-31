@@ -29,8 +29,9 @@ from .templates import (
     format_search_results,
     format_feedback,
     format_report_list,
-    get_confirmation_keyboard,
 )
+from .keyboards import get_confirmation_keyboard
+from .callback_router import route_callback
 from src.bot import strings
 
 
@@ -538,44 +539,17 @@ async def feedback_command(update: Update, context) -> None:
 
 
 async def button_callback(update: Update, context) -> None:
-    """Handle callback queries from inline keyboard buttons.
+    """Alias mantido para compatibilidade retroativa.
+
+    O despacho real é feito por ``route_callback`` em ``callback_router.py``.
+    Este wrapper garante que código legado que referencia ``button_callback``
+    continue funcionando sem alterações.
 
     Args:
         update: The Telegram update object.
         context: The callback context.
     """
-    query = update.callback_query
-    await query.answer()
-
-    user_id = update.effective_user.id
-    user_state = conv_manager.get_user_state(user_id)
-    data = query.data
-
-    if data == "yes_resolved":
-        await query.edit_message_text(text=strings.CALLBACK_RESOLVED)
-        if user_state and user_state.current_report_id:
-            pool = get_database_pool()
-            async with pool.acquire() as session:
-                user_report_repo = UserReportRepository(session)
-                await user_report_repo.update_status(
-                    UUID(user_state.current_report_id), "resolved"
-                )
-        conv_manager.update_user_state(user_id, ConversationState.IDLE)
-
-    elif data == "no_unresolved":
-        await query.edit_message_text(text=strings.CALLBACK_NOT_RESOLVED)
-        if user_state and user_state.current_report_id:
-            pool = get_database_pool()
-            async with pool.acquire() as session:
-                escalation_handler = EscalationHandler(
-                    escalation_repo=EscalationRepository(session),
-                    user_report_repo=UserReportRepository(session),
-                )
-                await escalation_handler.create_escalation(
-                    report_id=UUID(user_state.current_report_id),
-                    summary=strings.CALLBACK_ESCALATION_SUMMARY,
-                )
-        conv_manager.update_user_state(user_id, ConversationState.ESCALATED)
+    await route_callback(update, context)
 
 
 
@@ -593,7 +567,7 @@ def register_handlers(application) -> None:
     application.add_handler(CommandHandler("search", search_command))
     application.add_handler(CommandHandler("list", list_command))
     application.add_handler(CommandHandler("feedback", feedback_command))
-    application.add_handler(CallbackQueryHandler(button_callback))
+    application.add_handler(CallbackQueryHandler(route_callback))
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
     )

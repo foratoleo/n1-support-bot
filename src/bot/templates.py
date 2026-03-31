@@ -5,6 +5,10 @@ from typing import Optional, List
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from src.bot import strings
+# Re-exporta get_confirmation_keyboard de keyboards.py para compatibilidade retroativa.
+# Importadores antigos que fazem `from src.bot.templates import get_confirmation_keyboard`
+# continuarão funcionando sem alterações.
+from src.bot.keyboards import get_confirmation_keyboard  # noqa: F401
 
 # Alias de compatibilidade — remover apos migracao completa de handlers.py (Plano 3)
 BOT_MESSAGES = {
@@ -192,16 +196,3 @@ def format_report_list(reports: List[dict]) -> str:
     return BOT_MESSAGES["report_list"].format(reports="\n".join(reports_text))
 
 
-def get_confirmation_keyboard() -> InlineKeyboardMarkup:
-    """Get inline keyboard with yes/no confirmation buttons.
-
-    Returns:
-        InlineKeyboardMarkup with Yes and No buttons.
-    """
-    keyboard = [
-        [
-            InlineKeyboardButton(strings.BTN_YES_RESOLVED, callback_data="yes_resolved"),
-            InlineKeyboardButton(strings.BTN_NO_UNRESOLVED, callback_data="no_unresolved"),
-        ]
-    ]
-    return InlineKeyboardMarkup(keyboard)

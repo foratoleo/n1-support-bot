@@ -30,7 +30,7 @@ from .templates import (
     format_feedback,
     format_report_list,
 )
-from .keyboards import get_confirmation_keyboard
+from .keyboards import get_confirmation_keyboard, get_main_menu_keyboard
 from .callback_router import route_callback
 from src.bot import strings
 
@@ -45,11 +45,19 @@ question_generator = QuestionGenerator()
 async def start_command(update: Update, context) -> None:
     """Handle /start command.
 
+    Exibe imediatamente o menu principal com InlineKeyboard.
+    Não requer leitura de instruções — o usuário navega por botões (NAV-01).
+
     Args:
         update: The Telegram update object.
         context: The callback context.
     """
-    await update.message.reply_text(BOT_MESSAGES["welcome"])
+    user_id = update.effective_user.id
+    conv_manager.clear_user_state(user_id)
+    await update.message.reply_text(
+        strings.MENU_WELCOME,
+        reply_markup=get_main_menu_keyboard(),
+    )
 
 
 async def help_command(update: Update, context) -> None:
@@ -251,7 +259,11 @@ async def handle_message(update: Update, context) -> None:
     user_state = conv_manager.get_user_state(user_id)
 
     if user_state.state == ConversationState.IDLE:
-        await update.message.reply_text(strings.IDLE_REDIRECT)
+        # NAV-06: texto livre fora de fluxo ativo exibe o menu principal
+        await update.message.reply_text(
+            strings.FREE_TEXT_REDIRECT,
+            reply_markup=get_main_menu_keyboard(),
+        )
         return
 
     if user_state.state == ConversationState.AWAITING_VALIDATION_ANSWER:

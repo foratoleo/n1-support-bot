@@ -6,7 +6,16 @@ Nenhuma lógica de negócio aqui — apenas construção de teclados.
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-from src.bot.strings import BTN_YES_RESOLVED, BTN_NO_UNRESOLVED
+from src.bot.strings import (
+    BTN_YES_RESOLVED,
+    BTN_NO_UNRESOLVED,
+    BTN_TIRAR_DUVIDA,
+    BTN_REPORTAR_ERRO,
+    BTN_ACOMPANHAR_CHAMADO,
+    BTN_FALAR_HUMANO,
+    BTN_MENU_PRINCIPAL,
+    BREADCRUMB_ROOT,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -68,16 +77,77 @@ def get_confirmation_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(keyboard)
 
 
-def get_main_menu_keyboard() -> InlineKeyboardMarkup:
-    """Teclado do menu principal (placeholder para a Fase 4).
+def format_breadcrumb(*path_parts: str) -> str:
+    """Formata o cabeçalho de breadcrumb para mensagens de menu.
 
-    Será expandido na Fase 4 com as opções de navegação completas:
-    Tirar Dúvidas, Reportar Erro, Acompanhar Chamado, Falar com Humano.
+    Args:
+        *path_parts: Partes do caminho de navegação. O root (BREADCRUMB_ROOT)
+            é sempre prefixado automaticamente.
 
     Returns:
-        InlineKeyboardMarkup com opções do menu principal.
+        String formatada com separador " > ", ex.: "Suporte Workforce > Tirar Dúvida".
+
+    Exemplo::
+
+        format_breadcrumb("Tirar Dúvida")
+        # "Suporte Workforce > Tirar Dúvida"
+
+        format_breadcrumb()
+        # "Suporte Workforce"
     """
-    # Placeholder: apenas uma linha indicando que o menu principal será implementado na Fase 4.
-    # Na Fase 4, este teclado receberá os botões reais com callback_data "menu:*".
-    keyboard: list[list[InlineKeyboardButton]] = []
+    parts = [BREADCRUMB_ROOT, *path_parts]
+    return " > ".join(parts)
+
+
+def get_main_menu_keyboard() -> InlineKeyboardMarkup:
+    """Teclado do menu principal com 4 opções em grade 2x2.
+
+    Callback data no formato "menu:<ação>" para ser roteado pelo callback_router.
+
+    Returns:
+        InlineKeyboardMarkup com botões: Tirar Dúvida, Reportar Erro,
+        Acompanhar Chamado e Falar com Humano.
+    """
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                BTN_TIRAR_DUVIDA,
+                callback_data=_assert_callback_data("menu:duvidas"),
+            ),
+            InlineKeyboardButton(
+                BTN_REPORTAR_ERRO,
+                callback_data=_assert_callback_data("menu:erro"),
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                BTN_ACOMPANHAR_CHAMADO,
+                callback_data=_assert_callback_data("menu:chamado"),
+            ),
+            InlineKeyboardButton(
+                BTN_FALAR_HUMANO,
+                callback_data=_assert_callback_data("menu:humano"),
+            ),
+        ],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_back_to_menu_keyboard() -> InlineKeyboardMarkup:
+    """Teclado com botão único de retorno ao menu principal.
+
+    Usado em submenus e páginas de conteúdo para garantir que o usuário
+    sempre consiga voltar ao ponto de partida (NAV-04).
+
+    Returns:
+        InlineKeyboardMarkup com botão "Menu Principal" (callback_data="menu:main").
+    """
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                BTN_MENU_PRINCIPAL,
+                callback_data=_assert_callback_data("menu:main"),
+            ),
+        ]
+    ]
     return InlineKeyboardMarkup(keyboard)

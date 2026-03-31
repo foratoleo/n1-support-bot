@@ -15,6 +15,11 @@ from telegram import Update
 from src.bot.callback_router import register
 from src.bot.conversation_manager import ConversationManager, ConversationState
 from src.bot import strings
+from src.bot.keyboards import (
+    get_main_menu_keyboard,
+    get_back_to_menu_keyboard,
+    format_breadcrumb,
+)
 from src.database.connection import get_database_pool
 from src.database.repositories import EscalationRepository, UserReportRepository
 from src.escalation.handler import EscalationHandler
@@ -133,3 +138,150 @@ async def handle_feedback_callback(update: Update, context) -> None:
     """
     # Placeholder: callbacks de feedback serão implementados na Fase 10.
     pass
+
+
+# ---------------------------------------------------------------------------
+# Handlers: menu principal (prefixo "menu:")
+# ---------------------------------------------------------------------------
+
+
+@register("menu:")
+async def handle_menu_callback(update: Update, context) -> None:
+    """Trata todos os callbacks com prefixo 'menu:' — navegação pelo menu principal.
+
+    Despacha para sub-handlers com base no sufixo do callback_data:
+    - menu:main        → retorna ao menu principal (NAV-04)
+    - menu:duvidas     → placeholder "Em breve" com botão voltar
+    - menu:erro        → placeholder "Em breve" com botão voltar
+    - menu:chamado     → status do chamado mais recente do usuário
+    - menu:humano      → fluxo de escalação para humano
+
+    Args:
+        update: O objeto de atualização do Telegram.
+        context: O contexto de callback do PTB.
+    """
+    query = update.callback_query
+    data: str = query.data or ""
+    action = data[len("menu:") :]  # sufixo após "menu:"
+
+    if action == "main":
+        await _handle_menu_main(query)
+    elif action == "duvidas":
+        await _handle_menu_duvidas(query)
+    elif action == "erro":
+        await _handle_menu_erro(query)
+    elif action == "chamado":
+        await _handle_menu_chamado(query, update)
+    elif action == "humano":
+        await _handle_menu_humano(query, update, context)
+    # Ações não reconhecidas são silenciosamente ignoradas (router já respondeu query.answer)
+
+
+async def _handle_menu_main(query) -> None:
+    """Retorna ao menu principal editando a mensagem atual (NAV-04)."""
+    from src.bot import strings as _strings
+    await query.edit_message_text(
+        text=_strings.MENU_WELCOME,
+        reply_markup=get_main_menu_keyboard(),
+    )
+
+
+async def _handle_menu_duvidas(query) -> None:
+    """Exibe placeholder para 'Tirar Dúvida' com botão voltar."""
+    await query.edit_message_text(
+        text=strings.MENU_PLACEHOLDER_DUVIDAS,
+        reply_markup=get_back_to_menu_keyboard(),
+    )
+
+
+async def _handle_menu_erro(query) -> None:
+    """Exibe placeholder para 'Reportar Erro' com botão voltar."""
+    await query.edit_message_text(
+        text=strings.MENU_PLACEHOLDER_ERRO,
+        reply_markup=get_back_to_menu_keyboard(),
+    )
+
+
+async def _handle_menu_chamado(query, update: Update) -> None:
+    """Exibe o status do chamado mais recente do usuário.
+
+    Se não houver chamados, informa o usuário e oferece retorno ao menu.
+    """
+    user_id = update.effective_user.id
+    pool = get_database_pool()
+
+    breadcrumb = format_breadcrumb(strings.BTN_ACOMPANHAR_CHAMADO)
+
+    async with pool.acquire() as session:
+        from uuid import UUID as _UUID
+        user_report_repo = UserReportRepository(session)
+        try:
+            user_uuid = _UUID(int=user_id)
+            reports = await user_report_repo.get_recent_by_user(user_uuid, limit=1)
+        except (ValueError, Exception):
+            reports = []
+
+    if not reports:
+        text = (
+            f"{breadcrumb}\n\n"
+            "Você ainda não tem chamados abertos.\n"
+            "Use o menu para reportar um erro ou tirar uma dúvida."
+        )
+    else:
+        report = reports[0]
+        created_at = (
+            report.created_at.strftime("%d/%m/%Y %H:%M")
+            if report.created_at
+            else "Desconhecido"
+        )
+        text = (
+            f"{breadcrumb}\n\n"
+            f"Chamado mais recente:\n"
+            f"• ID: {str(report.id)[:8]}...\n"
+            f"• Status: {report.status or 'Desconhecido'}\n"
+            f"• Criado em: {created_at}"
+        )
+
+    await query.edit_message_text(
+        text=text,
+        reply_markup=get_back_to_menu_keyboard(),
+    )
+
+
+async def _handle_menu_humano(query, update: Update, context) -> None:
+    """Inicia o fluxo de escalação para atendimento humano."""
+    user_id = update.effective_user.id
+    conv_manager = _get_conv_manager()
+    user_state = conv_manager.get_user_state(user_id)
+
+    breadcrumb = format_breadcrumb(strings.BTN_FALAR_HUMANO)
+
+    if user_state.current_report_id:
+        pool = get_database_pool()
+        async with pool.acquire() as session:
+            escalation_handler = EscalationHandler(
+                escalation_repo=EscalationRepository(session),
+                user_report_repo=UserReportRepository(session),
+            )
+            await escalation_handler.create_escalation(
+                report_id=UUID(user_state.current_report_id),
+                summary="Usuário solicitou atendimento humano pelo menu principal.",
+            )
+
+        conv_manager.update_user_state(user_id, ConversationState.ESCALATED)
+        text = (
+            f"{breadcrumb}\n\n"
+            "Seu chamado foi encaminhado para a equipe de suporte.\n"
+            "Um agente irá responder em breve."
+        )
+    else:
+        text = (
+            f"{breadcrumb}\n\n"
+            f"{strings.MENU_HUMANO_INICIANDO}\n\n"
+            "Para abrir um chamado, use o menu para descrever seu problema primeiro."
+        )
+
+    await query.edit_message_text(
+        text=text,
+        reply_markup=get_back_to_menu_keyboard(),
+    )

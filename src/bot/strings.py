@@ -239,3 +239,34 @@ DEFAULT_SELF_SERVICE_STEP = (
 )
 DEFAULT_ESCALATION_SUMMARY = "Chamado requer análise humana"
 DEFAULT_ISSUE_DESCRIPTION = "Sem descrição"
+
+# ---------------------------------------------------------------------------
+# Menu principal (Fase 4)
+# ---------------------------------------------------------------------------
+
+MENU_WELCOME = "Olá! Sou o assistente de suporte do Workforce. Como posso ajudar?"
+
+BTN_TIRAR_DUVIDA = "Tirar Dúvida"
+BTN_REPORTAR_ERRO = "Reportar Erro"
+BTN_ACOMPANHAR_CHAMADO = "Acompanhar Chamado"
+BTN_FALAR_HUMANO = "Falar com Humano"
+BTN_MENU_PRINCIPAL = "Menu Principal"
+
+BREADCRUMB_ROOT = "Suporte Workforce"
+
+FREE_TEXT_REDIRECT = "Não entendi. Use o menu abaixo para navegar:"
+
+MENU_PLACEHOLDER_DUVIDAS = (
+    "Suporte Workforce > Tirar Dúvida\n\n"
+    "Esta funcionalidade será implementada em breve."
+)
+
+MENU_PLACEHOLDER_ERRO = (
+    "Suporte Workforce > Reportar Erro\n\n"
+    "Esta funcionalidade será implementada em breve."
+)
+
+MENU_HUMANO_INICIANDO = (
+    "Suporte Workforce > Falar com Humano\n\n"
+    "Encaminhando para um agente humano. Aguarde um momento."
+)

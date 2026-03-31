@@ -244,13 +244,31 @@ DEFAULT_ISSUE_DESCRIPTION = "Sem descrição"
 # Menu principal (Fase 4)
 # ---------------------------------------------------------------------------
 
-MENU_WELCOME = "Olá! Sou o assistente de suporte do Workforce. Como posso ajudar?"
+MENU_WELCOME = (
+    "Olá! Sou o assistente de suporte do Workforce.\n\n"
+    "Escolha uma das opções abaixo para começar. "
+    "Se tiver dúvidas sobre o sistema, toque em Tirar Dúvida. "
+    "Se algo não está funcionando, toque em Reportar Erro."
+)
 
 BTN_TIRAR_DUVIDA = "Tirar Dúvida"
 BTN_REPORTAR_ERRO = "Reportar Erro"
 BTN_ACOMPANHAR_CHAMADO = "Acompanhar Chamado"
 BTN_FALAR_HUMANO = "Falar com Humano"
 BTN_MENU_PRINCIPAL = "Menu Principal"
+BTN_SAIBA_MAIS = "ℹ️ Saiba mais"
+
+MENU_SAIBA_MAIS = (
+    "Suporte Workforce > Saiba Mais\n\n"
+    "Aqui está o que cada opção faz:\n\n"
+    "• Tirar Dúvida — Consulte artigos da base de conhecimento sobre acesso, "
+    "documentos, tarefas e outros temas.\n\n"
+    "• Reportar Erro — Abra um chamado descrevendo o problema encontrado. "
+    "Vamos guiar você passo a passo.\n\n"
+    "• Acompanhar Chamado — Veja o status dos seus chamados abertos e recentes.\n\n"
+    "• Falar com Humano — Encaminhe seu chamado para a equipe de suporte "
+    "quando a orientação automática não resolver."
+)
 
 BREADCRUMB_ROOT = "Suporte Workforce"
 
@@ -268,7 +286,29 @@ MENU_PLACEHOLDER_ERRO = (
 
 MENU_HUMANO_INICIANDO = (
     "Suporte Workforce > Falar com Humano\n\n"
-    "Encaminhando para um agente humano. Aguarde um momento."
+    "Seu chamado foi encaminhado para a equipe de suporte.\n"
+    "Um agente irá responder em breve."
+)
+
+MENU_HUMANO_SEM_CHAMADO = (
+    "Suporte Workforce > Falar com Humano\n\n"
+    "Para encaminhar para um agente humano, primeiro precisamos "
+    "registrar o seu problema.\n\n"
+    "Escolha como deseja prosseguir:"
+)
+
+MENU_CHAMADO_INTRO = (
+    "Suporte Workforce > Acompanhar Chamado\n\n"
+    "Aqui você pode verificar o status dos seus chamados recentes.\n"
+    "Selecione um chamado para ver detalhes:"
+)
+
+MENU_CHAMADO_VAZIO = (
+    "Suporte Workforce > Acompanhar Chamado\n\n"
+    "Você ainda não tem chamados registrados.\n\n"
+    "Se precisar de ajuda:\n"
+    "• Consulte a base de conhecimento em Tirar Dúvida\n"
+    "• Abra um chamado novo em Reportar Erro"
 )
 
 # ---------------------------------------------------------------------------
@@ -286,36 +326,51 @@ SUBMENU_ESCOLHA = "Escolha uma opção:"
 
 MENU_DUVIDAS_INTRO = (
     "Suporte Workforce > Tirar Dúvida\n\n"
-    "Selecione a categoria da sua dúvida:"
+    "Aqui você encontra artigos com orientações e soluções para problemas comuns.\n\n"
+    "Selecione a categoria da sua dúvida ou use a pesquisa para buscar por palavras-chave:"
 )
 
 MENU_ERRO_INTRO = (
     "Suporte Workforce > Reportar Erro\n\n"
-    "Selecione o tipo de erro que deseja reportar:"
+    "Vamos registrar o seu problema passo a passo.\n"
+    "Primeiro, selecione a área do Workforce que está com problema:"
 )
 
 MENU_CAT_ACESSO = (
     "Suporte Workforce > Tirar Dúvida > Acesso e Login\n\n"
-    "Descreva a sua dúvida sobre acesso ou login no Workforce. "
-    "Use /report <descrição> para abrir um chamado."
+    "Nesta seção você encontra orientações sobre:\n"
+    "• Login e autenticação no Workforce\n"
+    "• Recuperação de senha\n"
+    "• Desbloqueio de conta\n"
+    "• Autenticação em dois fatores (2FA)\n\n"
+    "Selecione um artigo abaixo ou pesquise por palavras-chave:"
 )
 
 MENU_CAT_DOCUMENTOS = (
     "Suporte Workforce > Tirar Dúvida > Geração de Documentos\n\n"
-    "Descreva a sua dúvida sobre geração de documentos no Workforce. "
-    "Use /report <descrição> para abrir um chamado."
+    "Nesta seção você encontra orientações sobre:\n"
+    "• Como gerar documentos no sistema\n"
+    "• Problemas com templates\n"
+    "• Exportação de arquivos\n"
+    "• Erros na geração de documentos\n\n"
+    "Selecione um artigo abaixo ou pesquise por palavras-chave:"
 )
 
 MENU_CAT_TAREFAS = (
     "Suporte Workforce > Tirar Dúvida > Tarefas e Sprints\n\n"
-    "Descreva a sua dúvida sobre tarefas ou sprints no Workforce. "
-    "Use /report <descrição> para abrir um chamado."
+    "Nesta seção você encontra orientações sobre:\n"
+    "• Criação e gestão de tarefas\n"
+    "• Boards e visualização\n"
+    "• Sprints e planejamento\n"
+    "• Dados e relatórios\n\n"
+    "Selecione um artigo abaixo ou pesquise por palavras-chave:"
 )
 
 MENU_CAT_GERAL = (
     "Suporte Workforce > Tirar Dúvida > Suporte Geral\n\n"
-    "Descreva a sua dúvida. "
-    "Use /report <descrição> para abrir um chamado."
+    "Nesta seção você encontra orientações gerais sobre o Workforce, "
+    "incluindo navegação, configurações e funcionalidades diversas.\n\n"
+    "Selecione um artigo abaixo ou pesquise por palavras-chave:"
 )
 
 # ---------------------------------------------------------------------------
@@ -425,7 +480,11 @@ BTN_FREQ_INTERMITTENT = "Intermitente"
 
 KB_BROWSE_TITLE = "Base de Conhecimento"
 
-KB_CATEGORY_HEADER = "Suporte Workforce > Tirar Dúvida > {category}\n\nArtigos disponíveis:"
+KB_CATEGORY_HEADER = (
+    "Suporte Workforce > Tirar Dúvida > {category}\n\n"
+    "Veja os artigos disponíveis nesta categoria. "
+    "Toque em um artigo para ler ou use a pesquisa para buscar por palavras-chave:"
+)
 
 KB_ARTICLE_SUMMARY = "{title}\n\n{excerpt}"
 
@@ -443,14 +502,18 @@ BTN_PESQUISAR = "Pesquisar na KB"
 
 KB_SEARCH_PROMPT = (
     "Suporte Workforce > Pesquisar\n\n"
-    "Digite sua busca:"
+    "Digite palavras-chave relacionadas à sua dúvida.\n"
+    "Exemplo: \"login\", \"gerar documento\", \"sprint não atualiza\""
 )
 
 KB_SEARCH_RESULTS_HEADER = "Resultados para '{query}':"
 
 KB_SEARCH_NO_RESULTS = (
     "Nenhum artigo encontrado para: {query}\n\n"
-    "Tente palavras-chave diferentes."
+    "Sugestões:\n"
+    "• Tente palavras-chave diferentes ou mais curtas\n"
+    "• Navegue pelas categorias abaixo\n"
+    "• Se o problema persistir, abra um chamado via Reportar Erro"
 )
 
 BTN_THUMB_UP = "👍 Útil"
@@ -462,8 +525,11 @@ KB_RATING_THANKS = "Obrigado pela avaliação!"
 KB_FULL_ARTICLE_HEADER = "Suporte Workforce > {category} > {title}"
 
 KB_NO_ARTICLES = (
-    "Nenhum artigo encontrado nesta categoria ainda.\n\n"
-    "Use o botão abaixo para pesquisar ou volte ao menu."
+    "Ainda não há artigos publicados nesta categoria.\n\n"
+    "Enquanto isso, você pode:\n"
+    "• Pesquisar por palavras-chave em toda a base de conhecimento\n"
+    "• Explorar outras categorias\n"
+    "• Reportar um erro para que nossa equipe investigue"
 )
 
 # ---------------------------------------------------------------------------

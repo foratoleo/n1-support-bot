@@ -163,6 +163,8 @@ async def handle_menu_callback(update: Update, context) -> None:
 
     if action == "main":
         await _handle_menu_main(query)
+    elif action == "saiba_mais":
+        await _handle_menu_saiba_mais(query)
     elif action == "duvidas":
         await _handle_menu_duvidas(query, update)
     elif action == "duvidas:acesso":
@@ -188,6 +190,14 @@ async def _handle_menu_main(query) -> None:
     await query.edit_message_text(
         text=_strings.MENU_WELCOME,
         reply_markup=get_main_menu_keyboard(),
+    )
+
+
+async def _handle_menu_saiba_mais(query) -> None:
+    """Exibe texto detalhado sobre o que cada opção do menu faz."""
+    await query.edit_message_text(
+        text=strings.MENU_SAIBA_MAIS,
+        reply_markup=get_back_to_menu_keyboard(),
     )
 
 
@@ -255,48 +265,42 @@ async def _handle_menu_erro(query, update: Update) -> None:
 
 
 async def _handle_menu_chamado(query, update: Update) -> None:
-    """Exibe o status do chamado mais recente do usuário.
+    """Exibe lista de chamados recentes do usuário (até 5).
 
-    Se não houver chamados, informa o usuário e oferece retorno ao menu.
+    Se não houver chamados, mostra sugestões alternativas.
     """
     user_id = update.effective_user.id
     pool = get_database_pool()
-
-    breadcrumb = format_breadcrumb(strings.BTN_ACOMPANHAR_CHAMADO)
 
     async with pool.acquire() as session:
         from uuid import UUID as _UUID
         user_report_repo = UserReportRepository(session)
         try:
             user_uuid = _UUID(int=user_id)
-            reports = await user_report_repo.get_recent_by_user(user_uuid, limit=1)
+            reports = await user_report_repo.get_recent_by_user(user_uuid, limit=5)
         except (ValueError, Exception):
             reports = []
 
     if not reports:
-        text = (
-            f"{breadcrumb}\n\n"
-            "Você ainda não tem chamados abertos.\n"
-            "Use o menu para reportar um erro ou tirar uma dúvida."
+        from src.bot.keyboards import get_humano_sem_chamado_keyboard  # noqa: PLC0415
+        await query.edit_message_text(
+            text=strings.MENU_CHAMADO_VAZIO,
+            reply_markup=get_humano_sem_chamado_keyboard(),
         )
-    else:
-        report = reports[0]
-        created_at = (
-            report.created_at.strftime("%d/%m/%Y %H:%M")
-            if report.created_at
-            else "Desconhecido"
-        )
-        text = (
-            f"{breadcrumb}\n\n"
-            f"Chamado mais recente:\n"
-            f"• ID: {str(report.id)[:8]}...\n"
-            f"• Status: {report.status or 'Desconhecido'}\n"
-            f"• Criado em: {created_at}"
-        )
+        return
 
+    STATUS_EMOJI = {"open": "🟡", "resolved": "✅", "escalated": "🔴"}
+    report_buttons = []
+    for r in reports:
+        rid_short = str(r.id)[:8]
+        emoji = STATUS_EMOJI.get(r.status, "⚪")
+        desc = (r.description[:35] + "...") if r.description and len(r.description) > 35 else (r.description or "Sem descrição")
+        report_buttons.append((rid_short, emoji, desc))
+
+    from src.bot.keyboards import get_chamado_list_keyboard  # noqa: PLC0415
     await query.edit_message_text(
-        text=text,
-        reply_markup=get_back_to_menu_keyboard(),
+        text=strings.MENU_CHAMADO_INTRO,
+        reply_markup=get_chamado_list_keyboard(report_buttons),
     )
 
 
@@ -328,11 +332,12 @@ async def _handle_menu_humano(query, update: Update, context) -> None:  # noqa: 
             "Um agente irá responder em breve."
         )
     else:
-        text = (
-            f"{breadcrumb}\n\n"
-            f"{strings.MENU_HUMANO_INICIANDO}\n\n"
-            "Para abrir um chamado, use o menu para descrever seu problema primeiro."
+        from src.bot.keyboards import get_humano_sem_chamado_keyboard  # noqa: PLC0415
+        await query.edit_message_text(
+            text=strings.MENU_HUMANO_SEM_CHAMADO,
+            reply_markup=get_humano_sem_chamado_keyboard(),
         )
+        return
 
     await query.edit_message_text(
         text=text,
@@ -354,6 +359,60 @@ async def _handle_menu_humano(query, update: Update, context) -> None:  # noqa: 
 # ---------------------------------------------------------------------------
 # Handler: navegação — prefixo "nav:" (NAV-03)
 # ---------------------------------------------------------------------------
+
+
+@register("chamado:")
+async def handle_chamado_detail(update: Update, context) -> None:
+    """Exibe detalhes de um chamado específico selecionado na lista."""
+    query = update.callback_query
+    data: str = query.data or ""
+    rid_short = data[len("chamado:"):]
+
+    user_id = update.effective_user.id
+    pool = get_database_pool()
+
+    async with pool.acquire() as session:
+        user_report_repo = UserReportRepository(session)
+        try:
+            user_uuid = UUID(int=user_id)
+            reports = await user_report_repo.get_recent_by_user(user_uuid, limit=10)
+        except (ValueError, Exception):
+            reports = []
+
+    report = None
+    for r in reports:
+        if str(r.id).startswith(rid_short):
+            report = r
+            break
+
+    if not report:
+        await query.edit_message_text(
+            text="Chamado não encontrado.",
+            reply_markup=get_back_to_menu_keyboard(),
+        )
+        return
+
+    breadcrumb = format_breadcrumb(strings.BTN_ACOMPANHAR_CHAMADO)
+    created_at = report.created_at.strftime("%d/%m/%Y %H:%M") if report.created_at else "Desconhecido"
+
+    text = (
+        f"{breadcrumb}\n\n"
+        f"Detalhes do Chamado:\n\n"
+        f"ID: {str(report.id)[:8]}...\n"
+        f"Status: {report.status or 'Desconhecido'}\n"
+        f"Criado em: {created_at}\n"
+        f"Descrição: {report.description or 'Sem descrição'}"
+    )
+
+    from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+    keyboard = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton(strings.BTN_VOLTAR, callback_data="menu:chamado"),
+            InlineKeyboardButton(strings.BTN_MENU_PRINCIPAL, callback_data="menu:main"),
+        ],
+    ])
+
+    await query.edit_message_text(text=text, reply_markup=keyboard)
 
 
 @register("nav:")

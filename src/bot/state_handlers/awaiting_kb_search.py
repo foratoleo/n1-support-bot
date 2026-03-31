@@ -38,10 +38,10 @@ async def handle(
     conv_manager.update_user_state(user_id, ConversationState.IDLE)
 
     if not results:
-        from src.bot.keyboards import get_kb_category_list_keyboard  # noqa: PLC0415
+        from src.bot.keyboards import get_kb_search_no_results_keyboard  # noqa: PLC0415
         await update.message.reply_text(
             strings.KB_SEARCH_NO_RESULTS.format(query=query_text),
-            reply_markup=get_kb_category_list_keyboard(),
+            reply_markup=get_kb_search_no_results_keyboard(),
         )
         return
 

@@ -10,6 +10,7 @@ from src.bot.strings import (
     BTN_YES_RESOLVED,
     BTN_NO_UNRESOLVED,
     BTN_TIRAR_DUVIDA,
+    BTN_SAIBA_MAIS,
     # Feedback inline (Fase 10)
     FBK_STAR_1,
     FBK_STAR_2,
@@ -183,6 +184,12 @@ def get_main_menu_keyboard() -> InlineKeyboardMarkup:
             InlineKeyboardButton(
                 BTN_FALAR_HUMANO,
                 callback_data=_assert_callback_data("menu:humano"),
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                BTN_SAIBA_MAIS,
+                callback_data=_assert_callback_data("menu:saiba_mais"),
             ),
         ],
     ]
@@ -597,6 +604,83 @@ def get_kb_ver_mais_keyboard(article_id: str) -> InlineKeyboardMarkup:
             InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
         ],
     ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+# ---------------------------------------------------------------------------
+# Teclados adicionais — melhorias de UX
+# ---------------------------------------------------------------------------
+
+
+def get_humano_sem_chamado_keyboard() -> InlineKeyboardMarkup:
+    """Teclado para 'Falar com Humano' quando não há chamado ativo.
+
+    Oferece caminhos alternativos: Reportar Erro ou Tirar Dúvida.
+    """
+    keyboard = [
+        [InlineKeyboardButton(BTN_REPORTAR_ERRO, callback_data=_assert_callback_data("menu:erro"))],
+        [InlineKeyboardButton(BTN_TIRAR_DUVIDA, callback_data=_assert_callback_data("menu:duvidas"))],
+        [
+            InlineKeyboardButton(BTN_VOLTAR, callback_data=_assert_callback_data("nav:back")),
+            InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
+        ],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_kb_empty_category_keyboard() -> InlineKeyboardMarkup:
+    """Teclado para categoria da KB sem artigos.
+
+    Oferece pesquisa, reportar erro e voltar às categorias.
+    """
+    keyboard = [
+        [InlineKeyboardButton(BTN_PESQUISAR, callback_data=_assert_callback_data("kb:search"))],
+        [InlineKeyboardButton(BTN_REPORTAR_ERRO, callback_data=_assert_callback_data("menu:erro"))],
+        [
+            InlineKeyboardButton(BTN_VOLTAR, callback_data=_assert_callback_data("menu:duvidas")),
+            InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
+        ],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_kb_search_no_results_keyboard() -> InlineKeyboardMarkup:
+    """Teclado para busca KB sem resultados.
+
+    Oferece categorias para navegar, reportar erro e voltar.
+    """
+    keyboard = [
+        [InlineKeyboardButton(BTN_CAT_ACESSO, callback_data=_assert_callback_data("kb:cat:acesso"))],
+        [InlineKeyboardButton(BTN_CAT_DOCUMENTOS, callback_data=_assert_callback_data("kb:cat:documentos"))],
+        [InlineKeyboardButton(BTN_CAT_TAREFAS, callback_data=_assert_callback_data("kb:cat:tarefas"))],
+        [InlineKeyboardButton(BTN_CAT_GERAL, callback_data=_assert_callback_data("kb:cat:geral"))],
+        [InlineKeyboardButton(BTN_REPORTAR_ERRO, callback_data=_assert_callback_data("menu:erro"))],
+        [
+            InlineKeyboardButton(BTN_VOLTAR, callback_data=_assert_callback_data("menu:duvidas")),
+            InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
+        ],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_chamado_list_keyboard(
+    reports: list[tuple[str, str, str]],
+) -> InlineKeyboardMarkup:
+    """Teclado listando chamados recentes do usuário.
+
+    Args:
+        reports: Lista de tuplas (report_id_short, status_emoji, description_short).
+    """
+    keyboard = []
+    for rid_short, status_emoji, desc in reports[:5]:
+        label = f"{status_emoji} {desc[:40]}"
+        cb = f"chamado:{rid_short}"
+        keyboard.append([InlineKeyboardButton(label, callback_data=_assert_callback_data(cb))])
+
+    keyboard.append([
+        InlineKeyboardButton(BTN_VOLTAR, callback_data=_assert_callback_data("nav:back")),
+        InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
+    ])
     return InlineKeyboardMarkup(keyboard)
 
 

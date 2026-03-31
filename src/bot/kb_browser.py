@@ -239,9 +239,10 @@ async def _handle_kb_category(query, update: Update, category: str) -> None:
     articles = await _get_articles_by_category(category)
 
     if not articles:
+        from src.bot.keyboards import get_kb_empty_category_keyboard  # noqa: PLC0415
         await query.edit_message_text(
             text=strings.KB_NO_ARTICLES,
-            reply_markup=get_kb_category_list_keyboard(),
+            reply_markup=get_kb_empty_category_keyboard(),
         )
         return
 

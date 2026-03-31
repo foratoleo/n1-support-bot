@@ -4,62 +4,25 @@ from typing import Optional, List
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
+from src.bot import strings
+
+# Alias de compatibilidade — remover apos migracao completa de handlers.py (Plano 3)
 BOT_MESSAGES = {
-    "welcome": (
-        "Welcome to N1 Support Bot! I'm here to help you with issues in the workforce system. "
-        "I can help you resolve problems, answer questions, and escalate bugs to our support team."
-    ),
-    "help": (
-        "Available commands:\n"
-        "/start - Start a new conversation\n"
-        "/help - Show this help message\n"
-        "/report <issue> - Report an issue\n"
-        "/status <report_id> - Check report status\n"
-        "/search <query> - Search knowledge base\n"
-        "/list - Show your recent reports\n"
-        "/feedback <report_id> <1-5> - Rate a report\n"
-        "/cancel - Cancel current conversation"
-    ),
-    "acknowledge": (
-        "I've received your issue. Let me analyze it and ask a few questions to better understand the problem.\n\n"
-        "Your report ID is: {report_id}"
-    ),
-    "ask_question": (
-        "Question {current}/{total}:\n"
-        "{question}\n\n"
-        "Please answer below."
-    ),
-    "known_issue": (
-        "I found information about this in our knowledge base.\n\n"
-        "{summary}\n\n"
-        "Steps to resolve:\n"
-        "{steps}\n\n"
-        "If this does not resolve your issue, please let me know."
-    ),
-    "escalate": (
-        "I've analyzed your issue and identified a potential problem that requires human investigation.\n\n"
-        "Summary:\n"
-        "- Issue: {issue}\n"
-        "- Project: {project}\n"
-        "- Impact: {impact}\n\n"
-        "I'm escalating this to our support team. A human agent will review and respond shortly.\n\n"
-        "Your report ID: {report_id}"
-    ),
-    "status_format": (
-        "Report Status\n\n"
-        "Report ID: {report_id}\n"
-        "Status: {status}\n"
-        "Created: {created_at}\n"
-        "Escalated: {escalated}"
-    ),
-    "cancel": "Conversation cancelled. If you have another issue, use /report to start a new conversation.",
-    "error": "Sorry, something went wrong. Please try again or use /cancel to start over.",
-    "search_results": "Search results for '{query}':\n\n{results}",
-    "no_results": "No results found for '{query}'.\n\nTry different keywords or /report to create a support ticket.",
-    "feedback_success": "Thank you for your feedback! Report {report_id} rated {rating}/5.\n\nWe appreciate your input to improve our service.",
-    "report_list": "Your Recent Reports:\n\n{reports}",
-    "report_item": "• [{status}] {description}\n  ID: `{report_id}`\n  Created: {created_at}{rating_text}\n",
-    "confirmation": "Did this resolve your issue?",
+    "welcome": strings.WELCOME,
+    "help": strings.HELP,
+    "acknowledge": strings.REPORT_ACKNOWLEDGED,
+    "ask_question": strings.VALIDATION_QUESTION,
+    "known_issue": strings.SELF_SERVICE_GUIDANCE,
+    "escalate": strings.ESCALATION_MESSAGE,
+    "status_format": strings.STATUS_REPORT,
+    "cancel": strings.CANCEL,
+    "error": strings.ERROR_GENERIC,
+    "search_results": strings.SEARCH_RESULTS,
+    "no_results": strings.SEARCH_NO_RESULTS,
+    "feedback_success": strings.FEEDBACK_SUCCESS,
+    "report_list": strings.LIST_HEADER,
+    "report_item": strings.LIST_ITEM,
+    "confirmation": strings.CONFIRMATION_QUESTION,
 }
 
 
@@ -91,16 +54,16 @@ def format_acknowledge(report_id: str) -> str:
 def format_escalation(
     report_id: str,
     issue: str,
-    project: str = "Not specified",
-    impact: str = "To be determined",
+    project: str = strings.DEFAULT_PROJECT_NOT_SPECIFIED,
+    impact: str = strings.DEFAULT_IMPACT_UNDETERMINED,
 ) -> str:
     """Format the escalation message with issue details.
 
     Args:
         report_id: The unique report identifier.
         issue: Description of the issue.
-        project: Project name (default: "Not specified").
-        impact: Impact level (default: "To be determined").
+        project: Project name (default: strings.DEFAULT_PROJECT_NOT_SPECIFIED).
+        impact: Impact level (default: strings.DEFAULT_IMPACT_UNDETERMINED).
 
     Returns:
         Formatted escalation message.
@@ -158,7 +121,7 @@ def format_status_report(
         report_id=report_id,
         status=status,
         created_at=created_at,
-        escalated="Yes" if escalated else "No",
+        escalated=strings.STATUS_ESCALATED_YES if escalated else strings.STATUS_ESCALATED_NO,
     )
 
 def format_search_results(query: str, results: List[dict]) -> str:
@@ -177,9 +140,12 @@ def format_search_results(query: str, results: List[dict]) -> str:
     results_text = []
     for i, r in enumerate(results, 1):
         results_text.append(
-            f"*{i}. {r['title']}*\n"
-            f"   Area: {r['area']}\n"
-            f"   {r['content'][:150]}..."
+            strings.SEARCH_RESULT_ITEM.format(
+                index=i,
+                title=r["title"],
+                area=r["area"],
+                excerpt=r["content"][:150],
+            )
         )
 
     return BOT_MESSAGES["search_results"].format(
@@ -212,7 +178,7 @@ def format_report_list(reports: List[dict]) -> str:
     """
     reports_text = []
     for r in reports:
-        rating_text = f"\n  Rating: {r['rating']}/5" if r.get("rating") else ""
+        rating_text = f"\n  Avaliação: {r['rating']}/5" if r.get("rating") else ""
         reports_text.append(
             BOT_MESSAGES["report_item"].format(
                 status=r["status"],
@@ -234,8 +200,8 @@ def get_confirmation_keyboard() -> InlineKeyboardMarkup:
     """
     keyboard = [
         [
-            InlineKeyboardButton("Yes, resolved", callback_data="yes_resolved"),
-            InlineKeyboardButton("No, still need help", callback_data="no_unresolved"),
+            InlineKeyboardButton(strings.BTN_YES_RESOLVED, callback_data="yes_resolved"),
+            InlineKeyboardButton(strings.BTN_NO_UNRESOLVED, callback_data="no_unresolved"),
         ]
     ]
     return InlineKeyboardMarkup(keyboard)

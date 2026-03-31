@@ -59,7 +59,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Refatoracao Estrutural
 
-- [ ] **REF-01**: Decompor handle_message() em handlers por estado (src/bot/state_handlers/)
+- [x] **REF-01**: Decompor handle_message() em handlers por estado (src/bot/state_handlers/)
 - [x] **REF-02**: Decompor button_callback monolitico em router de callbacks por prefixo
 - [x] **REF-03**: Centralizar teclados InlineKeyboard em modulo dedicado (src/bot/keyboards.py)
 
@@ -133,7 +133,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | SRCH-01 | Phase 9 | Pending |
 | SRCH-02 | Phase 9 | Pending |
 | SRCH-03 | Phase 9 | Pending |
-| REF-01 | Phase 8 | Pending |
+| REF-01 | Phase 8 | Complete |
 | REF-02 | Phase 2 | Complete |
 | REF-03 | Phase 2 | Complete |
 | FBK-01 | Phase 10 | Pending |

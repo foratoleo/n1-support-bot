@@ -18,6 +18,9 @@ from src.bot import strings
 from src.bot.keyboards import (
     get_main_menu_keyboard,
     get_back_to_menu_keyboard,
+    get_duvidas_submenu_keyboard,
+    get_erro_submenu_keyboard,
+    get_category_keyboard,
     format_breadcrumb,
 )
 from src.database.connection import get_database_pool
@@ -167,9 +170,17 @@ async def handle_menu_callback(update: Update, context) -> None:
     if action == "main":
         await _handle_menu_main(query)
     elif action == "duvidas":
-        await _handle_menu_duvidas(query)
+        await _handle_menu_duvidas(query, update)
+    elif action == "duvidas:acesso":
+        await _handle_menu_duvidas_categoria(query, update, "acesso")
+    elif action == "duvidas:documentos":
+        await _handle_menu_duvidas_categoria(query, update, "documentos")
+    elif action == "duvidas:tarefas":
+        await _handle_menu_duvidas_categoria(query, update, "tarefas")
+    elif action == "duvidas:geral":
+        await _handle_menu_duvidas_categoria(query, update, "geral")
     elif action == "erro":
-        await _handle_menu_erro(query)
+        await _handle_menu_erro(query, update)
     elif action == "chamado":
         await _handle_menu_chamado(query, update)
     elif action == "humano":
@@ -186,19 +197,68 @@ async def _handle_menu_main(query) -> None:
     )
 
 
-async def _handle_menu_duvidas(query) -> None:
-    """Exibe placeholder para 'Tirar Dúvida' com botão voltar."""
+async def _handle_menu_duvidas(query, update: Update) -> None:
+    """Exibe o submenu de categorias de dúvida (NAV-03).
+
+    Empurra "duvidas" na pilha de navegação e edita a mensagem atual
+    com o submenu de categorias da base de conhecimento.
+    """
+    user_id = update.effective_user.id
+    conv_manager = _get_conv_manager()
+    user_state = conv_manager.get_user_state(user_id)
+    user_state.push_menu("duvidas")
+
     await query.edit_message_text(
-        text=strings.MENU_PLACEHOLDER_DUVIDAS,
-        reply_markup=get_back_to_menu_keyboard(),
+        text=strings.MENU_DUVIDAS_INTRO,
+        reply_markup=get_duvidas_submenu_keyboard(),
     )
 
 
-async def _handle_menu_erro(query) -> None:
-    """Exibe placeholder para 'Reportar Erro' com botão voltar."""
+async def _handle_menu_duvidas_categoria(
+    query, update: Update, categoria: str
+) -> None:
+    """Exibe o conteúdo de uma categoria de dúvida (NAV-03).
+
+    Empurra a categoria na pilha de navegação e edita a mensagem com
+    a orientação correspondente.
+
+    Args:
+        query: Objeto CallbackQuery do Telegram.
+        update: Objeto Update do Telegram.
+        categoria: Identificador da categoria ("acesso", "documentos", "tarefas", "geral").
+    """
+    user_id = update.effective_user.id
+    conv_manager = _get_conv_manager()
+    user_state = conv_manager.get_user_state(user_id)
+    user_state.push_menu(f"duvidas:{categoria}")
+
+    _cat_texts = {
+        "acesso": strings.MENU_CAT_ACESSO,
+        "documentos": strings.MENU_CAT_DOCUMENTOS,
+        "tarefas": strings.MENU_CAT_TAREFAS,
+        "geral": strings.MENU_CAT_GERAL,
+    }
+    text = _cat_texts.get(categoria, strings.MENU_CAT_GERAL)
+
     await query.edit_message_text(
-        text=strings.MENU_PLACEHOLDER_ERRO,
-        reply_markup=get_back_to_menu_keyboard(),
+        text=text,
+        reply_markup=get_category_keyboard(),
+    )
+
+
+async def _handle_menu_erro(query, update: Update) -> None:
+    """Exibe o submenu de 'Reportar Erro' com botão voltar (NAV-03, placeholder para Fase 6).
+
+    Empurra "erro" na pilha de navegação e edita a mensagem atual.
+    """
+    user_id = update.effective_user.id
+    conv_manager = _get_conv_manager()
+    user_state = conv_manager.get_user_state(user_id)
+    user_state.push_menu("erro")
+
+    await query.edit_message_text(
+        text=strings.MENU_ERRO_INTRO,
+        reply_markup=get_erro_submenu_keyboard(),
     )
 
 
@@ -248,7 +308,7 @@ async def _handle_menu_chamado(query, update: Update) -> None:
     )
 
 
-async def _handle_menu_humano(query, update: Update, context) -> None:
+async def _handle_menu_humano(query, update: Update, context) -> None:  # noqa: D401
     """Inicia o fluxo de escalação para atendimento humano."""
     user_id = update.effective_user.id
     conv_manager = _get_conv_manager()
@@ -285,3 +345,57 @@ async def _handle_menu_humano(query, update: Update, context) -> None:
         text=text,
         reply_markup=get_back_to_menu_keyboard(),
     )
+
+
+# ---------------------------------------------------------------------------
+# Handler: navegação — prefixo "nav:" (NAV-03)
+# ---------------------------------------------------------------------------
+
+
+@register("nav:")
+async def handle_nav_callback(update: Update, context) -> None:
+    """Trata callbacks com prefixo 'nav:' — ações de navegação entre níveis de menu.
+
+    Ações suportadas:
+    - nav:back → recua para o nível pai na pilha de menu_path e re-renderiza.
+
+    Args:
+        update: O objeto de atualização do Telegram.
+        context: O contexto de callback do PTB.
+    """
+    query = update.callback_query
+    data: str = query.data or ""
+    action = data[len("nav:"):]
+
+    if action == "back":
+        await _handle_nav_back(query, update)
+
+
+async def _handle_nav_back(query, update: Update) -> None:
+    """Recua um nível na árvore de navegação usando pop_menu (NAV-03).
+
+    Mapeia o nó pai resultante para o teclado e texto corretos,
+    editando a mensagem sem enviar nova mensagem ao chat.
+    """
+    user_id = update.effective_user.id
+    conv_manager = _get_conv_manager()
+    user_state = conv_manager.get_user_state(user_id)
+
+    # Remove o nó atual; o que sobra é o pai.
+    user_state.pop_menu()
+    parent = user_state.current_menu()
+
+    # Mapeamento nó-pai → (texto, teclado)
+    if parent in ("duvidas",):
+        text = strings.MENU_DUVIDAS_INTRO
+        keyboard = get_duvidas_submenu_keyboard()
+    elif parent in ("erro",):
+        text = strings.MENU_ERRO_INTRO
+        keyboard = get_erro_submenu_keyboard()
+    else:
+        # Raiz ou nó desconhecido → menu principal
+        user_state.clear_menu()
+        text = strings.MENU_WELCOME
+        keyboard = get_main_menu_keyboard()
+
+    await query.edit_message_text(text=text, reply_markup=keyboard)

@@ -270,3 +270,50 @@ MENU_HUMANO_INICIANDO = (
     "Suporte Workforce > Falar com Humano\n\n"
     "Encaminhando para um agente humano. Aguarde um momento."
 )
+
+# ---------------------------------------------------------------------------
+# Navegação — Fase 5 (NAV-03)
+# ---------------------------------------------------------------------------
+
+BTN_VOLTAR = "« Voltar"
+
+BTN_CAT_ACESSO = "Acesso e Login"
+BTN_CAT_DOCUMENTOS = "Geração de Documentos"
+BTN_CAT_TAREFAS = "Tarefas e Sprints"
+BTN_CAT_GERAL = "Suporte Geral"
+
+SUBMENU_ESCOLHA = "Escolha uma opção:"
+
+MENU_DUVIDAS_INTRO = (
+    "Suporte Workforce > Tirar Dúvida\n\n"
+    "Selecione a categoria da sua dúvida:"
+)
+
+MENU_ERRO_INTRO = (
+    "Suporte Workforce > Reportar Erro\n\n"
+    "Selecione o tipo de erro que deseja reportar:"
+)
+
+MENU_CAT_ACESSO = (
+    "Suporte Workforce > Tirar Dúvida > Acesso e Login\n\n"
+    "Descreva a sua dúvida sobre acesso ou login no Workforce. "
+    "Use /report <descrição> para abrir um chamado."
+)
+
+MENU_CAT_DOCUMENTOS = (
+    "Suporte Workforce > Tirar Dúvida > Geração de Documentos\n\n"
+    "Descreva a sua dúvida sobre geração de documentos no Workforce. "
+    "Use /report <descrição> para abrir um chamado."
+)
+
+MENU_CAT_TAREFAS = (
+    "Suporte Workforce > Tirar Dúvida > Tarefas e Sprints\n\n"
+    "Descreva a sua dúvida sobre tarefas ou sprints no Workforce. "
+    "Use /report <descrição> para abrir um chamado."
+)
+
+MENU_CAT_GERAL = (
+    "Suporte Workforce > Tirar Dúvida > Suporte Geral\n\n"
+    "Descreva a sua dúvida. "
+    "Use /report <descrição> para abrir um chamado."
+)

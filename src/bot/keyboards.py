@@ -15,6 +15,11 @@ from src.bot.strings import (
     BTN_FALAR_HUMANO,
     BTN_MENU_PRINCIPAL,
     BREADCRUMB_ROOT,
+    BTN_VOLTAR,
+    BTN_CAT_ACESSO,
+    BTN_CAT_DOCUMENTOS,
+    BTN_CAT_TAREFAS,
+    BTN_CAT_GERAL,
 )
 
 
@@ -149,5 +154,104 @@ def get_back_to_menu_keyboard() -> InlineKeyboardMarkup:
                 callback_data=_assert_callback_data("menu:main"),
             ),
         ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_duvidas_submenu_keyboard() -> InlineKeyboardMarkup:
+    """Teclado do submenu "Tirar Dúvida" com categorias da KB e botões de navegação.
+
+    Categorias disponíveis:
+    - Acesso e Login
+    - Geração de Documentos
+    - Tarefas e Sprints
+    - Suporte Geral
+
+    Inclui botões "Voltar" (nav:back) e "Menu Principal" (menu:main).
+
+    Returns:
+        InlineKeyboardMarkup com categorias + botões de navegação.
+    """
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                BTN_CAT_ACESSO,
+                callback_data=_assert_callback_data("menu:duvidas:acesso"),
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                BTN_CAT_DOCUMENTOS,
+                callback_data=_assert_callback_data("menu:duvidas:documentos"),
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                BTN_CAT_TAREFAS,
+                callback_data=_assert_callback_data("menu:duvidas:tarefas"),
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                BTN_CAT_GERAL,
+                callback_data=_assert_callback_data("menu:duvidas:geral"),
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                BTN_VOLTAR,
+                callback_data=_assert_callback_data("nav:back"),
+            ),
+            InlineKeyboardButton(
+                BTN_MENU_PRINCIPAL,
+                callback_data=_assert_callback_data("menu:main"),
+            ),
+        ],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_erro_submenu_keyboard() -> InlineKeyboardMarkup:
+    """Teclado do submenu "Reportar Erro" com botões de navegação (placeholder para Fase 6).
+
+    Inclui botões "Voltar" (nav:back) e "Menu Principal" (menu:main).
+
+    Returns:
+        InlineKeyboardMarkup com botões de navegação.
+    """
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                BTN_VOLTAR,
+                callback_data=_assert_callback_data("nav:back"),
+            ),
+            InlineKeyboardButton(
+                BTN_MENU_PRINCIPAL,
+                callback_data=_assert_callback_data("menu:main"),
+            ),
+        ],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_category_keyboard() -> InlineKeyboardMarkup:
+    """Teclado para páginas de conteúdo de categoria com botões "Voltar" e "Menu Principal".
+
+    Usado nas folhas da árvore de navegação (níveis mais profundos).
+
+    Returns:
+        InlineKeyboardMarkup com botões "Voltar" e "Menu Principal".
+    """
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                BTN_VOLTAR,
+                callback_data=_assert_callback_data("nav:back"),
+            ),
+            InlineKeyboardButton(
+                BTN_MENU_PRINCIPAL,
+                callback_data=_assert_callback_data("menu:main"),
+            ),
+        ],
     ]
     return InlineKeyboardMarkup(keyboard)

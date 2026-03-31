@@ -22,9 +22,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [ ] **NAV-04**: Botao "Menu Principal" acessivel em qualquer profundidade
 - [ ] **NAV-05**: Breadcrumb textual no header da mensagem (ex: Inicio > Tirar Duvida > Acesso)
 - [ ] **NAV-06**: Texto livre fora de fluxo ativo redireciona ao menu principal
-- [ ] **NAV-07**: callback_query.answer() chamado em todo CallbackQuery handler
-- [ ] **NAV-08**: Callback data compacto com esquema prefix:path:action respeitando limite 64 bytes
-- [ ] **NAV-09**: Router de callbacks baseado em prefixo substituindo if/elif monolitico
+- [x] **NAV-07**: callback_query.answer() chamado em todo CallbackQuery handler
+- [x] **NAV-08**: Callback data compacto com esquema prefix:path:action respeitando limite 64 bytes
+- [x] **NAV-09**: Router de callbacks baseado em prefixo substituindo if/elif monolitico
 
 ### Report de Erro Guiado
 
@@ -60,8 +60,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Refatoracao Estrutural
 
 - [ ] **REF-01**: Decompor handle_message() em handlers por estado (src/bot/state_handlers/)
-- [ ] **REF-02**: Decompor button_callback monolitico em router de callbacks por prefixo
-- [ ] **REF-03**: Centralizar teclados InlineKeyboard em modulo dedicado (src/bot/keyboards.py)
+- [x] **REF-02**: Decompor button_callback monolitico em router de callbacks por prefixo
+- [x] **REF-03**: Centralizar teclados InlineKeyboard em modulo dedicado (src/bot/keyboards.py)
 
 ### Feedback
 
@@ -108,9 +108,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | NAV-04 | Phase 4 | Pending |
 | NAV-05 | Phase 4 | Pending |
 | NAV-06 | Phase 4 | Pending |
-| NAV-07 | Phase 2 | Pending |
-| NAV-08 | Phase 2 | Pending |
-| NAV-09 | Phase 2 | Pending |
+| NAV-07 | Phase 2 | Complete |
+| NAV-08 | Phase 2 | Complete |
+| NAV-09 | Phase 2 | Complete |
 | RPT-01 | Phase 6 | Pending |
 | RPT-02 | Phase 6 | Pending |
 | RPT-03 | Phase 6 | Pending |
@@ -134,8 +134,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | SRCH-02 | Phase 9 | Pending |
 | SRCH-03 | Phase 9 | Pending |
 | REF-01 | Phase 8 | Pending |
-| REF-02 | Phase 2 | Pending |
-| REF-03 | Phase 2 | Pending |
+| REF-02 | Phase 2 | Complete |
+| REF-03 | Phase 2 | Complete |
 | FBK-01 | Phase 10 | Pending |
 | FBK-02 | Phase 10 | Pending |
 | FBK-03 | Phase 10 | Pending |

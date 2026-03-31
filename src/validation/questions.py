@@ -107,7 +107,7 @@ class QuestionGenerator:
                 "is_valid": False,
                 "is_known_issue": False,
                 "needs_escalation": False,
-                "summary": "Number of answers does not match questions asked.",
+                "summary": "Quantidade de respostas não corresponde às perguntas feitas.",
             }
 
         # Check for empty or too-short answers
@@ -117,7 +117,7 @@ class QuestionGenerator:
                 "is_valid": False,
                 "is_known_issue": False,
                 "needs_escalation": False,
-                "summary": "Insufficient information provided for validation.",
+                "summary": "Informações insuficientes para validação.",
             }
 
         # Analyze answer patterns
@@ -152,7 +152,7 @@ class QuestionGenerator:
                 "is_valid": True,
                 "is_known_issue": True,
                 "needs_escalation": False,
-                "summary": "User indicated the issue has been resolved.",
+                "summary": "Usuário indicou que o problema foi resolvido.",
             }
 
         if is_user_error:
@@ -160,7 +160,7 @@ class QuestionGenerator:
                 "is_valid": False,
                 "is_known_issue": False,
                 "needs_escalation": False,
-                "summary": "User indicated this was a misunderstanding on their part.",
+                "summary": "Usuário indicou que houve um mal-entendido da parte dele.",
             }
 
         if has_persist:
@@ -168,7 +168,7 @@ class QuestionGenerator:
                 "is_valid": True,
                 "is_known_issue": False,
                 "needs_escalation": True,
-                "summary": "User confirms the issue persists after troubleshooting.",
+                "summary": "Usuário confirma que o problema persiste após troubleshooting.",
             }
 
         # Default: valid issue that needs further review
@@ -176,5 +176,5 @@ class QuestionGenerator:
             "is_valid": True,
             "is_known_issue": False,
             "needs_escalation": True,
-            "summary": "Issue requires human review for resolution.",
+            "summary": "Chamado requer análise humana para resolução.",
         }

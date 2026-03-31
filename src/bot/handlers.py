@@ -215,13 +215,13 @@ async def status_command(update: Update, context) -> None:
         created_at = (
             report.created_at.strftime("%d/%m/%Y %H:%M:%S")
             if report.created_at
-            else "Unknown"
+            else "Desconhecido"
         )
 
         await update.message.reply_text(
             format_status_report(
                 report_id=report_id,
-                status=report.status or "Unknown",
+                status=report.status or "Desconhecido",
                 created_at=created_at,
                 escalated=escalation is not None,
             )
@@ -326,7 +326,7 @@ async def handle_message(update: Update, context) -> None:
 
                         escalation = await escalation_handler.create_escalation(
                             report_id=UUID(user_state.current_report_id),
-                            summary=escalation_decision.reason or validation_result.get("summary", "Issue requires human review"),
+                            summary=escalation_decision.reason or validation_result.get("summary", "Chamado requer análise humana"),
                             project_name=user_state.context.get("project_name"),
                             impact=user_state.context.get("impact"),
                         )
@@ -480,11 +480,11 @@ async def list_command(update: Update, context) -> None:
 
         reports_data = []
         for r in reports:
-            created_at = r.created_at.strftime("%d/%m/%Y %H:%M") if r.created_at else "Unknown"
+            created_at = r.created_at.strftime("%d/%m/%Y %H:%M") if r.created_at else "Desconhecido"
             reports_data.append({
                 "id": str(r.id),
                 "description": r.description[:50] + "..." if len(r.description) > 50 else r.description,
-                "status": r.status or "Unknown",
+                "status": r.status or "Desconhecido",
                 "created_at": created_at,
                 "rating": r.rating if r.rating else None,
             })

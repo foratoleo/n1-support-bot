@@ -201,7 +201,7 @@ class IssueClassifier:
             return IssueClassification(
                 category="general",
                 confidence=0.5,
-                summary="Issue does not match specific categories",
+                summary="Problema não corresponde a categorias específicas",
                 area="support",
             )
 
@@ -213,7 +213,7 @@ class IssueClassifier:
         return IssueClassification(
             category=best_category[0],
             confidence=0.7,
-            summary=f"Issue classified as {best_category[0]} based on keywords",
+            summary=f"Problema classificado como {best_category[0]} com base em palavras-chave",
             area=best_category[1]["area"],
         )
 
@@ -307,7 +307,7 @@ Responda com um objeto JSON:
         if any(kw in issue_lower for kw in human_request_keywords):
             return EscalationDecision(
                 should_escalate=True,
-                reason="User explicitly requested human assistance",
+                reason="Usuário solicitou explicitamente assistência humana",
                 escalation_type="user_requests_human",
             )
 
@@ -316,7 +316,7 @@ Responda com um objeto JSON:
             if keyword in issue_lower:
                 return EscalationDecision(
                     should_escalate=False,
-                    reason=f"Issue is a {keyword}, not a bug",
+                    reason=f"Trata-se de {keyword}, não de um bug",
                     escalation_type=None,
                 )
 
@@ -337,7 +337,7 @@ Responda com um objeto JSON:
                 if not has_solution:
                     return EscalationDecision(
                         should_escalate=True,
-                        reason="No solution found in knowledge base",
+                        reason="Nenhuma solução encontrada na base de conhecimento",
                         escalation_type="cannot_reproduce",
                     )
 
@@ -357,7 +357,7 @@ Responda com um objeto JSON:
             if any(trigger in answer_text for trigger in triggers):
                 return EscalationDecision(
                     should_escalate=True,
-                    reason=f"Validation indicates {escalation_type.replace('_', ' ')}",
+                    reason=f"Validação indica {escalation_type.replace('_', ' ')}",
                     escalation_type=escalation_type,
                 )
 
@@ -366,13 +366,13 @@ Responda com um objeto JSON:
         if any(ind in answer_text for ind in persist_indicators):
             return EscalationDecision(
                 should_escalate=True,
-                reason="User confirms issue persists after troubleshooting",
+                reason="Usuário confirma que o problema persiste após troubleshooting",
                 escalation_type="cannot_reproduce",
             )
 
         # Default: do not escalate
         return EscalationDecision(
             should_escalate=False,
-            reason="Issue appears resolvable through self-service guidance",
+            reason="Problema parece resolvível através de orientação de autoatendimento",
             escalation_type=None,
         )

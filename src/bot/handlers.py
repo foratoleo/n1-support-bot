@@ -4,7 +4,7 @@ from uuid import UUID
 
 from telegram import Update
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import CommandHandler, MessageHandler, filters
+from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, filters
 
 from src.database.connection import get_database_pool
 from src.database.repositories import (
@@ -31,6 +31,7 @@ from .templates import (
     format_report_list,
     get_confirmation_keyboard,
 )
+from src.bot import strings
 
 
 # Global conversation manager instance
@@ -87,9 +88,7 @@ async def report_command(update: Update, context) -> None:
     user_id = update.effective_user.id
 
     if not context.args:
-        await update.message.reply_text(
-            "Please provide an issue description. Usage: /report <your issue>"
-        )
+        await update.message.reply_text(strings.REPORT_MISSING_ARGS)
         return
 
     issue_description = " ".join(context.args)
@@ -188,9 +187,7 @@ async def status_command(update: Update, context) -> None:
         context: The callback context.
     """
     if not context.args:
-        await update.message.reply_text(
-            "Please provide a report ID. Usage: /status <report_id>"
-        )
+        await update.message.reply_text(strings.STATUS_MISSING_ARGS)
         return
 
     report_id = context.args[0]
@@ -200,9 +197,7 @@ async def status_command(update: Update, context) -> None:
     try:
         report_uuid = UUID(report_id)
     except ValueError:
-        await update.message.reply_text(
-            "Invalid report ID format. Please provide a valid UUID."
-        )
+        await update.message.reply_text(strings.STATUS_INVALID_ID)
         return
 
     async with pool.acquire() as session:
@@ -212,9 +207,7 @@ async def status_command(update: Update, context) -> None:
         report = await user_report_repo.get_by_id(report_uuid)
 
         if not report:
-            await update.message.reply_text(
-                f"Report {report_id} not found."
-            )
+            await update.message.reply_text(strings.STATUS_NOT_FOUND.format(report_id=report_id))
             return
 
         escalation = await escalation_repo.get_by_report(report_uuid)
@@ -250,16 +243,14 @@ async def handle_message(update: Update, context) -> None:
     """
     # Null check for non-text messages
     if not update.message.text:
-        await update.message.reply_text("Please send a text response.")
+        await update.message.reply_text(strings.NON_TEXT_MESSAGE)
         return
 
     user_id = update.effective_user.id
     user_state = conv_manager.get_user_state(user_id)
 
     if user_state.state == ConversationState.IDLE:
-        await update.message.reply_text(
-            "Welcome! Use /report <issue> to report a problem or /help for available commands."
-        )
+        await update.message.reply_text(strings.IDLE_REDIRECT)
         return
 
     if user_state.state == ConversationState.AWAITING_VALIDATION_ANSWER:
@@ -286,9 +277,7 @@ async def handle_message(update: Update, context) -> None:
                 )
             else:
                 # All questions answered, analyze and decide next step
-                await update.message.reply_text(
-                    "Thank you for your answers. I'm analyzing your issue..."
-                )
+                await update.message.reply_text(strings.VALIDATION_ANALYZING)
 
                 # Perform validation and escalation analysis
                 pool = get_database_pool()
@@ -390,7 +379,7 @@ async def handle_message(update: Update, context) -> None:
             if user_state.kb_articles_found:
                 article = user_state.kb_articles_found[0]
                 summary = article[1] if len(article) > 1 else ""
-                steps = ["Check the knowledge base article for resolution steps."]
+                steps = [strings.DEFAULT_SELF_SERVICE_STEP]
 
                 guidance_message = format_self_service(summary=summary, steps=steps)
                 keyboard = get_confirmation_keyboard()
@@ -407,7 +396,7 @@ async def handle_message(update: Update, context) -> None:
                 # No KB articles found, escalate
                 escalation_message = format_escalation(
                     report_id=user_state.current_report_id or "UNKNOWN",
-                    issue=user_state.issue_description or "Unknown issue",
+                    issue=user_state.issue_description or strings.DEFAULT_ISSUE_DESCRIPTION,
                 )
                 await update.message.reply_text(escalation_message)
 
@@ -425,10 +414,7 @@ async def handle_message(update: Update, context) -> None:
         return
 
     if user_state.state == ConversationState.ESCALATED:
-        await update.message.reply_text(
-            "This issue has been escalated to our support team. "
-            "You'll be notified when there's an update. Use /status <report_id> to check progress."
-        )
+        await update.message.reply_text(strings.ESCALATED_STATE_MESSAGE)
         return
 
     await update.message.reply_text(BOT_MESSAGES["error"])
@@ -445,9 +431,7 @@ async def search_command(update: Update, context) -> None:
         context: The callback context.
     """
     if not context.args:
-        await update.message.reply_text(
-            "Please provide a search query. Usage: /search <your query>"
-        )
+        await update.message.reply_text(strings.SEARCH_MISSING_ARGS)
         return
 
     query = " ".join(context.args)
@@ -458,10 +442,7 @@ async def search_command(update: Update, context) -> None:
         articles = await kb_repo.search(query=query, limit=5)
 
         if not articles:
-            await update.message.reply_text(
-                f"No results found for: {query}\n\n"
-                "Try different keywords or /report to create a support ticket."
-            )
+            await update.message.reply_text(strings.SEARCH_NO_RESULTS.format(query=query))
             return
 
         results_text = format_search_results(query, [
@@ -486,7 +467,7 @@ async def list_command(update: Update, context) -> None:
     try:
         user_uuid = UUID(int=user_id)
     except ValueError:
-        await update.message.reply_text("Invalid user ID.")
+        await update.message.reply_text(strings.LIST_INVALID_USER)
         return
 
     async with pool.acquire() as session:
@@ -494,9 +475,7 @@ async def list_command(update: Update, context) -> None:
         reports = await user_report_repo.get_recent_by_user(user_uuid, limit=5)
 
         if not reports:
-            await update.message.reply_text(
-                "You have no recent reports. Use /report <issue> to create one."
-            )
+            await update.message.reply_text(strings.LIST_NO_REPORTS)
             return
 
         reports_data = []
@@ -524,9 +503,7 @@ async def feedback_command(update: Update, context) -> None:
         context: The callback context.
     """
     if len(context.args) < 2:
-        await update.message.reply_text(
-            "Please provide a report ID and rating (1-5). Usage: /feedback <report_id> <1-5>"
-        )
+        await update.message.reply_text(strings.FEEDBACK_MISSING_ARGS)
         return
 
     report_id = context.args[0]
@@ -537,9 +514,7 @@ async def feedback_command(update: Update, context) -> None:
         if rating < 1 or rating > 5:
             raise ValueError("Rating must be between 1 and 5")
     except ValueError:
-        await update.message.reply_text(
-            "Invalid rating. Please provide a number between 1 and 5."
-        )
+        await update.message.reply_text(strings.FEEDBACK_INVALID_RATING)
         return
 
     pool = get_database_pool()
@@ -547,9 +522,7 @@ async def feedback_command(update: Update, context) -> None:
     try:
         report_uuid = UUID(report_id)
     except ValueError:
-        await update.message.reply_text(
-            "Invalid report ID format. Please provide a valid UUID."
-        )
+        await update.message.reply_text(strings.FEEDBACK_INVALID_ID)
         return
 
     async with pool.acquire() as session:
@@ -557,7 +530,7 @@ async def feedback_command(update: Update, context) -> None:
         success = await user_report_repo.update_rating(report_uuid, rating)
 
         if not success:
-            await update.message.reply_text(f"Report {report_id} not found.")
+            await update.message.reply_text(strings.FEEDBACK_NOT_FOUND.format(report_id=report_id))
             return
 
         feedback_text = format_feedback(report_id, rating)
@@ -579,11 +552,7 @@ async def button_callback(update: Update, context) -> None:
     data = query.data
 
     if data == "yes_resolved":
-        await query.edit_message_text(
-            text="Great! I'm glad I could help resolve your issue. "
-                 "If you have any other problems, don't hesitate to reach out. "
-                 "Use /list to view your recent reports."
-        )
+        await query.edit_message_text(text=strings.CALLBACK_RESOLVED)
         if user_state and user_state.current_report_id:
             pool = get_database_pool()
             async with pool.acquire() as session:
@@ -594,11 +563,7 @@ async def button_callback(update: Update, context) -> None:
         conv_manager.update_user_state(user_id, ConversationState.IDLE)
 
     elif data == "no_unresolved":
-        await query.edit_message_text(
-            text="I'm sorry the guidance didn't resolve your issue. "
-                 "Let me escalate this to our support team for further assistance. "
-                 "Use /status <report_id> to check progress."
-        )
+        await query.edit_message_text(text=strings.CALLBACK_NOT_RESOLVED)
         if user_state and user_state.current_report_id:
             pool = get_database_pool()
             async with pool.acquire() as session:
@@ -608,7 +573,7 @@ async def button_callback(update: Update, context) -> None:
                 )
                 await escalation_handler.create_escalation(
                     report_id=UUID(user_state.current_report_id),
-                    summary="User indicated guidance did not resolve issue",
+                    summary=strings.CALLBACK_ESCALATION_SUMMARY,
                 )
         conv_manager.update_user_state(user_id, ConversationState.ESCALATED)
 

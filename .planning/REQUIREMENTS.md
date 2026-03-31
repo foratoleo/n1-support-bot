@@ -65,9 +65,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Feedback
 
-- [ ] **FBK-01**: Feedback solicitado automaticamente apos fim de fluxo (nao apenas via /feedback)
-- [ ] **FBK-02**: Rating 1-5 estrelas via botoes inline
-- [ ] **FBK-03**: Comentario opcional apos rating ("Quer deixar um comentario?" Sim/Nao)
+- [x] **FBK-01**: Feedback solicitado automaticamente apos fim de fluxo (nao apenas via /feedback)
+- [x] **FBK-02**: Rating 1-5 estrelas via botoes inline
+- [x] **FBK-03**: Comentario opcional apos rating ("Quer deixar um comentario?" Sim/Nao)
 
 ## v2 Requirements
 
@@ -136,9 +136,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | REF-01 | Phase 8 | Complete |
 | REF-02 | Phase 2 | Complete |
 | REF-03 | Phase 2 | Complete |
-| FBK-01 | Phase 10 | Pending |
-| FBK-02 | Phase 10 | Pending |
-| FBK-03 | Phase 10 | Pending |
+| FBK-01 | Phase 10 | Complete |
+| FBK-02 | Phase 10 | Complete |
+| FBK-03 | Phase 10 | Complete |
 
 **Coverage:**
 - v1 requirements: 38 total

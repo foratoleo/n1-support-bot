@@ -1,48 +1,76 @@
-# Fase 3 — Plano 03-01: Extensão de Estado para Navegação — Resumo
-
-**Criado:** 2026-03-30
-**Última atualização:** 2026-03-30
-**Status:** complete
-
+---
+phase: "03"
+plan: "01"
+title: "Extensao de estado para navegacao menu"
+subsystem: "bot/conversation_manager"
+tags: ["navigation", "menu", "state-management", "NAV-02"]
+dependency_graph:
+  requires: []
+  provides: ["menu_path", "menu_context", "navigation-helpers"]
+  affects: ["src/bot/conversation_manager.py", "src/bot/handlers.py"]
+tech_stack:
+  added: []
+  patterns: ["menu stack pattern", "context dictionary"]
+key_files:
+  created: []
+  modified:
+    - "src/bot/conversation_manager.py"
+decisions: []
 ---
 
-## O que foi feito
+# Phase 03 Plan 01: Extensão de Estado para Navegação Menu Summary
 
-Extensão de `UserConversationState` e `ConversationManager` em
-`src/bot/conversation_manager.py` para suportar navegação por menu inline.
+## One-Liner
 
-### Campos adicionados a `UserConversationState`
+Verificação de campos de navegação por menu (menu_path, menu_context) e métodoshelpers em UserConversationState.
 
-| Campo | Tipo | Padrão | Descrição |
-|-------|------|--------|-----------|
-| `menu_path` | `List[str]` | `[]` | Pilha de nós do menu ativos (ex.: `["main", "duvidas"]`) |
-| `menu_context` | `Dict[str, Any]` | `{}` | Contexto transitório do nó atual |
+## Verification Summary
 
-### Métodos adicionados a `UserConversationState`
+Verificado que `UserConversationState` já possui todos os campos e métodos de navegação necessários:
 
-| Método | Assinatura | Comportamento |
-|--------|-----------|---------------|
-| `push_menu` | `(path: str, context: dict = None) -> None` | Empurra nó na pilha; substitui `menu_context` se `context` fornecido |
-| `pop_menu` | `() -> Optional[str]` | Remove e retorna o nó mais recente; não remove o elemento raiz |
-| `current_menu` | `() -> Optional[str]` | Retorna o nó mais recente sem alterar a pilha |
-| `clear_menu` | `() -> None` | Reinicia `menu_path` e `menu_context` para vazios |
+### Campos Verificados (NAV-02)
 
-### Atualizações em `ConversationManager`
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `menu_path` | `List[str]` | Pilha de posições no menu (ex.: `["main", "duvidas"]`) |
+| `menu_context` | `Dict[str, Any]` | Contexto transitório associado ao nó de menu atual |
 
-- `clear_user_state()` agora também zera `menu_path` e `menu_context`
-- Novo método assíncrono `edit_message_and_update_state()`: executa
-  `query.edit_message_text()` e `update_user_state()` no mesmo bloco
-  `try/except`, garantindo atomicidade entre edição de mensagem e mudança
-  de estado
+### Métodos Verificados
 
-## Critérios de aceite verificados
+| Método | Descrição |
+|--------|-----------|
+| `push_menu(path, context)` | Empurra novo nó na pilha de navegação |
+| `pop_menu()` | Remove e retorna o nó mais recente (protege raiz) |
+| `current_menu()` | Retorna nó atual sem alterar pilha |
+| `clear_menu()` | Reinicia estado de navegação |
+| `edit_message_and_update_state()` | Edita mensagem Telegram e atualiza estado atomicamente |
 
-1. `UserConversationState` possui `menu_path`, `menu_context` e os quatro helpers — **atendido**
-2. Os 26 testes de transição de estado existentes passam sem modificação — **atendido** (26/26)
-3. `edit_message_text` e atualização de estado ocorrem no mesmo bloco `try/except` — **atendido** via `edit_message_and_update_state`
+### Test Results
 
-## Compatibilidade retroativa
+Executado: `python -m pytest tests/test_conversation_manager.py -v`
+- **Result:** 26/26 testes passaram
+- **Duration:** ~4 segundos
 
-Todo código existente que instancia `UserConversationState(state=..., user_id=...)`
-continua funcionando sem alteração, pois ambos os novos campos têm
-`default_factory=list` / `default_factory=dict`.
+## Task Completion
+
+| Task | Name | Status | Commit |
+|------|------|--------|--------|
+| 1 | Verificar campos menu_path e menu_context | ✅ COMPLETE | N/A (verified existing implementation) |
+
+## Deviation from Plan
+
+**Nenhuma derivação** — O plano foi executado exatamente como escrito. Os campos e métodos de navegação já estavam implementados no código existente.
+
+## Self-Check
+
+- [x] `src/bot/conversation_manager.py` exists and contains `menu_path`
+- [x] `src/bot/conversation_manager.py` exists and contains `menu_context`
+- [x] `src/bot/conversation_manager.py` exists and contains navigation methods
+- [x] Tests pass: 26/26
+
+## Execution Metrics
+
+- **Start Time:** 2026-03-31T15:34:39Z
+- **End Time:** 2026-03-31T15:34:43Z
+- **Duration:** 4 seconds
+- **Tasks Completed:** 1/1

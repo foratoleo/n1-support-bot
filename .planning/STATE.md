@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Milestone complete
-last_updated: "2026-03-31T15:30:56Z"
+status: unknown
+last_updated: "2026-03-31T15:35:03.488Z"
 progress:
   total_phases: 10
-  completed_phases: 2
-  total_plans: 5
+  completed_phases: 3
+  total_plans: 6
   completed_plans: 13
 ---
 
@@ -43,6 +43,12 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 |------|-------|--------|
 | 02-01 | Criar keyboards.py e callback_router.py | complete |
 
+## Phase 3 Plan Progress
+
+| Plan | Title | Status |
+|------|-------|--------|
+| 03-01 | Verificar campos menu_path e menu_context | complete |
+
 ## Phase History
 
 - **2026-03-30** — Plan 01-01 complete: Created `src/bot/strings.py` with 48 UPPER_SNAKE_CASE constants in pt-br. Zero English user-facing strings.
@@ -50,3 +56,4 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 - **2026-03-30** — Plan 01-03 complete: Migrated handlers and escalation — replaced 21 English strings in handlers.py and 8 in escalation/handler.py with pt-br constants from strings.py.
 - **2026-03-30** — Plan 01-04 complete: Translated validation and LLM prompts
 - **2026-03-31** — Plan 02-01 complete: Created keyboards.py, callback_router.py, _callback_handlers.py; added test_callback_data.py with 34 passing tests
+- **2026-03-31** — Plan 03-01 complete: Verified menu navigation state fields (menu_path, menu_context) and helper methods already implemented in UserConversationState; 26/26 tests pass

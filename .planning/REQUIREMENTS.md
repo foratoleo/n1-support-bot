@@ -28,17 +28,17 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Report de Erro Guiado
 
-- [ ] **RPT-01**: Fluxo guiado coleta area funcional via botoes inline
-- [ ] **RPT-02**: Fluxo guiado coleta tipo de sintoma via botoes inline
-- [ ] **RPT-03**: Fluxo guiado coleta quando comecou via botoes inline (Hoje, Ontem, Ha mais de 2 dias, Nao sei)
-- [ ] **RPT-04**: Fluxo guiado coleta frequencia via botoes inline (Sempre, As vezes, So uma vez)
-- [ ] **RPT-05**: Passo opcional para mensagem de erro ou screenshot (texto livre + foto)
-- [ ] **RPT-06**: Tela de confirmacao mostrando dados coletados antes de submeter
-- [ ] **RPT-07**: Usuario pode voltar e corrigir qualquer passo antes de confirmar
-- [ ] **RPT-08**: ID unico do report exibido apos confirmacao
-- [ ] **RPT-09**: Pre-preenchimento de categoria quando usuario vem da KB
-- [ ] **RPT-10**: Deteccao de duplicata via BM25 antes de criar ticket ("Isso resolve?")
-- [ ] **RPT-11**: Suporte a screenshot/foto como anexo no report
+- [x] **RPT-01**: Fluxo guiado coleta area funcional via botoes inline
+- [x] **RPT-02**: Fluxo guiado coleta tipo de sintoma via botoes inline
+- [x] **RPT-03**: Fluxo guiado coleta quando comecou via botoes inline (Hoje, Ontem, Ha mais de 2 dias, Nao sei)
+- [x] **RPT-04**: Fluxo guiado coleta frequencia via botoes inline (Sempre, As vezes, So uma vez)
+- [x] **RPT-05**: Passo opcional para mensagem de erro ou screenshot (texto livre + foto)
+- [x] **RPT-06**: Tela de confirmacao mostrando dados coletados antes de submeter
+- [x] **RPT-07**: Usuario pode voltar e corrigir qualquer passo antes de confirmar
+- [x] **RPT-08**: ID unico do report exibido apos confirmacao
+- [x] **RPT-09**: Pre-preenchimento de categoria quando usuario vem da KB
+- [x] **RPT-10**: Deteccao de duplicata via BM25 antes de criar ticket ("Isso resolve?")
+- [x] **RPT-11**: Suporte a screenshot/foto como anexo no report
 
 ### Knowledge Base
 
@@ -111,17 +111,17 @@ Deferred to future release. Tracked but not in current roadmap.
 | NAV-07 | Phase 2 | Complete |
 | NAV-08 | Phase 2 | Complete |
 | NAV-09 | Phase 2 | Complete |
-| RPT-01 | Phase 6 | Pending |
-| RPT-02 | Phase 6 | Pending |
-| RPT-03 | Phase 6 | Pending |
-| RPT-04 | Phase 6 | Pending |
-| RPT-05 | Phase 6 | Pending |
-| RPT-06 | Phase 6 | Pending |
-| RPT-07 | Phase 6 | Pending |
-| RPT-08 | Phase 6 | Pending |
-| RPT-09 | Phase 6 | Pending |
-| RPT-10 | Phase 6 | Pending |
-| RPT-11 | Phase 6 | Pending |
+| RPT-01 | Phase 6 | Complete |
+| RPT-02 | Phase 6 | Complete |
+| RPT-03 | Phase 6 | Complete |
+| RPT-04 | Phase 6 | Complete |
+| RPT-05 | Phase 6 | Complete |
+| RPT-06 | Phase 6 | Complete |
+| RPT-07 | Phase 6 | Complete |
+| RPT-08 | Phase 6 | Complete |
+| RPT-09 | Phase 6 | Complete |
+| RPT-10 | Phase 6 | Complete |
+| RPT-11 | Phase 6 | Complete |
 | KB-01 | Phase 7 | Pending |
 | KB-02 | Phase 7 | Pending |
 | KB-03 | Phase 7 | Pending |

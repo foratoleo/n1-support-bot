@@ -55,18 +55,30 @@ async def handle_yes_resolved(update: Update, context) -> None:
     user_id = update.effective_user.id
     conv_manager = _get_conv_manager()
     user_state = conv_manager.get_user_state(user_id)
+    report_id = user_state.current_report_id if user_state else None
 
     await query.edit_message_text(text=strings.CALLBACK_RESOLVED)
 
-    if user_state and user_state.current_report_id:
+    if user_state and report_id:
         pool = get_database_pool()
         async with pool.acquire() as session:
             user_report_repo = UserReportRepository(session)
             await user_report_repo.update_status(
-                UUID(user_state.current_report_id), "resolved"
+                UUID(report_id), "resolved"
             )
 
     conv_manager.update_user_state(user_id, ConversationState.IDLE)
+
+    # FBK-01: prompt de feedback automático após resolução confirmada
+    if report_id:
+        try:
+            from src.bot.feedback_handler import send_feedback_prompt_after_edit  # noqa: PLC0415
+            await send_feedback_prompt_after_edit(query, report_id)
+        except Exception as exc:
+            import logging as _logging  # noqa: PLC0415
+            _logging.getLogger(__name__).warning(
+                "Falha ao enviar prompt de feedback após yes_resolved: %s", exc
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -122,25 +134,6 @@ async def handle_search_callback(update: Update, context) -> None:
     # Placeholder: callbacks de busca serão implementados na Fase 7.
     # A presença deste handler garante que o router reconheça o prefixo "search"
     # sem lançar erro nem cair no fallback silencioso.
-    pass
-
-
-# ---------------------------------------------------------------------------
-# Handler: feedback inline (prefixo "feedback")
-# ---------------------------------------------------------------------------
-
-
-@register("feedback")
-async def handle_feedback_callback(update: Update, context) -> None:
-    """Trata callbacks com prefixo 'feedback' originados de botões de avaliação inline.
-
-    Atualmente um stub — será expandido na Fase 10 (feedback automático).
-
-    Args:
-        update: O objeto de atualização do Telegram.
-        context: O contexto de callback do PTB.
-    """
-    # Placeholder: callbacks de feedback serão implementados na Fase 10.
     pass
 
 
@@ -315,7 +308,8 @@ async def _handle_menu_humano(query, update: Update, context) -> None:  # noqa: 
 
     breadcrumb = format_breadcrumb(strings.BTN_FALAR_HUMANO)
 
-    if user_state.current_report_id:
+    report_id_for_fbk = user_state.current_report_id
+    if report_id_for_fbk:
         pool = get_database_pool()
         async with pool.acquire() as session:
             escalation_handler = EscalationHandler(
@@ -323,7 +317,7 @@ async def _handle_menu_humano(query, update: Update, context) -> None:  # noqa: 
                 user_report_repo=UserReportRepository(session),
             )
             await escalation_handler.create_escalation(
-                report_id=UUID(user_state.current_report_id),
+                report_id=UUID(report_id_for_fbk),
                 summary="Usuário solicitou atendimento humano pelo menu principal.",
             )
 
@@ -344,6 +338,17 @@ async def _handle_menu_humano(query, update: Update, context) -> None:  # noqa: 
         text=text,
         reply_markup=get_back_to_menu_keyboard(),
     )
+
+    # FBK-01: prompt de feedback automático após escalação confirmada
+    if report_id_for_fbk:
+        try:
+            from src.bot.feedback_handler import send_feedback_prompt_after_edit  # noqa: PLC0415
+            await send_feedback_prompt_after_edit(query, report_id_for_fbk)
+        except Exception as exc:
+            import logging as _logging  # noqa: PLC0415
+            _logging.getLogger(__name__).warning(
+                "Falha ao enviar prompt de feedback após escalação: %s", exc
+            )
 
 
 # ---------------------------------------------------------------------------

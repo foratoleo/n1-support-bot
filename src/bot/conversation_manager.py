@@ -15,6 +15,7 @@ class ConversationState(Enum):
     ESCALATED = "escalated"
     COLLECTING_REPORT = "collecting_report"
     AWAITING_KB_SEARCH = "awaiting_kb_search"
+    AWAITING_FEEDBACK_COMMENT = "awaiting_feedback_comment"
 
 
 @dataclass

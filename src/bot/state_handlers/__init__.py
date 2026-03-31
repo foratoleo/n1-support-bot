@@ -19,6 +19,7 @@ from . import (
     escalated,
     collecting_report,
     awaiting_kb_search,
+    awaiting_feedback_comment,
 )
 
 
@@ -30,6 +31,7 @@ DISPATCHER: dict = {
     ConversationState.ESCALATED: escalated.handle,
     ConversationState.COLLECTING_REPORT: collecting_report.handle,
     ConversationState.AWAITING_KB_SEARCH: awaiting_kb_search.handle,
+    ConversationState.AWAITING_FEEDBACK_COMMENT: awaiting_feedback_comment.handle,
 }
 
 

@@ -459,3 +459,10 @@ async def _create_report(
         text=strings.RPT_CREATED.format(report_id=report_id),
         reply_markup=get_main_menu_keyboard(),
     )
+
+    # FBK-01: prompt de feedback automático após criação de chamado
+    try:
+        from src.bot.feedback_handler import send_feedback_prompt_after_edit  # noqa: PLC0415
+        await send_feedback_prompt_after_edit(query, str(report.id))
+    except Exception as exc:
+        logger.warning("Falha ao enviar prompt de feedback após criação de chamado: %s", exc)

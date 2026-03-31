@@ -10,6 +10,15 @@ from src.bot.strings import (
     BTN_YES_RESOLVED,
     BTN_NO_UNRESOLVED,
     BTN_TIRAR_DUVIDA,
+    # Feedback inline (Fase 10)
+    FBK_STAR_1,
+    FBK_STAR_2,
+    FBK_STAR_3,
+    FBK_STAR_4,
+    FBK_STAR_5,
+    FBK_BTN_PULAR,
+    BTN_SIM,
+    BTN_NAO,
     BTN_REPORTAR_ERRO,
     BTN_ACOMPANHAR_CHAMADO,
     BTN_FALAR_HUMANO,
@@ -587,5 +596,63 @@ def get_kb_ver_mais_keyboard(article_id: str) -> InlineKeyboardMarkup:
             InlineKeyboardButton(BTN_VOLTAR, callback_data=_assert_callback_data("menu:duvidas")),
             InlineKeyboardButton(BTN_MENU_PRINCIPAL, callback_data=_assert_callback_data("menu:main")),
         ],
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+# ---------------------------------------------------------------------------
+# Teclados de feedback inline — Fase 10 (FBK-01 a FBK-03)
+# ---------------------------------------------------------------------------
+
+
+def get_feedback_rating_keyboard(report_id: str) -> InlineKeyboardMarkup:
+    """Teclado de avaliação por estrelas (1-5) com botão Pular.
+
+    Callback data no formato "fbk:rate:{report_id}:{stars}".
+    O report_id é truncado para garantir que o callback_data respeite o limite
+    de 64 bytes do Telegram.
+
+    Args:
+        report_id: UUID completo do chamado a ser avaliado.
+
+    Returns:
+        InlineKeyboardMarkup com 5 botões de estrela e botão Pular.
+    """
+    # Usa os primeiros 8 chars do UUID para manter o callback dentro de 64 bytes
+    rid = report_id[:8]
+    stars = [
+        (FBK_STAR_1, "1"),
+        (FBK_STAR_2, "2"),
+        (FBK_STAR_3, "3"),
+        (FBK_STAR_4, "4"),
+        (FBK_STAR_5, "5"),
+    ]
+    keyboard = [
+        [InlineKeyboardButton(label, callback_data=_assert_callback_data(f"fbk:rate:{rid}:{n}"))]
+        for label, n in stars
+    ]
+    keyboard.append([
+        InlineKeyboardButton(FBK_BTN_PULAR, callback_data=_assert_callback_data(f"fbk:skip:{rid}"))
+    ])
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_feedback_comment_keyboard(report_id: str) -> InlineKeyboardMarkup:
+    """Teclado de pergunta "Quer deixar um comentário?" com Sim/Não.
+
+    Callback data no formato "fbk:comment:{report_id}:yes|no".
+
+    Args:
+        report_id: UUID truncado (8 chars) ou completo do chamado.
+
+    Returns:
+        InlineKeyboardMarkup com botões Sim e Não.
+    """
+    rid = report_id[:8]
+    keyboard = [
+        [
+            InlineKeyboardButton(BTN_SIM, callback_data=_assert_callback_data(f"fbk:comment:{rid}:yes")),
+            InlineKeyboardButton(BTN_NAO, callback_data=_assert_callback_data(f"fbk:comment:{rid}:no")),
+        ]
     ]
     return InlineKeyboardMarkup(keyboard)

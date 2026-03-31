@@ -465,3 +465,30 @@ KB_NO_ARTICLES = (
     "Nenhum artigo encontrado nesta categoria ainda.\n\n"
     "Use o botão abaixo para pesquisar ou volte ao menu."
 )
+
+# ---------------------------------------------------------------------------
+# Feedback inline automático — Fase 10 (FBK-01 a FBK-03)
+# ---------------------------------------------------------------------------
+
+FBK_PROMPT = "Como você avalia este atendimento?"
+
+FBK_STAR_1 = "1 ⭐"
+FBK_STAR_2 = "2 ⭐⭐"
+FBK_STAR_3 = "3 ⭐⭐⭐"
+FBK_STAR_4 = "4 ⭐⭐⭐⭐"
+FBK_STAR_5 = "5 ⭐⭐⭐⭐⭐"
+
+FBK_BTN_PULAR = "Pular avaliação"
+
+FBK_THANKS = "Obrigado pela sua avaliação!"
+
+FBK_COMMENT_ASK = "Quer deixar um comentário?"
+
+BTN_SIM = "Sim"
+BTN_NAO = "Não, obrigado"
+
+FBK_COMMENT_PROMPT = "Digite seu comentário:"
+
+FBK_COMMENT_THANKS = "Comentário registrado. Obrigado!"
+
+FBK_SKIPPED = "Tudo bem! Volte quando precisar."

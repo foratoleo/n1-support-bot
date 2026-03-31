@@ -367,6 +367,7 @@ async def _handle_kb_resolved(query, update: Update, article_id: str) -> None:
     """
     user_id = update.effective_user.id
     conv_manager = _get_conv_manager()
+    user_state = conv_manager.get_user_state(user_id)
     conv_manager.update_user_state(user_id, ConversationState.IDLE)
 
     from src.bot.keyboards import get_main_menu_keyboard  # noqa: PLC0415
@@ -374,6 +375,15 @@ async def _handle_kb_resolved(query, update: Update, article_id: str) -> None:
         text=strings.CALLBACK_RESOLVED,
         reply_markup=get_main_menu_keyboard(),
     )
+
+    # FBK-01: prompt de feedback automático após KB resolver a dúvida
+    report_id = user_state.current_report_id
+    if report_id:
+        try:
+            from src.bot.feedback_handler import send_feedback_prompt_after_edit  # noqa: PLC0415
+            await send_feedback_prompt_after_edit(query, report_id)
+        except Exception as exc:
+            logger.warning("Falha ao enviar prompt de feedback após KB resolvida: %s", exc)
 
 
 async def _handle_kb_unresolved(

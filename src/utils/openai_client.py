@@ -6,8 +6,13 @@ from .logger import get_logger
 logger = get_logger(__name__)
 
 class OpenAIClient:
-    def __init__(self, api_key: str, model: str = "gpt-4o"):
-        self.client = OpenAI(api_key=api_key)
+    def __init__(
+        self,
+        api_key: str,
+        model: str = "MiniMax-M2",
+        base_url: str = "https://api.minimax.io/v1"
+    ):
+        self.client = OpenAI(api_key=api_key, base_url=base_url)
         self.model = model
 
     def chat_completion(

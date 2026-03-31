@@ -15,7 +15,13 @@ from sqlalchemy.pool import NullPool
 
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "")
+
+def _make_async_url(url: str) -> str:
+    """Convert postgresql:// to postgresql+asyncpg:// for async SQLAlchemy."""
+    if url and url.startswith("postgresql://"):
+        return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    return url
 
 
 class DatabasePool:
@@ -47,8 +53,9 @@ class DatabasePool:
         Sets up connection pooling with appropriate parameters for
         production use.
         """
+        async_url = _make_async_url(self.database_url)
         self.engine = create_async_engine(
-            self.database_url,
+            async_url,
             echo=False,
             pool_size=10,
             max_overflow=20,
@@ -134,14 +141,7 @@ def create_schema_if_not_exists(schema_name: str):
         schema_name: Name of the schema to create.
     """
     from sqlalchemy import text
-    from sqlalchemy.ext.asyncio import AsyncSession
-
-    async def _create(conn):
-        await conn.execute(
-            text(f"CREATE SCHEMA IF NOT EXISTS {schema_name}")
-        )
-
-    return _create
+    return text(f"CREATE SCHEMA IF NOT EXISTS {schema_name}")
 
 
 # Global database pool instance

@@ -6,18 +6,15 @@ load_dotenv()
 
 @dataclass
 class Config:
-    # Telegram
+    # Required
     telegram_bot_token: str
-
-    # OpenAI
     openai_api_key: str
-    openai_model: str = "gpt-4o"
-
-    # Database
     database_url: str
-    rag_schema: str = "rag"
 
     # Optional
+    openai_model: str = "MiniMax-M2"
+    rag_schema: str = "rag"
+    openai_base_url: str = "https://api.minimax.io/v1"
     log_level: str = "INFO"
     use_pgvector: bool = False
 
@@ -27,9 +24,10 @@ class Config:
         return cls(
             telegram_bot_token=os.getenv("TELEGRAM_BOT_TOKEN", ""),
             openai_api_key=os.getenv("OPENAI_API_KEY", ""),
-            openai_model=os.getenv("OPENAI_MODEL", "gpt-4o"),
             database_url=os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/n1_support"),
+            openai_model=os.getenv("OPENAI_MODEL", "MiniMax-M2"),
             rag_schema=os.getenv("RAG_SCHEMA", "rag"),
+            openai_base_url=os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1"),
             log_level=os.getenv("LOG_LEVEL", "INFO"),
             use_pgvector=os.getenv("USE_PGVECTOR", "false").lower() == "true",
         )

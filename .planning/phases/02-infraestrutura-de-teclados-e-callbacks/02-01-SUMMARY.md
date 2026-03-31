@@ -1,7 +1,7 @@
-# Phase 2 — Infraestrutura de Teclados e Callbacks: Summary
+# Phase 2 Plan 1: Criar keyboards.py e callback_router.py Summary
 
 **Created:** 2026-03-30
-**Last Updated:** 2026-03-30
+**Last Updated:** 2026-03-31
 **Status:** Complete
 
 ---
@@ -15,6 +15,7 @@
 | `src/bot/keyboards.py` | Módulo de fábrica de InlineKeyboard (REF-03) |
 | `src/bot/callback_router.py` | Router de callbacks por prefixo (REF-02, NAV-09) |
 | `src/bot/_callback_handlers.py` | Handlers concretos registrados via @register (REF-02) |
+| `tests/test_callback_data.py` | Testes de validação de callback_data (64 bytes + formato) |
 
 ### Arquivos modificados
 
@@ -72,3 +73,26 @@
 - **NAV-07**: callback_query.answer() chamado em todo CallbackQuery handler
 - **NAV-08**: Callback data compacto respeitando limite 64 bytes (validação em _assert_callback_data)
 - **NAV-09**: Router de callbacks baseado em prefixo substituindo if/elif monolítico
+
+---
+
+## Verificação final
+
+```bash
+$ python -c "from src.bot.keyboards import *; print('keyboards.py OK')"
+keyboards.py OK
+
+$ python -c "from src.bot.callback_router import route_callback; print('callback_router.py OK')"
+callback_router.py OK
+
+$ python -m pytest tests/test_callback_data.py -v
+============================== 34 passed in 1.20s ==============================
+```
+
+### Cobertura de testes
+
+| Categoria | Testes |
+|-----------|--------|
+| Limite 64 bytes (26 keyboards) | 26 testes |
+| Formato prefix:action[:param] | 5 testes |
+| format_breadcrumb | 3 testes |

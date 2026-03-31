@@ -1,477 +1,215 @@
-# Codebase Concerns Analysis
+# Codebase Concerns
 
-**Last Updated:** 2026-03-30
+**Analysis Date:** 2026-03-31
 
-## Executive Summary
+## Tech Debt
 
-This document outlines technical debt, security concerns, performance issues, and areas of fragility discovered during a comprehensive codebase analysis of the ragworkforce project.
+### In-Memory State Management (Critical)
+- **Issue:** ConversationManager uses in-memory dict (`_states: Dict[int, UserConversationState]`) for user state tracking
+- **Files:** `src/bot/conversation_manager.py`
+- **Impact:** All user conversation states are lost on bot restart. Users lose their place in workflows.
+- **Fix approach:** Persist user state to database. Add `user_states` table with columns: `user_id`, `current_state`, `current_report_id`, `context` (JSONB), `updated_at`. Load state on user interaction, save after each state change.
 
----
+### BM25 Re-Ranking Without Index Loading
+- **Issue:** KnowledgeBaseSearcher rebuilds BM25 index in-memory for every search call (`_score_with_bm25plus` constructs corpus from DB rows each time)
+- **Files:** `src/rag/knowledge_base.py` (lines 431-477)
+- **Impact:** Performance degrades with large KB. O(n) corpus construction on every search.
+- **Fix approach:** Load KB documents once at startup, build BM25 index in memory, refresh periodically or on KB updates.
 
-## 1. Critical Issues
-
-### 1.1 Security Concerns
-
-#### CORS Configuration - Production Risk
-- **File:** `supabase/functions/ms-oauth-callback/index.ts` (Line 45-49)
-- **Issue:** Access-Control-Allow-Origin is set to "*" for development
-- **Risk:** High - Allows any origin to access OAuth callback endpoint
-- **Details:**
-  ```typescript
-  const CORS = {
-    "Access-Control-Allow-Origin": "*",
-  ```
-- **Action Required:** Restrict to `FRONTEND_URL` or whitelist specific domains in production
-- **Severity:** CRITICAL
-
-#### Unencrypted Token Storage
-- **File:** `supabase/functions/sync-github-prs/sync-orchestrator.ts` (Line 168)
-- **Issue:** GitHub token passed without decryption
-- **Risk:** Medium - Token stored encrypted but not decrypted before use
-- **Code:** `token: config.github_token_encrypted, // TODO: Decrypt token`
-- **Action Required:** Implement token decryption before using in API calls
-- **Severity:** HIGH
-
-#### Default Credentials in Configuration
-- **File:** `src/config.py` (Line 27)
-- **Issue:** Hardcoded default database URL with credentials
-- **Risk:** Medium - Default password visible in code
-- **Code:** `database_url=os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/n1_support")`
-- **Action Required:** Remove default credentials, make DATABASE_URL mandatory
-- **Severity:** HIGH
-
-#### Localhost Fallbacks in Production
+### Silent Exception Handling
+- **Issue:** Several places use bare `except Exception: pass` or catch-then-ignore patterns
 - **Files:** 
-  - `supabase/functions/recall-bot-create/index.ts` (Line 18)
-  - `supabase/functions/media-meeting-callback/index.ts` (Line 12)
-  - Multiple other Supabase functions
-- **Issue:** Multiple functions fallback to localhost/127.0.0.1 when environment vars missing
-- **Risk:** High - Could accidentally point to local development environment in production
-- **Examples:**
-  ```typescript
-  const SUPABASE_URL = Deno.env.get("DB_URL") || Deno.env.get("SUPABASE_URL") || "http://127.0.0.1:54321";
-  ```
-- **Action Required:** Remove localhost fallbacks, fail fast if env vars missing
-- **Severity:** HIGH
+  - `src/rag/knowledge_base.py` line 14 (NLTK import), line 105 (stemming), line 382 (BM25 fallback), line 553 (re-ranking)
+  - `src/bot/_callback_handlers.py` lines 77, 347 (feedback prompts)
+  - `src/bot/report_wizard.py` lines 391, 447, 467
+- **Impact:** Silent failures hide bugs. Users see no feedback when operations fail.
+- **Fix approach:** Replace silent catches with specific exception handling, log warnings/errors, provide user feedback where appropriate.
 
----
+### Unused Code / Placeholder Handlers
+- **Issue:** `handle_search_callback` in `_callback_handlers.py` is a no-op stub (line 137: `pass`)
+- **Files:** `src/bot/_callback_handlers.py:124-137`
+- **Impact:** Placeholder that was "to be expanded in Phase 7" - unclear if still planned
+- **Fix approach:** Either implement inline search functionality or remove the placeholder.
 
-## 2. Technical Debt
+### Empty Returns Without Context
+- **Issue:** Multiple search methods return empty `[]` or `None` without indicating why
+- **Files:** 
+  - `src/rag/knowledge_base.py` lines 226, 387, 410, 575, 580
+  - `src/bot/kb_browser.py` line 102
+- **Impact:** No differentiation between "no results", "error", and "feature disabled"
+- **Fix approach:** Create result wrapper with status enum: `SearchResult(success: bool, data: List, error: Optional[str])`
 
-### 2.1 TODO/FIXME Comments
+## Known Bugs
 
-#### OAuth Callback CORS Restriction
-- **File:** `supabase/functions/ms-oauth-callback/index.ts` (Line 45)
-- **Item:** `TODO: Restrict Access-Control-Allow-Origin to specific domains in production`
+### UUID Conversion Risk
+- **Issue:** Converting Telegram user_id (int) to UUID with `UUID(int=user_id)` can fail for large integers
+- **Files:** 
+  - `src/bot/handlers.py` line 115
+  - `src/bot/_callback_handlers.py` lines 271-272
+- **Trigger:** Telegram user IDs can exceed UUID's max value (2^128-1)
+- **Workaround:** Store user_id as string in database instead of UUID, or use separate mapping table.
+
+### Database Connection Not Initialized Before First Use
+- **Issue:** `get_database_pool()` is called in handlers but pool may not be initialized if bot starts without running `init_database_pool()`
+- **Files:** `src/database/connection.py` lines 151-165
+- **Trigger:** Any handler that calls `get_database_pool()` before `main.py` completes initialization
+- **Workaround:** Currently handled by main.py startup order, but fragile.
+
+### Duplicate KB Documents Possible
+- **Issue:** No validation prevents duplicate `file_path` entries at application level (only DB constraint)
+- **Files:** `src/database/models.py` line 40 (`file_path` unique constraint exists, but no application-level check)
+- **Trigger:** Seed script could fail silently on duplicate file paths
+- **Workaround:** Database constraint catches it, but error message is unclear.
+
+## Security Considerations
+
+### API Keys in Environment Variables
+- **Risk:** `TELEGRAM_BOT_TOKEN` and `OPENAI_API_KEY` are loaded from `.env` file
+- **Files:** `src/config.py`
+- **Current mitigation:** `.env` is gitignored
+- **Recommendations:** 
+  - Use Docker secrets or external secret manager in production
+  - Validate env var presence at startup, not silently default to empty string
+
+### No Input Sanitization on User Reports
+- **Risk:** User-submitted `description` in reports is stored as-is
+- **Files:** `src/bot/handlers.py` line 104, `src/database/repositories.py`
+- **Current mitigation:** Text is displayed to users, no XSS in Telegram
+- **Recommendations:** 
+  - Add length limits to prevent DoS
+  - Consider rate limiting report creation per user
+
+### Hardcoded Model Names
+- **Risk:** `gpt-4o` is hardcoded in multiple places for classification/re-ranking
+- **Files:** 
+  - `src/validation/classifier.py` line 256
+  - `src/rag/knowledge_base.py` line 523
+- **Current mitigation:** Uses configured base_url for API endpoint
+- **Recommendations:** Make model name configurable per feature
+
+## Performance Bottlenecks
+
+### Large KB Loading on Every Search
+- **Problem:** Each search fetches all matching documents from DB then re-scores in memory
+- **Files:** `src/rag/knowledge_base.py` (lines 319-429)
+- **Cause:** No caching, fetches full content even for large docs
+- **Improvement path:** 
+  - Add LRU cache for frequent queries
+  - Paginate results from DB
+  - Store pre-computed search vectors in DB
+
+### Blocking I/O in Async Context
+- **Problem:** `openai_client.chat.completions.create` is called synchronously in re-ranking
+- **Files:** `src/rag/knowledge_base.py` lines 519-534
+- **Cause:** Uses `run_in_executor` but still blocks thread pool
+- **Improvement path:** Use `openai.AsyncOpenAI` client for true async
+
+### No Connection Pool Warming
+- **Problem:** First request after idle period is slow (cold pool)
+- **Files:** `src/database/connection.py`
+- **Cause:** `pool_pre_ping=True` but no warm-up on startup
+- **Improvement path:** Run dummy query on startup after `pool.initialize()`
+
+## Fragile Areas
+
+### Callback Router Handler Matching
+- **Issue:** Prefix matching in `route_callback` uses string `startswith` - can have false positives
+- **Files:** `src/bot/callback_router.py` lines 94-97
+- **Why fragile:** "search" prefix matches "search_article_123" vs "search:category" - order dependent
+- **Safe modification:** Ensure prefixes are mutually exclusive or use exact match for leaf nodes
+
+### State Machine Transitions Not Enforced
+- **Issue:** `update_user_state` accepts any state with kwargs - no validation of valid transitions
+- **Files:** `src/bot/conversation_manager.py` lines 116-136
+- **Why fragile:** Code could set invalid states (e.g., COLLECTING_REPORT → ESCALATED without going through validation)
+- **Safe modification:** Add transition validation matrix
+
+### Import-Time Side Effects in Router
+- **Issue:** `callback_router.py` imports modules at end of file to trigger registration decorators
+- **Files:** `src/bot/callback_router.py` lines 109-112
+- **Why fragile:** Circular import risk, order-dependent behavior
+- **Safe modification:** Use explicit registration pattern or lazy imports
+
+## Scaling Limits
+
+### In-Memory Conversation State
+- **Current capacity:** Limited by process memory - estimate ~10KB per user
+- **Limit:** At ~10,000 concurrent users, could consume ~100MB+
+- **Scaling path:** Database-backed state persistence required for horizontal scaling
+
+### Database Connection Pool
+- **Current capacity:** pool_size=10, max_overflow=20 (30 total)
+- **Limit:** With blocking queries, ~30 concurrent DB operations
+- **Scaling path:** 
+  - Increase pool size cautiously
+  - Add read replicas for heavy read workloads (KB search)
+  - Consider connection pooling service (PgBouncer)
+
+### Telegram API Rate Limits
+- **Current capacity:** No explicit rate limiting in code
+- **Limit:** Telegram's standard limits (~30 msg/sec to single user, bulk limits)
+- **Scaling path:** Add message queuing, batch responses where possible
+
+## Dependencies at Risk
+
+### rank-bm25 (Optional but Used)
+- **Risk:** External library for BM25 - version compatibility with Python 3.11+
+- **Impact:** Would need to reimplement BM25 scoring or find alternative
+- **Migration plan:** Already has fallback (inline scoring mentioned in comments), verify tests pass
+
+### NLTK (Optional)
+- **Risk:** Large download dependency (stemmer data)
+- **Impact:** Graceful degradation with `_nltk_available = False` - search still works
+- **Migration plan:** Consider spacy or smaller stemmer library
+
+### python-telegram-bot
+- **Risk:** Major version changes can break API
+- **Impact:** Significant refactor needed on major version bump
+- **Migration plan:** Pin to specific minor version, review changelog on updates
+
+## Missing Critical Features
+
+### No Retry Logic for External APIs
+- **Problem:** Telegram API calls and OpenAI calls have no retry on transient failures
+- **Files:** All handlers make API calls directly
+- **Blocks:** Production reliability, particularly on network issues
+
+### No Health Check Endpoint
+- **Problem:** No way to verify bot is running correctly (DB connection, Telegram auth)
+- **Files:** N/A
+- **Blocks:** Container orchestration health checks, monitoring
+
+### No Logging of Conversations
+- **Problem:** `conversations` table exists but no handler adds messages during menu navigation
+- **Files:** `src/database/repositories.py` - `ConversationRepository.add_message` exists but only called in `report_command`
+- **Blocks:** Auditing, debugging user issues, analytics
+
+## Test Coverage Gaps
+
+### State Handlers Not Tested
+- **What's not tested:** All state handlers in `src/bot/state_handlers/`
+- **Files:** `awaiting_report.py`, `awaiting_kb_search.py`, `providing_guidance.py`, `awaiting_validation.py`, etc.
+- **Risk:** Logic errors in menu navigation go undetected
 - **Priority:** High
-- **Effort:** Low (1-2 hours)
 
-#### Token Decryption Missing
-- **File:** `supabase/functions/sync-github-prs/sync-orchestrator.ts` (Line 168)
-- **Item:** `TODO: Decrypt token`
+### Callback Handlers Have Minimal Tests
+- **What's not tested:** Most callback handlers in `_callback_handlers.py`
+- **Files:** Menu navigation, escalation triggers, search callbacks
+- **Risk:** Broken menu navigation, wrong state transitions
 - **Priority:** High
-- **Effort:** Medium (depends on encryption implementation)
 
-#### Email Sending Not Implemented
-- **File:** `supabase/functions/_shared/jira-alerts.ts` (Line 135)
-- **Item:** `TODO: Implement actual email sending`
+### Integration Tests Missing
+- **What's not tested:** Full conversation flows (start → menu → report → validation → guidance)
+- **Files:** N/A
+- **Risk:** State management bugs, database transaction issues
 - **Priority:** Medium
-- **Effort:** Medium
 
-#### Responses API Support Unknown
-- **File:** `supabase/functions/process-transcript/openai-client.ts` (Line 427)
-- **Item:** `TODO: Check if Responses API supports AbortController`
-- **Priority:** Low
-- **Effort:** Low
-
----
-
-### 2.2 Hardcoded Values and Magic Numbers
-
-#### BM25 Parameters
-- **File:** `src/rag/knowledge_base.py` (Lines 109-110)
-- **Values:**
-  - `k1 = 1.5` (term frequency saturation)
-  - `b = 0.75` (document length normalization)
-- **Issue:** Hardcoded without configuration
-- **Action:** Move to config with defaults for tuning
-
-#### Content Preprocessing
-- **File:** `src/rag/knowledge_base.py` (Line 241)
-- **Value:** `content[:100]` - First 100 chars for deduplication
-- **Issue:** Magic number without explanation
-- **Impact:** Deduplication signature calculation
-
-#### BM25 Score Combination
-- **File:** `src/rag/knowledge_base.py` (Line 465)
-- **Values:** `0.4 * (bm25_score / 10) + 0.6 * gpt_normalized`
-- **Issue:** Hardcoded weights for score combination (40% BM25, 60% GPT)
-- **Impact:** Result ranking quality
-- **Action:** Make configurable
-
-#### Default Average Document Length
-- **File:** `src/rag/knowledge_base.py` (Line 339, 363)
-- **Value:** `1000` (fallback avg_doc_length)
-- **Issue:** Hardcoded fallback for statistical calculation
-- **Impact:** BM25 scoring accuracy when stats unavailable
-
-#### Query Term Limit
-- **File:** `src/rag/knowledge_base.py` (Line 277)
-- **Value:** `search_terms[:10]` - Limit to first 10 terms
-- **Issue:** Hardcoded limit
-- **Impact:** May truncate important search terms
-
-#### Result Fetching Multiplier
-- **File:** `src/rag/knowledge_base.py` (Line 299)
-- **Value:** `limit * 3` - Fetch 3x results for deduplication
-- **Issue:** Hardcoded multiplier
-- **Impact:** Performance and deduplication effectiveness
-
-#### Max Tokens for GPT Reranking
-- **File:** `src/rag/knowledge_base.py` (Line 449)
-- **Value:** `max_tokens=100`
-- **Issue:** Hardcoded without configuration
-- **Impact:** Response length limit
-
-#### Validation Question Count
-- **File:** `src/bot/handlers.py` (Line 134)
-- **Value:** `max_questions=3`
-- **Issue:** Hardcoded limit on questions
-- **Impact:** User experience in validation phase
-
-#### Report Limit in /list Command
-- **File:** `src/bot/handlers.py` (Line 494)
-- **Value:** `limit=5` - Show 5 recent reports
-- **Issue:** Hardcoded
-- **Impact:** User can't customize how many reports to see
-
-#### Text Truncation
-- **File:** `src/bot/handlers.py` (Lines 468, 507)
-- **Values:** `[:200]`, `[:50]`
-- **Issue:** Multiple hardcoded string truncation lengths
-- **Impact:** Message formatting consistency
+### RAG Search Quality Not Measured
+- **What's not tested:** Search relevance, re-ranking effectiveness
+- **Files:** `src/rag/knowledge_base.py`
+- **Risk:** Degraded search quality without detection
+- **Priority:** Medium
 
 ---
 
-## 3. Performance Concerns
-
-### 3.1 Inefficient Search Implementation
-
-#### Multiple Sequential Searches
-- **File:** `src/rag/knowledge_base.py` (Lines 116-154)
-- **Issue:** `find_relevant_articles()` performs BM25 search, then optional GPT re-ranking in sequence
-- **Impact:** Blocking await on GPT API call
-- **Recommendation:** Consider async parallel execution if multiple candidates need re-ranking
-
-#### Full Text Scan in Deduplication
-- **File:** `src/rag/knowledge_base.py` (Lines 220-254)
-- **Issue:** `_deduplicate_results()` uses O(n) lookups with set membership
-- **Impact:** Scales linearly with result count
-- **Optimization:** Already optimal for this operation
-
-#### BM25 Document Statistics Caching
-- **File:** `src/rag/knowledge_base.py` (Lines 325-339)
-- **Issue:** Document statistics cached in-memory but refreshed only once per instance
-- **Impact:** Stale stats if KB changes without reinitialization
-- **Risk:** BM25 scores become less accurate over time
-- **Action:** Implement TTL-based cache invalidation or per-search refresh
-
-#### Simple Content Signature
-- **File:** `src/rag/knowledge_base.py` (Line 241)
-- **Issue:** Using first 100 chars (whitespace-removed) may miss duplicates with different prefixes
-- **Impact:** Incomplete deduplication
-- **Recommendation:** Consider content hash or more comprehensive fingerprinting
-
-### 3.2 Polling and Database Access
-
-#### Drop Pending Updates Flag
-- **File:** `src/main.py` (Line 38)
-- **Issue:** `drop_pending_updates=True` discards any pending messages
-- **Impact:** Could lose user messages if bot is restarted
-- **Risk:** User frustration if reports are lost
-- **Recommendation:** Implement queue-based message persistence
-
-#### Inefficient User Lookup
-- **File:** `src/bot/handlers.py` (Lines 487-489)
-- **Issue:** UUID conversion from Telegram user ID may fail silently
-- **Code:** `UUID(int=user_id)` conversion without validation
-- **Risk:** Type coercion from Telegram int to UUID
-
----
-
-## 4. Fragile and Complex Areas
-
-### 4.1 State Management
-
-#### Conversation State Machine
-- **File:** `src/bot/handlers.py` (Lines 238-435)
-- **Issue:** Complex nested state handling in single function
-- **Size:** ~200 lines
-- **Risk:** Hard to maintain, easy to introduce bugs
-- **Nested Logic:**
-  - IDLE state check
-  - AWAITING_VALIDATION_ANSWER processing with multiple branches
-  - PROVIDING_GUIDANCE with KB article logic
-  - ESCALATED state
-  - Multiple async database operations within state transitions
-- **Recommendation:** Separate into handler classes per state
-
-#### User State Storage
-- **File:** `src/bot/conversation_manager.py`
-- **Issue:** In-memory state storage (ConversationManager)
-- **Risk:** State lost on process restart
-- **Impact:** Users must restart conversation if bot restarts
-- **Recommendation:** Persist conversation state to database
-
-### 4.2 Error Handling Issues
-
-#### Generic Exception Handling
-- **File:** `src/rag/knowledge_base.py` (Lines 473-476)
-- **Issue:** Broad exception catch with fallback to BM25
-- **Code:**
-  ```python
-  except Exception as e:
-      print(f"Re-ranking failed: {e}")
-      return candidates
-  ```
-- **Issue:** Uses `print()` instead of logger, silently fails
-- **Severity:** Medium
-
-#### Missing Error Handling in Escalation
-- **File:** `src/bot/handlers.py` (Lines 333-361)
-- **Issue:** Escalation creation has no error handling
-- **Risk:** User not notified if escalation fails
-- **Action Required:** Add try-catch and error messaging
-
-#### OpenAI Client Exception Propagation
-- **File:** `src/utils/openai_client.py` (Lines 29-39, 57-78)
-- **Issue:** Broad exception handling re-raises without context
-- **Code:**
-  ```python
-  except Exception as e:
-      logger.error(f"OpenAI API error: {e}")
-      raise
-  ```
-- **Risk:** Caller doesn't know if it's rate limit, timeout, or other error
-- **Recommendation:** Create custom exceptions for different failure modes
-
-#### Missing Validation in Report Creation
-- **File:** `src/bot/handlers.py` (Lines 104-114)
-- **Issue:** No validation that report was created before storing message
-- **Risk:** Orphaned messages if report creation fails
-- **Action Required:** Add transaction-like error handling
-
----
-
-## 5. Missing Error Handling
-
-### 5.1 Database Operations Without Error Recovery
-
-#### KB Search SQL Injection Risk
-- **File:** `src/rag/knowledge_base.py` (Lines 272-289)
-- **Issue:** Dynamic SQL construction with f-strings
-- **Code:** `f"(title ILIKE ${param_idx} OR content ILIKE ${param_idx})"`
-- **Risk:** Though parameters are passed separately, dynamic query building is fragile
-- **Status:** Parameters are properly bound (safe), but could be cleaner
-
-#### Missing Connection Pool Error Handling
-- **File:** `src/database/connection.py` (Lines 50-64)
-- **Issue:** Connection pool initialization has no retry logic
-- **Risk:** Temporary network issues cause immediate failure
-- **Recommendation:** Implement connection retry with exponential backoff
-
-#### Missing Transaction Handling
-- **File:** `src/bot/handlers.py` (Multiple locations)
-- **Issue:** Multi-step operations (create report, store message, search KB) have no transaction boundaries
-- **Risk:** Partial failures leave inconsistent state
-- **Recommendation:** Implement transactions around related operations
-
-### 5.2 API Integration Error Handling
-
-#### OpenAI API Timeouts Not Handled
-- **File:** `src/utils/openai_client.py`
-- **Issue:** No timeout configuration or retry logic
-- **Risk:** Requests can hang indefinitely
-- **Recommendation:** Add timeout and exponential backoff retry
-
-#### GitHub API Rate Limiting
-- **File:** `supabase/functions/sync-github-prs/sync-orchestrator.ts`
-- **Issue:** Rate limit tracking exists but no backoff implemented
-- **Risk:** Sync can fail without graceful degradation
-- **Recommendation:** Implement exponential backoff based on rate limit remaining
-
-#### Recall.ai API Error Recovery
-- **File:** `supabase/functions/ms-oauth-callback/index.ts` (Lines 346-356)
-- **Issue:** Calendar creation failure doesn't fail gracefully
-- **Code:** `// Continue without Recall calendar - user can retry later`
-- **Risk:** User unaware that calendar wasn't created
-- **Recommendation:** Store calendar creation status and notify user
-
----
-
-## 6. Configuration Issues
-
-### 6.1 Missing Configuration Externalization
-
-#### Hardcoded Model Names
-- **File:** `src/config.py` (Line 15)
-- **Value:** Default model is "MiniMax-M2"
-- **Issue:** Hardcoded, limits flexibility
-- **Impact:** Requires code change to switch models
-
-#### Hardcoded API Endpoints
-- **Files:**
-  - `src/config.py` (Line 17): `https://api.minimax.io/v1`
-  - `supabase/functions/ms-oauth-callback/index.ts` (Line 102): `https://login.microsoftonline.com/common/oauth2/v2.0/token`
-- **Issue:** Multiple hardcoded endpoints
-- **Risk:** Need code changes for different environments
-
-#### Environment Variable Fallbacks Too Permissive
-- **File:** `src/config.py` (Lines 25-32)
-- **Issue:** Many defaults allow startup without configuration
-- **Risk:** Could deploy with wrong settings
-- **Recommendation:** Fail fast for critical vars, only provide safe defaults
-
----
-
-## 7. Validation and Input Handling
-
-### 7.1 Insufficient Input Validation
-
-#### No Sanitization of User Input in Reports
-- **File:** `src/bot/handlers.py` (Lines 75-96)
-- **Issue:** User issue description passed directly to KB searcher and OpenAI
-- **Risk:** Injection attacks via Telegram messages
-- **Recommendation:** Sanitize and validate input length/content
-
-#### Missing Bounds Checking
-- **File:** `src/bot/handlers.py` (Line 507)
-- **Issue:** Text truncation assumes minimum length
-- **Code:** `r.description[:50] + "..." if len(r.description) > 50 else r.description`
-- **Risk:** No check for empty strings
-- **Recommendation:** Add explicit empty string handling
-
-#### UUID Conversion Without Validation
-- **File:** `src/bot/handlers.py` (Lines 106-107, 201-206, 487-489, 548-552)
-- **Issue:** Multiple UUID(string) conversions that can raise ValueError
-- **Risk:** Inconsistent error handling across functions
-- **Recommendation:** Create validation utility function
-
----
-
-## 8. Logging and Observability
-
-### 8.1 Insufficient Logging Coverage
-
-#### Silent Failures in Re-ranking
-- **File:** `src/rag/knowledge_base.py` (Lines 473-476)
-- **Issue:** Uses `print()` instead of logger
-- **Code:** `print(f"Re-ranking failed: {e}")`
-- **Impact:** Won't appear in structured logs
-
-#### Missing Correlation IDs
-- **Files:** Across all Python modules
-- **Issue:** No request/conversation ID propagation in logs
-- **Impact:** Hard to trace issues across async operations
-
-#### Limited Structured Logging
-- **File:** `src/utils/logger.py`
-- **Issue:** Basic logging without context/metadata
-- **Recommendation:** Use structured logging with context dicts
-
----
-
-## 9. Database and Data Integrity
-
-### 9.1 Missing Indexes
-
-#### No Indexes on Search Queries
-- **File:** `src/rag/knowledge_base.py` (Lines 52-63)
-- **Issue:** ILIKE queries on title and content
-- **Risk:** Full table scans on large KB
-- **Recommendation:** Add GIN indexes for full-text search
-
-#### User ID Lookups
-- **File:** Various repository methods
-- **Issue:** Queries on user_id without indexed lookups
-- **Recommendation:** Ensure user_id has index in all queries
-
-### 9.2 Data Consistency
-
-#### Race Condition in State Management
-- **File:** `src/bot/conversation_manager.py`
-- **Issue:** In-memory state is not thread-safe
-- **Risk:** Race conditions in concurrent message handling
-- **Recommendation:** Add locks or use database-backed state
-
-#### Missing Cascade Deletes
-- **File:** `src/database/models.py`
-- **Issue:** Relationships don't define cascade behavior
-- **Risk:** Orphaned records if parent deleted
-- **Recommendation:** Define CASCADE delete for child records
-
----
-
-## 10. Testing Gaps
-
-### 10.1 Coverage Issues
-
-#### No Tests for Conversation State Transitions
-- **File:** `src/bot/handlers.py`
-- **Issue:** Complex state machine lacks test coverage
-- **Risk:** Regressions in state transitions
-
-#### No Error Path Testing
-- **Files:** Multiple
-- **Issue:** Error handling paths not tested
-- **Risk:** Silent failures in production
-
-#### No Integration Tests
-- **Issue:** No end-to-end tests for Telegram->KB->OpenAI flow
-- **Risk:** Breaking changes go undetected
-
----
-
-## 11. Summary Table
-
-| Category | Count | Severity | Effort |
-|----------|-------|----------|--------|
-| Critical Security Issues | 4 | CRITICAL/HIGH | Medium |
-| TODO Items | 4 | HIGH/MEDIUM | Medium |
-| Hardcoded Values | 8+ | MEDIUM | Medium |
-| Performance Concerns | 4 | MEDIUM | High |
-| Fragile Areas | 2 | HIGH | High |
-| Missing Error Handling | 6+ | HIGH | High |
-| Validation Issues | 3 | MEDIUM | Medium |
-| Configuration Issues | 3 | MEDIUM | Low |
-| Logging Gaps | 3 | LOW | Low |
-| Data Integrity | 2 | MEDIUM | Medium |
-
----
-
-## 12. Recommended Priority Actions
-
-### Immediate (This Sprint)
-1. Fix CORS configuration in `ms-oauth-callback/index.ts`
-2. Remove hardcoded default credentials from `config.py`
-3. Remove localhost fallbacks from Supabase functions
-4. Implement token decryption in GitHub sync
-
-### Short-term (Next 2 Weeks)
-1. Implement transaction handling for multi-step operations
-2. Add comprehensive error handling to OpenAI and GitHub clients
-3. Implement email sending for JIRA alerts
-4. Add database indexes for search queries
-
-### Medium-term (Next Month)
-1. Refactor state machine into separate handler classes
-2. Migrate conversation state to database
-3. Implement structured logging with correlation IDs
-4. Add integration tests for full conversation flow
-
-### Long-term (Next Quarter)
-1. Implement connection retry logic with backoff
-2. Add caching for KB document statistics with TTL
-3. Create separate configuration for BM25 parameters
-4. Comprehensive input validation and sanitization layer
-
+*Concerns audit: 2026-03-31*

@@ -1,520 +1,236 @@
-# Directory and File Structure
+# Codebase Structure
 
-**Last Updated:** 2026-03-30  
-**Status:** N1 Support Bot - Phase 2
+**Analysis Date:** 2026-03-31
 
-## Project Directory Tree
+## Directory Layout
 
 ```
 ragworkforce/
-├── src/                                    # Main source code directory
-│   ├── __init__.py                         # Package initialization
-│   ├── main.py                             # Application entry point
-│   ├── config.py                           # Configuration management
-│   │
-│   ├── bot/                                # Telegram bot layer
-│   │   ├── __init__.py
-│   │   ├── handlers.py                     # Command handlers (/report, /search, /feedback, etc.)
-│   │   ├── conversation_manager.py         # Per-user state management
-│   │   └── templates.py                    # Message formatting and UI templates
-│   │
-│   ├── database/                           # Data access layer
-│   │   ├── __init__.py
-│   │   ├── connection.py                   # Database pool and connection management
-│   │   ├── models.py                       # SQLAlchemy ORM models
-│   │   └── repositories.py                 # Repository pattern for CRUD operations
-│   │
-│   ├── rag/                                # Retrieval-Augmented Generation
-│   │   ├── __init__.py
-│   │   ├── knowledge_base.py               # KB search with BM25 ranking
-│   │   └── embeddings.py                   # Embedding generation (optional pgvector)
-│   │
-│   ├── escalation/                         # Escalation management
-│   │   ├── __init__.py
-│   │   └── handler.py                      # Escalation workflow and message formatting
-│   │
-│   ├── validation/                         # Issue validation and classification
-│   │   ├── __init__.py
-│   │   ├── classifier.py                   # Issue classification and escalation decision
-│   │   └── questions.py                    # Validation question generation
-│   │
-│   └── utils/                              # Utilities
-│       ├── __init__.py
-│       ├── logger.py                       # Logging configuration
-│       └── openai_client.py                # OpenAI/MiniMax API wrapper
-│
-├── scripts/                                # Utility scripts
-│   └── seed_kb.py                          # Knowledge base population script
-│
-├── tests/                                  # Test suite
-│   ├── __init__.py
-│   ├── conftest.py                         # pytest configuration and fixtures
-│   ├── test_conversation_manager.py
-│   ├── test_escalation_handler.py
-│   ├── test_knowledge_base.py
-│   ├── test_models.py
-│   ├── test_repositories.py
-│   ├── test_templates.py
-│   └── test_validation.py
-│
-├── supabase/                               # Supabase Edge Functions (external services)
-│   └── functions/                          # Serverless functions for file processing
-│       ├── accessibility-test/
-│       ├── extract-pdf/
-│       ├── generate-presigned-download-url/
-│       ├── process-transcript/
-│       ├── recall-bot-create/
-│       ├── recall-bot-list/
-│       ├── recall-transcript/
-│       ├── recall-webhook/
-│       ├── service-call-to-markdown/
-│       ├── llms.txt
-│       └── llms-full.txt
-│
-├── docs/                                   # Documentation (project context)
-│   ├── 01-project-overview/
-│   ├── 02-folder-structure/
-│   ├── 03-glossary/
-│   ├── 04-database-schema/
-│   ├── 05-authentication/
-│   ├── ...
-│   └── [20+ subdirectories for feature docs]
-│
-├── .planning/                              # Planning and analysis artifacts
-│   └── codebase/
-│       ├── ARCHITECTURE.md                 # This architecture document
-│       └── STRUCTURE.md                    # This structure document
-│
-├── docker-compose.yml                      # Docker Compose configuration
-├── requirements.txt                        # Python dependencies
-└── .gitignore                              # Git ignore rules
+├── src/                      # Main source code
+│   ├── main.py               # Application entry point
+│   ├── config.py             # Configuration dataclass
+│   ├── bot/                  # Telegram bot layer
+│   │   ├── handlers.py       # Command handlers (/start, /report, etc.)
+│   │   ├── conversation_manager.py  # State machine
+│   │   ├── callback_router.py      # Prefix-based callback routing
+│   │   ├── keyboards.py      # InlineKeyboard factory functions
+│   │   ├── templates.py      # Message formatting helpers
+│   │   ├── strings.py        # All user-facing text (pt-BR)
+│   │   ├── _callback_handlers.py  # Concrete callback handlers
+│   │   ├── kb_browser.py     # KB navigation handlers
+│   │   ├── report_wizard.py  # Guided error report flow
+│   │   ├── feedback_handler.py    # Inline feedback handling
+│   │   └── state_handlers/    # State-specific message handlers
+│   ├── database/             # Data access layer
+│   │   ├── connection.py     # DatabasePool, async session management
+│   │   ├── models.py         # SQLAlchemy ORM models
+│   │   └── repositories.py   # Repository classes (CRUD)
+│   ├── rag/                  # RAG/knowledge base search
+│   │   ├── knowledge_base.py # BM25Plus + optional vector search
+│   │   └── embeddings.py     # Embedding generation
+│   ├── validation/           # Issue classification
+│   │   ├── classifier.py     # IssueClassifier
+│   │   └── questions.py      # QuestionGenerator
+│   ├── escalation/           # Escalation handling
+│   │   └── handler.py        # EscalationHandler
+│   └── utils/                # Utilities
+│       ├── openai_client.py  # OpenAI/MiniMax API wrapper
+│       └── logger.py         # Logging configuration
+├── tests/                    # Test files
+├── supabase/                 # Database initialization SQL
+├── kb_data/                  # Knowledge base source files
+├── docs/                     # Documentation
+├── scripts/                  # Utility scripts
+├── docker-compose.yml        # Docker services configuration
+├── Dockerfile                # Bot container definition
+├── requirements.txt          # Python dependencies
+├── .env.example              # Environment variable template
+└── .planning/                # GSD planning artifacts
+    └── codebase/             # Codebase analysis documents
 ```
 
----
+## Directory Purposes
 
-## File Location Quick Reference
+**`src/` - Main Source Code:**
+- Purpose: All Python source code for the bot application
+- Contains: Entry point, all modules organized by layer
+- Key files: `main.py`, `config.py`
 
-### Core Application Files
+**`src/bot/` - Presentation Layer:**
+- Purpose: Telegram bot interface, handlers, keyboards, templates, strings
+- Contains: Command handlers, state handlers, callback handlers, UI components
+- Key files: `handlers.py`, `conversation_manager.py`, `keyboards.py`, `templates.py`, `strings.py`
 
-| File | Purpose | Type |
-|------|---------|------|
-| `src/main.py` | Application entry point, bot initialization | Entry Point |
-| `src/config.py` | Configuration loading and validation | Configuration |
-| `src/bot/handlers.py` | Telegram command handlers | Business Logic |
-| `src/bot/conversation_manager.py` | User state management | State Management |
-| `src/bot/templates.py` | Message templates and formatting | UI/Presentation |
+**`src/bot/state_handlers/` - State-Specific Handlers:**
+- Purpose: Handle user messages based on current conversation state
+- Contains: `idle.py`, `awaiting_report.py`, `awaiting_validation.py`, `providing_guidance.py`, `escalated.py`, `collecting_report.py`, `awaiting_kb_search.py`, `awaiting_feedback_comment.py`
+- Key file: `__init__.py` exports `dispatch()` function
 
-### Database Files
+**`src/database/` - Data Layer:**
+- Purpose: Database connection pooling, ORM models, repository classes
+- Contains: `connection.py`, `models.py`, `repositories.py`
 
-| File | Purpose | Type |
-|------|---------|------|
-| `src/database/connection.py` | Database pool, session management | Infrastructure |
-| `src/database/models.py` | SQLAlchemy ORM model definitions | Data Model |
-| `src/database/repositories.py` | CRUD repository classes | Data Access |
+**`src/rag/` - RAG Layer:**
+- Purpose: Knowledge base search and retrieval
+- Contains: `knowledge_base.py`, `embeddings.py`
 
-### Business Logic Files
+**`src/validation/` - Validation Layer:**
+- Purpose: Issue classification and validation questions
+- Contains: `classifier.py`, `questions.py`
 
-| File | Purpose | Type |
-|------|---------|------|
-| `src/rag/knowledge_base.py` | KB search, BM25 ranking, query expansion | Search/Retrieval |
-| `src/rag/embeddings.py` | Vector embedding generation (optional) | AI/ML |
-| `src/escalation/handler.py` | Escalation workflow, message formatting | Business Logic |
-| `src/validation/classifier.py` | Issue classification, escalation decision | Business Logic |
-| `src/validation/questions.py` | Validation question generation | Business Logic |
+**`src/escalation/` - Escalation Layer:**
+- Purpose: Human handoff for complex issues
+- Contains: `handler.py`
 
-### Utility Files
+**`src/utils/` - Utilities:**
+- Purpose: Shared utilities (OpenAI client, logging)
+- Contains: `openai_client.py`, `logger.py`
 
-| File | Purpose | Type |
-|------|---------|------|
-| `src/utils/openai_client.py` | OpenAI/MiniMax API wrapper | Infrastructure |
-| `src/utils/logger.py` | Logging configuration | Utilities |
+**`tests/` - Test Suite:**
+- Purpose: Unit and integration tests
+- Contains: Test files matching source module structure
 
-### Testing Files
+**`supabase/` - Database Schema:**
+- Purpose: PostgreSQL initialization scripts
+- Contains: `init.sql`
 
-| File | Coverage | Type |
-|------|----------|------|
-| `tests/conftest.py` | pytest fixtures, mocks | Test Infrastructure |
-| `tests/test_conversation_manager.py` | ConversationManager, state transitions | Unit Tests |
-| `tests/test_escalation_handler.py` | Escalation creation, status updates | Unit Tests |
-| `tests/test_knowledge_base.py` | BM25 search, query expansion, deduplication | Unit Tests |
-| `tests/test_models.py` | ORM model validation | Unit Tests |
-| `tests/test_repositories.py` | CRUD operations, repository patterns | Unit Tests |
-| `tests/test_templates.py` | Message formatting, template rendering | Unit Tests |
-| `tests/test_validation.py` | Classification, escalation decision logic | Unit Tests |
+## Key File Locations
 
-### Configuration Files
+**Entry Points:**
+- `src/main.py`: Application startup, initializes all components
 
-| File | Purpose | Format |
-|------|---------|--------|
-| `requirements.txt` | Python package dependencies | pip format |
-| `docker-compose.yml` | Docker Compose services | YAML |
-| `.gitignore` | Git ignore patterns | Text |
+**Configuration:**
+- `src/config.py`: `Config` dataclass loading from environment variables
+- `.env.example`: Template with all required variables
 
----
+**State Management:**
+- `src/bot/conversation_manager.py`: `ConversationManager`, `ConversationState`, `UserConversationState`
+
+**Command Handlers:**
+- `src/bot/handlers.py`: `register_handlers()`, command handlers (`start_command`, `report_command`, etc.)
+
+**Callback Routing:**
+- `src/bot/callback_router.py`: `route_callback()`, `register()` decorator
+- `src/bot/_callback_handlers.py`: Concrete handler implementations with `@register` decorators
+
+**Inline Keyboards:**
+- `src/bot/keyboards.py`: All `InlineKeyboardMarkup` factory functions
+
+**Message Templates:**
+- `src/bot/templates.py`: `format_*()` functions for response formatting
+- `src/bot/strings.py`: All string constants in Portuguese
+
+**Database:**
+- `src/database/connection.py`: `DatabasePool`, `get_database_pool()`
+- `src/database/models.py`: SQLAlchemy `Base`, `KBDocument`, `UserReport`, `Conversation`, `Escalation`
+- `src/database/repositories.py`: `*Repository` classes
+
+**RAG:**
+- `src/rag/knowledge_base.py`: `KnowledgeBaseSearcher` with BM25Plus
+- `src/rag/embeddings.py`: `EmbeddingGenerator` (optional pgvector)
+
+**Validation:**
+- `src/validation/classifier.py`: `IssueClassifier`, `IssueClassification`, `EscalationDecision`
+- `src/validation/questions.py`: `QuestionGenerator`, `Question`
+
+**Escalation:**
+- `src/escalation/handler.py`: `EscalationHandler`, `EscalationData`
 
 ## Naming Conventions
 
-### File Naming
+**Files:**
+- `snake_case.py`: All Python modules (e.g., `conversation_manager.py`, `callback_router.py`)
+- `__init__.py`: Package initialization files
+- Prefix underscore for private modules: `_callback_handlers.py`
 
-| Category | Convention | Example |
-|----------|-----------|---------|
-| **Modules** | lowercase_with_underscores | `conversation_manager.py` |
-| **Packages** | lowercase | `src/bot/` |
-| **Test Files** | `test_<module_name>.py` | `test_escalation_handler.py` |
-| **Scripts** | lowercase_with_underscores | `seed_kb.py` |
+**Directories:**
+- `lowercase/`: All package directories
+- `state_handlers/`: Plural for collection of similar modules
+- `_private/`: Prefix underscore for private packages
 
-### Class Naming
+**Classes:**
+- `PascalCase`: All class names (e.g., `ConversationManager`, `KnowledgeBaseSearcher`)
+- Suffix patterns: `-Manager`, `-Handler`, `-Searcher`, `-Generator`, `-Repository`, `-Client`
+- Dataclasses: `PascalCase` (e.g., `UserConversationState`, `IssueClassification`)
 
-| Category | Convention | Example |
-|----------|-----------|---------|
-| **Classes** | PascalCase | `ConversationManager` |
-| **Data Classes** | PascalCase | `UserConversationState` |
-| **Enums** | PascalCase | `ConversationState` |
-| **Exceptions** | PascalCase (ends with Error) | `ValidationError` |
+**Functions/Methods:**
+- `snake_case`: All function and method names
+- Async functions: No special prefix, use `async def`
+- Private methods: Leading underscore `_private_method()`
+- Factory methods: `create()` class method
 
-### Function/Method Naming
+**Variables:**
+- `snake_case`: All variable names
+- Descriptive names: `conversation_manager`, `user_report_repo`
+- Boolean prefixes: `is_`, `has_`, `enable_` (e.g., `enable_reranking`, `use_hybrid`)
 
-| Category | Convention | Example |
-|----------|-----------|---------|
-| **Public Methods** | lowercase_with_underscores | `find_relevant_articles()` |
-| **Private Methods** | _lowercase_with_underscores | `_extract_search_terms()` |
-| **Async Methods** | lowercase_with_underscores (prefix with async) | `async def classify()` |
-| **Handler Functions** | <action>_command or <action>_handler | `report_command()`, `message_handler()` |
+**Constants:**
+- `UPPER_SNAKE_CASE`: Module-level constants
+- Examples: `STOPWORDS`, `RELATED_TERMS`, `CATEGORY_KEYWORDS`, `CB_YES_RESOLVED`
 
-### Variable Naming
+**Type Variables:**
+- `PascalCase`: Type aliases and generic type parameters
+- Examples: `List[str]`, `Dict[str, Any]`, `Optional[UUID]`
 
-| Category | Convention | Example |
-|----------|-----------|---------|
-| **Constants** | UPPER_SNAKE_CASE | `STOPWORDS`, `RELATED_TERMS` |
-| **Flags/Booleans** | lowercase_with_underscores (use `is_`, `has_`, `can_`) | `is_escalated`, `has_solution` |
-| **Instances** | lowercase_with_underscores | `session`, `user_state`, `kb_searcher` |
+## Where to Add New Code
 
-### Database Naming
+**New Command Handler:**
+1. Add handler function to `src/bot/handlers.py`
+2. Register in `register_handlers()` function
+3. Add command to `src/bot/strings.py` if new strings needed
 
-| Category | Convention | Example |
-|----------|-----------|---------|
-| **Schemas** | lowercase | `rag` |
-| **Tables** | lowercase_plural | `kb_documents`, `user_reports` |
-| **Columns** | lowercase_with_underscores | `user_id`, `created_at` |
-| **Foreign Keys** | <referenced_table>_id | `user_report_id` |
+**New State Handler:**
+1. Create `src/bot/state_handlers/new_state.py`
+2. Export handler function `async def handle(update, context, user_state, conv_manager)`
+3. Import and add to `DISPATCHER` dict in `src/bot/state_handlers/__init__.py`
+4. Add new `ConversationState` value if needed
 
----
+**New Callback Handler:**
+1. Add to `src/bot/_callback_handlers.py` (or appropriate sub-module)
+2. Use `@register("prefix:")` decorator
+3. Call `await query.answer()` first (NAV-07 requirement)
 
-## Module Organization
+**New Keyboard:**
+1. Add factory function to `src/bot/keyboards.py`
+2. Follow naming: `get_<purpose>_keyboard() -> InlineKeyboardMarkup`
+3. Use `_assert_callback_data()` to validate 64-byte limit
+4. Add button strings to `src/bot/strings.py`
 
-### Layered Architecture Breakdown
+**New Message Template:**
+1. Add string constant to `src/bot/strings.py`
+2. Add format function to `src/bot/templates.py`
+3. Follow naming: `format_<purpose>() -> str`
 
-```
-Presentation Layer
-├── src/bot/handlers.py          ← Command handlers, update routing
-├── src/bot/conversation_manager.py  ← State transitions
-└── src/bot/templates.py         ← Message formatting
-                                 ↓
-Business Logic Layer
-├── src/validation/classifier.py      ← Classification logic
-├── src/escalation/handler.py         ← Escalation workflow
-└── src/validation/questions.py       ← Question generation
-                                 ↓
-RAG & Search Layer
-├── src/rag/knowledge_base.py         ← BM25 + vector search
-└── src/rag/embeddings.py        ← Embedding generation
-                                 ↓
-Data Access Layer
-├── src/database/repositories.py  ← CRUD operations
-└── src/database/models.py        ← ORM definitions
-                                 ↓
-Infrastructure Layer
-├── src/database/connection.py    ← Connection pooling
-├── src/config.py                 ← Configuration
-├── src/utils/openai_client.py    ← API wrappers
-└── src/utils/logger.py           ← Logging
-```
+**New Repository Method:**
+1. Add method to appropriate class in `src/database/repositories.py`
+2. Follow async pattern: `async def method_name() -> ReturnType`
+3. Use `self.session` for database operations
 
-### Dependency Flow (Upward)
+**New RAG Feature:**
+1. Add to `src/rag/knowledge_base.py` or `src/rag/embeddings.py`
+2. Follow async pattern where appropriate
 
-```
-main.py (orchestrator)
-  ├→ config.py (settings)
-  ├→ bot/handlers.py (presentation)
-  │  └→ bot/conversation_manager.py (state)
-  │     └→ database/repositories.py (data access)
-  │        └→ database/connection.py (infrastructure)
-  ├→ escalation/handler.py (business logic)
-  │  └→ database/repositories.py
-  ├→ validation/classifier.py (business logic)
-  │  └→ rag/knowledge_base.py (search)
-  │     └→ database/repositories.py
-  ├→ utils/openai_client.py (infrastructure)
-  └→ utils/logger.py (infrastructure)
-```
+**New Validation Logic:**
+1. Add to `src/validation/classifier.py` or `src/validation/questions.py`
 
----
+## Special Directories
 
-## Key Directories Explained
+**`src/bot/` - Bot Package:**
+- Purpose: All Telegram bot functionality
+- Exported via `src/bot/__init__.py` (minimal)
 
-### `src/` - Main Source Code
-Central location for all application logic, organized by concern (bot, database, RAG, etc.). All Python packages must have `__init__.py` files.
+**`tests/` - Test Directory:**
+- Purpose: Test files matching source structure
+- Test files: `test_*.py` or `*_test.py` pattern
 
-### `src/bot/` - Telegram Bot Interface
-Handles user interactions through Telegram. Contains:
-- Command parsing and routing
-- Conversation state machine
-- Message templates (for consistency)
+**`.planning/` - GSD Planning:**
+- Purpose: Planning artifacts and phase documentation
+- Structure: `.planning/codebase/` for architecture docs, `.planning/phases/` for phase work
 
-### `src/database/` - Data Persistence
-Manages all database operations:
-- Connection pooling with SQLAlchemy
-- ORM models (KBDocument, UserReport, Conversation, Escalation)
-- Repository pattern for clean data access
-
-### `src/rag/` - Search and Retrieval
-Implements knowledge base search:
-- BM25 ranking with query expansion
-- Optional vector embeddings (pgvector)
-- Optional GPT-4o re-ranking
-
-### `src/escalation/` - Issue Escalation
-Handles escalation to human agents:
-- Escalation record creation
-- Status tracking
-- Message formatting
-
-### `src/validation/` - Issue Analysis
-Validates and classifies issues:
-- Issue classification (5 categories)
-- Escalation decision logic
-- Question generation for validation
-
-### `src/utils/` - Shared Utilities
-Cross-cutting concerns:
-- OpenAI API wrapper (MiniMax-compatible)
-- Logging configuration
-
-### `tests/` - Test Suite
-Unit and integration tests:
-- pytest + pytest-asyncio framework
-- Fixtures in `conftest.py`
-- One test file per module
-
-### `scripts/` - Utility Scripts
-Ad-hoc maintenance and setup:
-- `seed_kb.py`: Populate knowledge base from files
-
-### `docs/` - Documentation
-Project context and specifications (20+ documents):
-- Database schema, authentication, routing
-- Component organization, state management
-- Feature-specific documentation
-
-### `supabase/functions/` - Serverless Functions
-External services for specialized tasks:
-- PDF extraction
-- Transcript processing
-- Webhook handlers
-- Presigned URL generation
+**`kb_data/` - Knowledge Base Source:**
+- Purpose: Source files for KB indexing
+- Format: Markdown files organized by topic
 
 ---
 
-## Import Patterns
-
-### Standard Imports by Layer
-
-**Presentation Layer** (`src/bot/`)
-```python
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler
-
-from src.database.connection import get_database_pool
-from src.database.repositories import (
-    ConversationRepository,
-    EscalationRepository,
-    KBDocumentRepository,
-    UserReportRepository,
-)
-from src.escalation.handler import EscalationHandler
-from src.rag.knowledge_base import KnowledgeBaseSearcher
-from src.validation.classifier import IssueClassifier
-from .conversation_manager import ConversationManager, ConversationState
-from .templates import BOT_MESSAGES, format_escalation
-```
-
-**Business Logic Layer** (`src/validation/`, `src/escalation/`)
-```python
-from dataclasses import dataclass
-from typing import Optional, List
-from src.database.repositories import EscalationRepository, UserReportRepository
-from .questions import QuestionGenerator
-```
-
-**Data Access Layer** (`src/database/`)
-```python
-from sqlalchemy import func, select, text
-from sqlalchemy.ext.asyncio import AsyncSession
-from .models import Conversation, Escalation, KBDocument, UserReport
-```
-
-**Infrastructure Layer** (`src/utils/`, `src/config.py`)
-```python
-from openai import OpenAI
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
-import logging
-from dotenv import load_dotenv
-```
-
-### Relative vs Absolute Imports
-
-| Context | Convention | Example |
-|---------|-----------|---------|
-| **Within same package** | Relative with `.` | `from .conversation_manager import ConversationManager` |
-| **Cross-package** | Absolute from `src/` | `from src.database.connection import get_database_pool` |
-| **Test files** | Absolute from `src/` | `from src.bot.handlers import report_command` |
-
----
-
-## Database Schema Layout
-
-**Schema:** `rag` (PostgreSQL)
-
-**Tables:**
-```
-rag.kb_documents
-  ├─ id (UUID, PK)
-  ├─ area (TEXT)
-  ├─ title (TEXT)
-  ├─ content (TEXT)
-  ├─ file_path (TEXT, UNIQUE)
-  ├─ created_at (DATETIME)
-  └─ embedding (VECTOR, optional pgvector)
-
-rag.user_reports
-  ├─ id (UUID, PK)
-  ├─ user_id (UUID, nullable)
-  ├─ project_id (UUID, nullable)
-  ├─ description (TEXT)
-  ├─ status (TEXT)
-  ├─ rating (TEXT, nullable)
-  └─ created_at (DATETIME)
-
-rag.conversations
-  ├─ id (UUID, PK)
-  ├─ user_report_id (UUID, FK → user_reports.id)
-  ├─ role (TEXT)
-  ├─ message (TEXT)
-  └─ created_at (DATETIME)
-
-rag.escalations
-  ├─ id (UUID, PK)
-  ├─ user_report_id (UUID, FK → user_reports.id)
-  ├─ summary (TEXT)
-  ├─ project_name (TEXT, nullable)
-  ├─ impact (TEXT, nullable)
-  ├─ assigned_to (UUID, nullable)
-  ├─ status (TEXT)
-  └─ created_at (DATETIME)
-```
-
----
-
-## Configuration Files
-
-### `requirements.txt`
-Python package dependencies with pinned or minimum versions. Installed via `pip install -r requirements.txt`.
-
-**Categories:**
-- **Core:** telegram-bot, openai, sqlalchemy, asyncpg
-- **Utilities:** python-dotenv, pydantic, httpx
-- **Testing:** pytest, pytest-asyncio, pytest-mock, pytest-cov
-- **Optional:** rank-bm25, nltk, redis, pgvector
-
-### `docker-compose.yml`
-Services for local development:
-- PostgreSQL database
-- Optional Redis cache
-- Optional pgvector extension
-
-### `.gitignore`
-Standard Python ignores:
-- `__pycache__/`, `.pytest_cache/`
-- `.venv/`, `venv/`
-- `.env`, `.env.local`
-- IDE files (`.vscode/`, `.idea/`)
-
----
-
-## Line Counts and Statistics
-
-### Code Files Summary
-
-| Module | File | Lines | Type |
-|--------|------|-------|------|
-| **Main** | `src/main.py` | 63 | Entry Point |
-| **Config** | `src/config.py` | 42 | Configuration |
-| **Bot** | `src/bot/handlers.py` | 500+ | Business Logic |
-| **Bot** | `src/bot/conversation_manager.py` | 80 | State Management |
-| **Bot** | `src/bot/templates.py` | 200+ | Templates |
-| **Database** | `src/database/connection.py` | 186 | Infrastructure |
-| **Database** | `src/database/models.py` | 143 | Data Model |
-| **Database** | `src/database/repositories.py` | 420 | Data Access |
-| **RAG** | `src/rag/knowledge_base.py` | 556 | Search/Retrieval |
-| **RAG** | `src/rag/embeddings.py` | ~100 | AI/ML |
-| **Escalation** | `src/escalation/handler.py` | 211 | Business Logic |
-| **Validation** | `src/validation/classifier.py` | 379 | Business Logic |
-| **Validation** | `src/validation/questions.py` | ~150 | Business Logic |
-| **Utils** | `src/utils/openai_client.py` | 79 | Infrastructure |
-| **Utils** | `src/utils/logger.py` | ~50 | Utilities |
-
-**Total Source Lines of Code (SLOC):** ~3,500+
-
-### Test Files Summary
-
-| File | Coverage |
-|------|----------|
-| `tests/test_conversation_manager.py` | ConversationManager |
-| `tests/test_escalation_handler.py` | EscalationHandler |
-| `tests/test_knowledge_base.py` | KnowledgeBaseSearcher, BM25 |
-| `tests/test_models.py` | ORM models |
-| `tests/test_repositories.py` | Repository classes |
-| `tests/test_templates.py` | Message templates |
-| `tests/test_validation.py` | Classifier, escalation decision |
-
----
-
-## Execution Flow (From File Perspective)
-
-```
-$ python -m src.main
-
-1. src/main.py::main()
-   ├─ Load src/config.py → Config.from_env()
-   ├─ Initialize src/database/connection.py → DatabasePool
-   ├─ Create src/utils/openai_client.py → OpenAIClient
-   ├─ Register handlers from src/bot/handlers.py
-   │  ├─ report_command → creates UserReport
-   │  ├─ validation_handler → uses src/validation/classifier.py
-   │  ├─ escalation_handler → uses src/escalation/handler.py
-   │  └─ feedback_handler → updates rating
-   │
-   └─ Start polling src/telegram.ext.Application
-      └─ Message arrives
-         └─ src/bot/handlers.py::message_handler()
-            ├─ src/bot/conversation_manager.py → get/update state
-            ├─ src/database/repositories.py → fetch/store data
-            ├─ src/rag/knowledge_base.py → search KB
-            ├─ src/validation/classifier.py → classify issue
-            ├─ src/escalation/handler.py → handle escalation
-            └─ src/utils/openai_client.py → call LLM
-               └─ Response via Telegram
-```
-
----
-
-## Summary Statistics
-
-- **Total Python Files:** 20+ source files
-- **Total Directories:** 8 main + 20+ docs subdirectories
-- **Database Tables:** 4 (KBDocument, UserReport, Conversation, Escalation)
-- **External APIs:** 2 (Telegram, OpenAI/MiniMax)
-- **Layers:** 6 (Presentation, Business Logic, RAG, Data, Config, Infrastructure)
-- **Test Coverage:** 7+ test modules
-
+*Structure analysis: 2026-03-31*

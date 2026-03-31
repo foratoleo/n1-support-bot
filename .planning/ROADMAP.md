@@ -189,7 +189,7 @@
 
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
-| 1 | Localizacao e Strings | Centralizar todas as strings em pt-br com tom profissional | L10N-01, L10N-02, L10N-03, L10N-04 | 4 |
+| 1 | Localizacao e Strings | Centralizar todas as strings em pt-br com tom profissional | Complete    | 2026-03-31 |
 | 2 | Infraestrutura de Teclados e Callbacks | Criar camada de infra para navegacao InlineKeyboard | REF-02, REF-03, NAV-07, NAV-08, NAV-09 | 5 |
 | 3 | Extensao de Estado para Navegacao | Estender UserConversationState com campos de menu | NAV-02 | 3 |
 | 4 | Menu Principal | Implementar menu principal via /start com InlineKeyboard | NAV-01, NAV-04, NAV-05, NAV-06 | 4 |

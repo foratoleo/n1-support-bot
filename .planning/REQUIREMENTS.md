@@ -9,10 +9,10 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Localizacao
 
-- [ ] **L10N-01**: Todas as mensagens do bot em pt-br (botoes, prompts, erros, confirmacoes)
-- [ ] **L10N-02**: System prompts do LLM reescritos em pt-br com tom profissional cordial
-- [ ] **L10N-03**: Strings centralizadas em modulo dedicado (src/bot/strings.py), nenhuma string hardcoded em handlers
-- [ ] **L10N-04**: Mensagens de erro e fallback em pt-br com tom acolhedor
+- [x] **L10N-01**: Todas as mensagens do bot em pt-br (botoes, prompts, erros, confirmacoes)
+- [x] **L10N-02**: System prompts do LLM reescritos em pt-br com tom profissional cordial
+- [x] **L10N-03**: Strings centralizadas em modulo dedicado (src/bot/strings.py), nenhuma string hardcoded em handlers
+- [x] **L10N-04**: Mensagens de erro e fallback em pt-br com tom acolhedor
 
 ### Menu e Navegacao
 
@@ -98,10 +98,10 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| L10N-01 | Phase 1 | Pending |
-| L10N-02 | Phase 1 | Pending |
-| L10N-03 | Phase 1 | Pending |
-| L10N-04 | Phase 1 | Pending |
+| L10N-01 | Phase 1 | Complete |
+| L10N-02 | Phase 1 | Complete |
+| L10N-03 | Phase 1 | Complete |
+| L10N-04 | Phase 1 | Complete |
 | NAV-01 | Phase 4 | Pending |
 | NAV-02 | Phase 3 | Pending |
 | NAV-03 | Phase 5 | Pending |

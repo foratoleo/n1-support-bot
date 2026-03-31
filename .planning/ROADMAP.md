@@ -15,6 +15,7 @@
 
 **Plan Progress:**
 - [x] 01-01: Criar módulo src/bot/strings.py com constantes pt-br — complete (2026-03-30)
+- [x] 01-04: Traduzir perguntas de validacao, system prompts LLM e verificacao final — complete (2026-03-30)
 
 **Success Criteria:**
 1. Qualquer mensagem exibida ao usuario — incluindo erros e fallbacks — esta em pt-br sem nenhuma string em ingles visivel.
